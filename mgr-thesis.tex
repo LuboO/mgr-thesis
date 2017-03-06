@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% I, the copyright holder of this work, release this work into the
+%% public domain. This applies worldwide. In some countries this may
+%% not be legally possible; if so: I grant anyone the right to use
+%% this work for any purpose, without any conditions, unless such
+%% conditions are required by law.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\PassOptionsToPackage{
+  plainpages = false,               								
+  pdfpagelabels,
+  unicode,  
+  colorlinks = true,
+  linkcolor = link-grey,	% PC version
+  citecolor = crimson,		% PC version
+  urlcolor = blue,			% PC version
+  % linkcolor = black,		% Print version
+  % citecolor = black,		% Print version
+  % urlcolor = black,		% Print version
+}{hyperref}
+
+\documentclass[
+  digital,  	% PC version
+  color,		% PC version
+  oneside,   	% PC version
+  % printed 	% Printed version
+  % monochrome	% Printed version
+  % twoside		% Printed version
+  12pt,
+  nocover,
+  table,
+  nolof,
+  nolot,
+  %% More options are listed in the user guide at
+  %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
+]{fithesis3}
+
+%% The following section sets up the locales used in the thesis.
+\usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
+\usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
+\usepackage[
+  main=english,
+  english, german, russian, czech, slovak
+]{babel}
+%% fonts:
+\usepackage{paratype}
+\def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
+
+%%
+%% The following section sets up the metadata of the thesis.
+\thesissetup{
+    date          = \the\year/\the\month/\the\day,
+    university    = mu,
+    faculty       = fi,
+    type          = mgr,
+    author        = Ľubomír Obrátil,
+    gender        = m,
+    advisor       = {RNDr. Petr Švenda, Ph.D.},
+    title         = {Randomness Testing Toolkit},
+    TeXtitle      = {WORK TITLE: The automated testing of randomness with multiple statistical batteries},
+    keywords      = {TODO},
+    TeXkeywords   = {TODO},
+    abstract      = {TODO},
+    thanks        = {TODO},
+    bib           = bibliography.bib,
+}
+\usepackage{makeidx}      %% The `makeidx` package contains
+\makeindex                %% helper commands for index typesetting.
+\thesisload
+
+%\usepackage[top=3cm, bottom=3.5cm, left=3.6cm, right=3.6cm]{geometry}  		% PC version
+%%\usepackage[top=3cm, bottom=3.5cm, left=4.6cm, right=2.6cm]{geometry}		% Printed version
+
+%% These additional packages are used within the document:
+\usepackage{paralist} %% Compact list environments
+\usepackage{amsmath}  %% Mathematics
+\usepackage{amsthm}
+\usepackage{url}
+\usepackage{amsfonts}
+\usepackage{markdown} %% Lightweight markup
+
+\usepackage{listings} %% Source code highlighting
+\lstset{
+  	basicstyle      = \ttfamily,%
+  	identifierstyle = \color{black},%
+  	keywordstyle    = \color{blue},%
+  	keywordstyle    = {[2]\color{cyan}},%
+  	keywordstyle    = {[3]\color{olive}},%
+ 	stringstyle     = \color{teal},%
+	commentstyle    = \itshape\color{magenta}
+}
+
+\usepackage{xcolor}
+\definecolor{link-grey}{rgb}{0.3,0.3,0.3}
+\definecolor{code-bg-grey}{rgb}{0.85,0.85,0.85}
+\definecolor{code-bg-light_grey}{rgb}{0.92,0.92,0.92}
+\definecolor{crimson}{rgb}{0.6,0,0}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% =================================== TEXT BEGINNING =================================== 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\chapter{Introduction}
+\label{chap:intro}
+\begin{huge}
+TODO
+\end{huge}
+
+\chapter{Conclusions}
+\label{chap:concl}
+\begin{huge}
+TODO
+\end{huge}
+
+\appendix
+
+\printbibliography
+
+\chapter{An appendix}
+\begin{huge}
+TODO
+\end{huge}
+
+\end{document}
