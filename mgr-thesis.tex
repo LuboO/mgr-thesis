@@ -68,8 +68,10 @@
 \makeindex                %% helper commands for index typesetting.
 \thesisload
 
-%\usepackage[top=3cm, bottom=3.5cm, left=3.6cm, right=3.6cm]{geometry}  		% PC version
-%%\usepackage[top=3cm, bottom=3.5cm, left=4.6cm, right=2.6cm]{geometry}		% Printed version
+\newcommand{\sidemargin}{3.6cm}
+
+\usepackage[top=3cm, bottom=3.5cm, left=\sidemargin, right=\sidemargin]{geometry}  		% PC version
+%\usepackage[top=3cm, bottom=3.5cm, left=4.6cm, right=2.6cm]{geometry}		% Printed version
 
 %% These additional packages are used within the document:
 \usepackage{paralist} %% Compact list environments
@@ -105,16 +107,55 @@
 \begin{document}
 
 \chapter{Introduction}
-\label{chap:intro}
-\begin{huge}
-TODO
-\end{huge}
+\begin{itemize}
+\item Randomness, why should we test it (defects, low entropy, etc...)
+\item Statistical testing of randomness
+\end{itemize}
+
+\chapter{Overview of statistical batteries}
+\begin{itemize}
+\item Terminology related to batteries - battery, test, variant of a test, subtest, statistics, p-values
+\item nist sts, dieharder, testu01
+\item Each battery: overview, tests, tests into (subtests, default parameters, variants in default run), known defectes
+\end{itemize}
+
+\chapter{Randomness Testing Toolkit}
+\begin{itemize}
+\item Motivation - unified interface to batteries, ease of use, unified result format/representation
+\item Local execution of RTT - battery and toolkit configuration, installation, brief implementation and interface overview - more thorough in documentation and comments
+\item Local result format - either database or file output storage
+\item Remote execution of RTT - toolkit deployed on server infrastructure, system overview (database, frontend, backend(s), storage), accessible through ssh on limited system or via web interface (django), results in database
+\item Remote results of RTT - email notification, webpage layout
+\end{itemize}
+
+\chapter{Interpretation of results of RTT}
+\begin{itemize}
+\item Grouping subtests together - eliminating intertest bias
+\item How grouping works - theory, Sidak correction, partial p-value, fail/pass of a test
+\end{itemize}
+ 
+\chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
+\begin{itemize}
+\item How the data were tested
+\item List functions
+\item List interesting (differing) results - Dieharder, NIST STS, TestU01, EACirc, polynomials(???)
+\end{itemize}
+
+\chapter{Analysis of DIEHARDER results on quantum random data}
+\begin{itemize}
+\item Statistical intro, uniformity, first vs. second level p-value, etc...
+\item Two experiments - continuous p-values, blocks of 2nd level
+\item Results - non-uniform, where it will begin to show on 2nd level results
+\end{itemize}
 
 \chapter{Conclusions}
-\label{chap:concl}
-\begin{huge}
-TODO
-\end{huge}
+\begin{itemize}
+\item Developed user-friendly tool for easy analysis of arbitrary binary data - Randomness Testing Toolkit
+\item Interpretation of results
+\item Comparison of batteries with EACirc, polynomials
+\item Defects in Dieharder, their relevance, etc...
+\item Future work, same analysis on TestU01, dependence between tests(?), continuous development of RTT, call for flawless statistical battery ( :) )
+\end{itemize}
 
 \appendix
 
