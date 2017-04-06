@@ -1,0 +1,38 @@
+## Terminology
+In this thesis we are using certain expressions in the context of Randomness Tetsing Toolkit and the tools it uses. We list these expressions along with their explanations here.
+
+(Statistical) Battery
+Program developed by a third party serving as a tool for evaluation of randomness of arbitrary binary data. Statistical battery usually contains one or multiple statistical tests. Final result of the evaluation is based on the results of the tests. Examples of statistical batteries are NIST Statistical Test Suite, Dieharder or TestU01.
+
+(Statistical) Test
+Single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). Based on this measurement, first level p-value of the test is calculated. The test can be repeated, resulting in multiple p-values. From these p-values are obtained one or multiple second level p-values. Result of the test can then be either first level p-value or one or more second level p-values called statistics.
+
+Variant of a test
+Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of single test with different settings as separate units but rather as a variants of that test.
+
+Subtest
+Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as a subtests of the test. Therefore subtest is smallest unit in the battery, providing only single result.
+
+Statistic
+Value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnovov Test or Chi-Square test.
+
+p-value
+We refer to first level p-values as to simply p-values and second level p-values as to statistics. P-value is obtained as a result of single execution of a test. This p-value tells us the probability that the input data was truly random. Hence obtaining p-value very close to 1 means that the data was almost certainly produced by TRNG. When the p-value is close to 0 it means that it is almost impossible to obtain such data from TRNG; the data is probably not random.
+
+# Batteries
+
+## NIST Statistical Test Suite
+The battery of statistical tests was developed by National Institute of Standards and Technology (cit.). The battery implements 15 statistical tests for evaluating randomness of input data.
+
+The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The optimized version of NIST STS used in RTT was developed by Zdenek Riha and Marek Sys(cit.). 
+
+## Dieharder
+Dieharder is a battery developed by Robert G. Brown at the Duke University (cit.). The battery features user friendly console interface with possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author and other users. 
+
+In RTT, we use modified version of the battery that has different output format better suited for our needs.
+
+## TestU01
+This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al (cit.). It contains wide range of tests from NIST STS, Dieharder and literature. It also implements numerous pseudo-random number genrators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries.
+
+Since TestU01 is available only as a library we implemented console interface for it.
+
