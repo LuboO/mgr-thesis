@@ -20,19 +20,26 @@ p-value
 We refer to first level p-values as to simply p-values and second level p-values as to statistics. P-value is obtained as a result of single execution of a test. This p-value tells us the probability that the input data was truly random. Hence obtaining p-value very close to 1 means that the data was almost certainly produced by TRNG. When the p-value is close to 0 it means that it is almost impossible to obtain such data from TRNG; the data is probably not random.
 
 # Batteries
+Randomness Testing Toolkit serves as a unified interface to statistical batteries and supports following tools.
 
 ## NIST Statistical Test Suite
 The battery of statistical tests was developed by National Institute of Standards and Technology (cit.). The battery implements 15 statistical tests for evaluating randomness of input data.
 
 The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The optimized version of NIST STS used in RTT was developed by Zdenek Riha and Marek Sys(cit.). 
 
+Only defects, variations and subtests here, rest in appendix.
+
 ## Dieharder
-Dieharder is a battery developed by Robert G. Brown at the Duke University (cit.). The battery features user friendly console interface with possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author and other users. 
+Dieharder is a battery developed by Robert G. Brown at the Duke University (cit.). The battery features user friendly console interface with possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author. 
 
 In RTT, we use modified version of the battery that has different output format better suited for our needs.
 
+Only defects, variations and subtests here, rest in appendix.
+
 ## TestU01
-This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al (cit.). It contains wide range of tests from NIST STS, Dieharder and literature. It also implements numerous pseudo-random number genrators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries.
+This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al (cit.). It contains wide range of tests from NIST STS, Dieharder and literature. It also implements numerous pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries.
 
 Since TestU01 is available only as a library we implemented console interface for it.
+
+Only defects, variations and subtests here, rest in appendix.
 

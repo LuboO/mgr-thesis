@@ -1,0 +1,27 @@
+Detected properties
+Frequency Test - proportion of zeroes and ones
+Frequency Test Within a Block - proportion of zeroes and ones within a block
+
+Runs Test - total number of uninterupted sequences of 1 and zeroes
+Test for The Longest Run Of 1s In a Block - longest uninterupted sequence of 1 in a block
+
+Random Binary Matrix Rank Test - Linear dependence among fixed length substrings
+
+Discrete Fourier Transform Test - Repetitive patterns that are near each other
+
+Non-overlapping Template Matching Test - aperiodic pattern detection
+Overlapping Template Matching Test - aperiodic pattern detection
+
+Maurers Universal Statistical Test - Compression test - distance between matching patterns
+
+Linear Complexity Test - Length of a LSFR
+
+Serial Test - Frequence of patterns
+
+Approximate Entropy Test - Frequency of m and m+1 patterns
+
+Cumulative Sum Test - +1 -1 climb
+
+Random Excursions - random walk
+
+Random Excursions Variant - random walk
