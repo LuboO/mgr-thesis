@@ -164,7 +164,10 @@ In this thesis we are using certain expressions in the context of Randomness Tes
 Program developed by a third party serving as a tool for evaluation of randomness of arbitrary binary data. Statistical battery usually contains one or multiple statistical tests. Final result of the evaluation is based on the results of the tests. Examples of statistical batteries are NIST Statistical Test Suite, Dieharder or TestU01.
 
 \item[(Statistical) Test] \hfill \\
-Single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). Based on this measurement, first level p-value of the test is calculated. The test can be repeated, resulting in multiple p-values. From these p-values are obtained one or multiple second level p-values. Result of the test can then be either first level p-value or one or more second level p-values called statistics.
+Single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). Test can have multiple variants and subtests and result of the test is one or multiple statistics.
+
+\item[Test sample] \hfill \\
+Single execution of statistical test. Result of single test execution is one first level p-value. By repeating execution of the test we obtain multiple p-values. By using certain statistic (e.g. Kolmogorov-Smirnov test) we can calculate single second level p-value.
 
 \item[Variant of a test] \hfill \\
 Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of single test with different settings as separate units but rather as a variants of that test.
@@ -172,15 +175,28 @@ Many tests can be parametrized in some ways, possibly giving different results w
 \item[Subtest] \hfill \\
 Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as a subtests of the test. Therefore subtest is smallest unit in the battery, providing only single result.
 
-\item[Statistic] \hfill \\
-Value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnovov Test or Chi-Square test.
+\item[Null hypothesis - $H_0$] \hfill \\
+The hypothesis $H_0$ denotes the hypothesis that the tested data stream is random. Based on the results of the test, we can either reject $H_0$ and say that the data is not random or not reject it. In the latter case, we assume that the tested data is indeed random.
 
 \item[p-value] \hfill \\
-We refer to first level p-values as to simply p-values and second level p-values as to statistics. P-value is obtained as a result of single execution of a test. This p-value tells us the probability that the input data was truly random and it is value between 0 and 1. Hence obtaining p-value very close to 1 means that the data was almost certainly produced by TRNG. When the p-value is close to 0 it means that it is almost impossible to obtain such data from TRNG; the data is probably not random.
+In our hypothesis testing, a p-value is the probability of obtaining equal or more extreme test result while $H_0$ holds true. Applied to our situation, a p-value denotes probability that we would obtain same or more extreme test results when testing truly random data. Therefore, the closer the p-value is to 0 the less is the probability the tested data is random and vice versa.
 
 \item[Alpha - $\alpha$] \hfill \\
+Significance level based on which we either reject or not reject $H_0$. 
+
+
+
 Critical value based on which we evaluate certain p-value. If p-value falls into interval specified by $\alpha$ (e.g. $[0,\alpha)$) we can say that the result is failure or success when the p-value is outside of the interval.
+
+\item[Statistic] \hfill \\
+Value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnovov Test or Chi-Square test.
 \end{description}
+
+
+
+
+
+
 
 \section{Batteries supported by RTT}
 \subsection{NIST Statistical Test Suite}
