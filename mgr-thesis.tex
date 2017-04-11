@@ -155,9 +155,10 @@
 \end{itemize}
 
 \chapter{Used third-party statistical software}
+In this chapter we will explain terminology specific to Randomness Testing Toolkit, present quick overview of the statistical software used in the toolkit and describe observed unexpected behavior of the statistical software in edge cases. We also list undertaken measures to mitigate the undocumented behaviour in our further experiments.
 
 \section{Terminology}
-In this thesis we are using certain expressions in the context of Randomness Testing Toolkit and the tools it uses. We list these expressions along with their explanations here.
+Throughout the thesis we are using certain expressions in the context of Randomness Testing Toolkit and the tools and math it uses. We list these expressions along with their explanations here.
 
 \begin{description}
 \item[(Statistical) Battery] \hfill \\
@@ -165,6 +166,17 @@ Program developed by a third party serving as a tool for evaluation of randomnes
 
 \item[(Statistical) Test] \hfill \\
 Single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). Test can have multiple variants and subtests and result of the test is one or multiple statistics.
+\item[Null hypothesis - $H_0$] \hfill \\
+The hypothesis $H_0$ denotes the hypothesis that the tested data stream is random. Based on the results of the test, we can either reject $H_0$ and say that the data is not random or not reject it. In the latter case, we assume that the tested data is indeed random.
+
+\item[P-value] \hfill \\
+In our hypothesis testing, a p-value is the probability of obtaining equal or more extreme test result while $H_0$ holds true. Applied to our situation, a p-value denotes probability that we would obtain same or more extreme test results when testing truly random data. Therefore, the closer the p-value is to 0 the less is the probability the tested data is random and vice versa.
+
+\item[Alpha - $\alpha$] \hfill \\
+Significance level based on which we either reject or not reject $H_0$. We can specify some interval (e.g. $[0,\alpha]$) and if result of the test (p-value) falls into this interval we will reject the hypothesis that the tested data is random. Alternatively, we can also reject p-values that are too extreme on both sides of the interval (outside of $\left[\frac{\alpha}{2},1-\frac{\alpha}{2}\right]$).
+
+\item[Statistic] \hfill \\
+Value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnovov Test or Chi-Square test. Based on values of statistics of a test we can decide rejection of $H_0$.
 
 \item[Test sample] \hfill \\
 Single execution of statistical test. Result of single test execution is one first level p-value. By repeating execution of the test we obtain multiple p-values. By using certain statistic (e.g. Kolmogorov-Smirnov test) we can calculate single second level p-value.
@@ -173,30 +185,8 @@ Single execution of statistical test. Result of single test execution is one fir
 Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of single test with different settings as separate units but rather as a variants of that test.
 
 \item[Subtest] \hfill \\
-Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as a subtests of the test. Therefore subtest is smallest unit in the battery, providing only single result.
-
-\item[Null hypothesis - $H_0$] \hfill \\
-The hypothesis $H_0$ denotes the hypothesis that the tested data stream is random. Based on the results of the test, we can either reject $H_0$ and say that the data is not random or not reject it. In the latter case, we assume that the tested data is indeed random.
-
-\item[p-value] \hfill \\
-In our hypothesis testing, a p-value is the probability of obtaining equal or more extreme test result while $H_0$ holds true. Applied to our situation, a p-value denotes probability that we would obtain same or more extreme test results when testing truly random data. Therefore, the closer the p-value is to 0 the less is the probability the tested data is random and vice versa.
-
-\item[Alpha - $\alpha$] \hfill \\
-Significance level based on which we either reject or not reject $H_0$. 
-
-
-
-Critical value based on which we evaluate certain p-value. If p-value falls into interval specified by $\alpha$ (e.g. $[0,\alpha)$) we can say that the result is failure or success when the p-value is outside of the interval.
-
-\item[Statistic] \hfill \\
-Value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnovov Test or Chi-Square test.
+Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as a subtests of the test. Subtests can have multiple separate statistics.
 \end{description}
-
-
-
-
-
-
 
 \section{Batteries supported by RTT}
 \subsection{NIST Statistical Test Suite}
@@ -222,24 +212,20 @@ Tests in PseudoDIEHARD imitate DIEHARD battery and FIPS\_140\_2 battery implemen
 
 Since TestU01 is available only as a ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. This allows us to apply batteries to arbitrary binary data even when the batteries don't support this feature natively.
 
-\section{Known errors in the batteries}
-To examine the boundary behavior of the above-listed tools, we used them to process extremely non-random data streams. The data streams that were used as the input to the batteries were two binary data files consisting only of zeroes and ones respectively. The settings of the batteries remained set to default. 
+\section{Unexpected behavior and errors of the batteries}
+To examine the boundary behavior of the above-listed tools, we used them to process extremely non-random data streams. The data streams that were used as the input to the batteries were two binary data files consisting of only zeroes and ones respectively. The settings of the batteries remained set to default. 
 
-Below we list observed behavior that differ from execution of the batteries with non-extreme input.
+Below we list observed undocumented behavior that differ from execution of the batteries with non-extreme input.
 
 \subsection*{NIST Statistical Test Suite}
+Each test in the battery processed 1000 separate data streams. Each data stream was 1000000 bits long.
+
 Tests Random Excursions and Random Excursions Variant are not applicable to all possible data streams. In a normal run with reasonably varied data, this doesn't matter much, as the tests are repeated multiple times and the final result will simply be calculated from lesser number of p-values. 
 
 Neither of the tests is applicable to a stream full of zeroes or ones. This causes absence of results when analyzing such data. The user can find out the fact that the tests are not applicable to provided stream after he inspects logs of the program, otherwise the interpretation of the missing results is left to him.
 
 \subsection*{Dieharder}
 When processing extremely non-random data with Dieharder, we observed various erroneous events. The events are summarized in Table~\ref{tab:dieharder-errors}. 
-
-\begin{titlemize}{Observed errors}
-\item \textbf{No result} Test didn't provide any p-values that would be used to calculate the final result of the test. User is not notified about this and the final result of the test statistic is based on default value (1.0).
-\item \textbf{Invalid result} Test provided resulting statistic and there was no indication of error other than that the result was again default value of statistic (1.0). Following definition of p-value, the interpretation of such result is that the analyzed stream was almost certainly generated by TRNG. This is obviously not true, as both streams are just repeating ones or zeroes respectively. 
-\item \textbf{Stuck execution} Tests froze at a certain point in execution, did not produce any results and we were forced to manually kill the processes.
-\end{titlemize}
 
 \begin{table}[h!]
 \begin{nomar}
@@ -257,19 +243,18 @@ Diehard Craps                        & -                        & Stuck executio
 RGB Bit Distribution                 & -                        & Stuck execution          \\
 \end{tabular}
 \end{nomar}
-\caption{Erroneous tests in Dieharder battery}
+\caption{Undocumented behavior of tests in Dieharder battery}
 \label{tab:dieharder-errors}
 \end{table}
 
-\subsection*{TestU01}
-Similarly to Dieharder battery, TestU01 battery also contains tests that has undocumented behaviour. The errors are summarized in Table~\ref{tab:testu01-errors}.
-
 \begin{titlemize}{Observed errors}
-\item \textbf{No results} Tests reported warning and ended without any result. This is probably caused by the tests not being applicable to provided data.
-\item \textbf{All results invalid}  All statistics of the test reported p-value very close to 1.0. This could lead user to the interpretation that the test reports the data as produced by almost perfect TRNG.
-\item \textbf{Some results invalid} Similar situation to the previous one but not all statistics of the test are close to 1.0. Results of tests statistics are either close to 0.0 or to 1.1.
-\item \textbf{Stuck execution} Tests froze at a certain point of execution. In some cases this is preceeded by an issued warning. Tests didn't produce any results and had to be killed manually.
+\item \textbf{No result} Test didn't provide any p-values that would be used to calculate the final result of the test. User is not notified about this and the final result of the test statistic is based on default value (1.0).
+\item \textbf{Invalid result} Test provided resulting statistic and there was no indication of error other than that the result was again default value of statistic (1.0). Following definition of p-value, the interpretation of such result is that the analyzed stream was almost certainly generated by TRNG. This is obviously not true, as both streams are just repeating ones or zeroes respectively. 
+\item \textbf{Stuck execution} Tests froze at a certain point in execution, did not produce any results and we were forced to manually kill the processes.
 \end{titlemize}
+
+\subsection*{TestU01}
+Batteries Small Crush, Crush, Big Crush, Rabbit, Alphabit and Block Alphabit were executed. Tests that are part of multiple batteries acted in the same way across the batteries. The behavior is summarized in Table~\ref{tab:testu01-errors}.
 
 \begin{table}[h!]
 \begin{nomar}
@@ -296,15 +281,22 @@ svaria\_SumCollector               & -                        & Stuck execution 
 smarsa\_GCD                        & -                        & Stuck execution          \\                                       
 \end{tabular}
 \end{nomar}  
-\caption{Erroneous tests in TestU01 library}
+\caption{Undocumented behavior of tests in TestU01 library}
 \label{tab:testu01-errors}                                                                                           
 \end{table}
 
+\begin{titlemize}{Observed errors}
+\item \textbf{No results} Tests reported warning and ended without any result. This is probably caused by the tests not being applicable to provided data.
+\item \textbf{All results invalid}  All statistics of the test reported p-value very close to 1.0. This could lead user to the interpretation that the test reports the data as produced by almost perfect TRNG.
+\item \textbf{Some results invalid} Similar situation to the previous one but not all statistics of the test are close to 1.0. Results of tests statistics are either close to 0.0 or to 1.0.
+\item \textbf{Stuck execution} Tests froze at a certain point of execution. In some cases this is preceeded by an issued warning. Tests didn't produce any results and had to be killed manually.
+\end{titlemize}
+
 \subsection{Preventive measures in RTT}
-Since we need to use the batteries in RTT even in cases of extreme data, we implemented following measures that mitigate above-mentioned errors.
+Since we need to use the batteries in RTT with arbitrary binary data, we implemented following measures that mitigate above-mentioned errors in our experiments.
 \begin{itemize}
 \item Tests that don't produce any results are ignored and treated as if never executed.
-\item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we will evaluate result as failure either when is too close to 0 or too close to 1. More specifically, all p-values that falls into interval $\left[\frac{\alpha}{2}, \frac{\alpha}{2}\right]$ will be considered success and failure otherwise.
+\item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we will reject the hypothesis of randomness either when the p-value is too close to 0 or too close to 1. More specifically, $H_0$ will be rejected for all p-values that falls outside of the interval $\left[\frac{\alpha}{2}, 1-\frac{\alpha}{2}\right]$. This way we reject all results that are too extreme.
 \item Each test is executed with timeout. If the test doesn't finish within defined time limit, it is automatically terminated. The test is then treated as if it didn't produce any results.
 \end{itemize}
 
