@@ -155,74 +155,75 @@
 \end{itemize}
 
 \chapter{Used third-party statistical software}
-In this chapter we will explain terminology specific to Randomness Testing Toolkit, present quick overview of the statistical software used in the toolkit and describe observed unexpected behavior of the statistical software in edge cases. We also list undertaken measures to mitigate the undocumented behaviour in our further experiments.
+In this chapter, we will explain terminology specific to Randomness Testing Toolkit; present a quick overview of the statistical software used in the toolkit and describe the observed and unexpected behavior of the statistical software in edge cases. We also list undertaken measures to mitigate the undocumented behaviour in our further experiments.
 
 \section{Terminology}
-Throughout the thesis we are using certain expressions in the context of Randomness Testing Toolkit and the tools and math it uses. We list these expressions along with their explanations here.
+Throughout the thesis, we are using certain expressions in the context of Randomness Testing Toolkit and the tools and math it uses. We list these terms along with their explanations here.
 
 \begin{description}
 \item[(Statistical) Battery] \hfill \\
-Program developed by a third party serving as a tool for evaluation of randomness of arbitrary binary data. Statistical battery usually contains one or multiple statistical tests. Final result of the evaluation is based on the results of the tests. Examples of statistical batteries are NIST Statistical Test Suite, Dieharder or TestU01.
+A program developed by a third party serving as a tool for evaluation of randomness of arbitrary binary data. A statistical battery usually contains one or multiple statistical tests. The final result of the assessment is based on the results of the tests. Examples of statistical batteries are NIST Statistical Test Suite, Dieharder or TestU01.
 
 \item[(Statistical) Test] \hfill \\
-Single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). Test can have multiple variants and subtests and result of the test is one or multiple statistics.
+A single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). The test can have multiple variants and subtests, and the result of the test is one or multiple statistics.
+
 \item[Null hypothesis - $H_0$] \hfill \\
 The hypothesis $H_0$ denotes the hypothesis that the tested data stream is random. Based on the results of the test, we can either reject $H_0$ and say that the data is not random or not reject it. In the latter case, we assume that the tested data is indeed random.
 
 \item[P-value] \hfill \\
-In our hypothesis testing, a p-value is the probability of obtaining equal or more extreme test result while $H_0$ holds true. Applied to our situation, a p-value denotes probability that we would obtain same or more extreme test results when testing truly random data. Therefore, the closer the p-value is to 0 the less is the probability the tested data is random and vice versa.
+In our hypothesis testing, a p-value is a probability of obtaining equal or more extreme test result while $H_0$ holds true. In our situation, a p-value denotes the probability that we would get same or more extreme test results when testing truly random data. Therefore, the closer the p-value is to 0 the less is the probability the tested data is random and vice versa.
 
 \item[Alpha - $\alpha$] \hfill \\
-Significance level based on which we either reject or not reject $H_0$. We can specify some interval (e.g. $[0,\alpha]$) and if result of the test (p-value) falls into this interval we will reject the hypothesis that the tested data is random. Alternatively, we can also reject p-values that are too extreme on both sides of the interval (outside of $\left[\frac{\alpha}{2},1-\frac{\alpha}{2}\right]$).
+Significance level based on which we either reject or not reject $H_0$. We can specify some interval (e.g. $[0,\alpha]$) and if the result of the test (p-value) falls into this interval, we will reject the hypothesis that the tested data is random. Alternatively, we can also reject p-values that are too extreme on both sides of the interval (outside of $\left[\frac{\alpha}{2},1-\frac{\alpha}{2}\right]$).
 
 \item[Statistic] \hfill \\
-Value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnovov Test or Chi-Square test. Based on values of statistics of a test we can decide rejection of $H_0$.
+The value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnov Test or Chi-Square test. Based on values of statistics of a test we can decide rejection of $H_0$.
 
 \item[Test sample] \hfill \\
-Single execution of statistical test. Result of single test execution is one first level p-value. By repeating execution of the test we obtain multiple p-values. By using certain statistic (e.g. Kolmogorov-Smirnov test) we can calculate single second level p-value.
+A single execution of a statistical test. The result of single test execution is one first level p-value. By repeating execution of the test, we obtain multiple p-values. By using a certain statistic (e.g. Kolmogorov-Smirnov test), we can calculate a single second level p-value.
 
 \item[Variant of a test] \hfill \\
-Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of single test with different settings as separate units but rather as a variants of that test.
+Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of a single test with different settings as separate units but rather as variants of that test.
 
 \item[Subtest] \hfill \\
-Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as a subtests of the test. Subtests can have multiple separate statistics.
+Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as subtests of the test. Subtests can have multiple separate statistics.
 \end{description}
 
 \section{Batteries supported by RTT}
 \subsection{NIST Statistical Test Suite}
 The battery of statistical tests was developed by National Institute of Standards and Technology (cit.). The battery implements 15 statistical tests for evaluating randomness of input data.
 
-The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The optimized version of NIST STS used in RTT was developed by Zdeněk Říha and Marek Sýs(cit.). 
+The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The faster version of NIST STS used in RTT was developed by Zdeněk Říha and Marek Sýs(cit.). 
 
 \subsection{Dieharder}
-Dieharder is a battery developed by Robert G. Brown at the Duke University (cit.). The battery features user friendly console interface with possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author. 
+Dieharder is a battery designed by Robert G. Brown at the Duke University (cit.). The battery features user-friendly console interface with the possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from the older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author. 
 
-Since original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify source code of the battery. RTT uses this modified Dieharder.
+Since the original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder.
 
 \subsection{TestU01}
-This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al (cit.). It contains wide range of tests from NIST STS, Dieharder and literature. It also implements numerous pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following 10 batteries.
+This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. (cit.). It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries.
 \begin{description}
 \item[Small Crush, Crush, Big Crush] \hfill \\
-Small Crush battery is very fast and needs relatively small amount of data to run - around 250 megabytes. Small Crush is also the only battery that can be natively used for analysis of data in binary file, for use of Crush and Big Crush, the user has to implement PRNG with TestU01 interface. Crush and Big Crush batteries are more stringent and need gigabytes of data and a few hours to finish while Big Crush is more time and data demanding.
+Small Crush battery is very fast and needs a relatively small amount of data to run - around 250 megabytes. Small Crush is also the only battery that can be natively used for analysis of data in a binary file, for the use of Crush and Big Crush, the user has to implement PRNG with the TestU01 interface. Crush and Big Crush batteries are more stringent and need gigabytes of data and a few hours to finish while Big Crush is more time and data demanding.
 \item[Rabbit, Alphabit, Block Alphabit] \hfill \\
-Tests in these batteries are suited for testing hardware bit generators and are applicable to arbitrary amount of data. Data can be provided either as a binary file or PRNG implementing TestU01 interface.
+Tests in these batteries are suited for testing hardware bit generators and can be applied to an arbitrary amount of data. Data can be provided either as a binary file or PRNG implementing the TestU01 interface.
 \item[PseudoDIEHARD, FIPS\_140\_2] \hfill \\
-Tests in PseudoDIEHARD imitate DIEHARD battery and FIPS\_140\_2 battery implements small suite of tests in NIST standard(cit.) Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other supported batteries.
+Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests in NIST standard(cit.) Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other supported batteries.
 \end{description}
 
-Since TestU01 is available only as a ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. This allows us to apply batteries to arbitrary binary data even when the batteries don't support this feature natively.
+Since TestU01 is available only as an ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. Our interface allows us to apply batteries to arbitrary binary data even when the batteries don't support this feature natively.
 
 \section{Unexpected behavior and errors of the batteries}
-To examine the boundary behavior of the above-listed tools, we used them to process extremely non-random data streams. The data streams that were used as the input to the batteries were two binary data files consisting of only zeroes and ones respectively. The settings of the batteries remained set to default. 
+To examine the boundary behavior of the above-listed tools, we used them to process extremely non-random data streams. The data streams that we used as the input to the batteries were two binary data files consisting of only zeroes and ones respectively. The settings of the batteries remained set to default. 
 
-Below we list observed undocumented behavior that differ from execution of the batteries with non-extreme input.
+Below we list observed undocumented behavior that differs from the execution of the batteries with non-extreme input.
 
 \subsection*{NIST Statistical Test Suite}
 Each test in the battery processed 1000 separate data streams. Each data stream was 1000000 bits long.
 
-Tests Random Excursions and Random Excursions Variant are not applicable to all possible data streams. In a normal run with reasonably varied data, this doesn't matter much, as the tests are repeated multiple times and the final result will simply be calculated from lesser number of p-values. 
+Tests Random Excursions and Random Excursions Variant are not applicable to all possible data streams. In a regular run with reasonably random data, this doesn't matter much, as the tests are repeated multiple times, and the final result will simply be calculated from a lesser number of p-values. 
 
-Neither of the tests is applicable to a stream full of zeroes or ones. This causes absence of results when analyzing such data. The user can find out the fact that the tests are not applicable to provided stream after he inspects logs of the program, otherwise the interpretation of the missing results is left to him.
+Neither of the tests can be applied to a stream full of zeroes or ones. This causes absence of results when analyzing such data. The user can find out the fact that the tests are not applicable to provided stream after he inspects logs of the program; otherwise, the interpretation of the missing results is left to him.
 
 \subsection*{Dieharder}
 When processing extremely non-random data with Dieharder, we observed various erroneous events. The events are summarized in Table~\ref{tab:dieharder-errors}. 
@@ -248,9 +249,9 @@ RGB Bit Distribution                 & -                        & Stuck executio
 \end{table}
 
 \begin{titlemize}{Observed errors}
-\item \textbf{No result} Test didn't provide any p-values that would be used to calculate the final result of the test. User is not notified about this and the final result of the test statistic is based on default value (1.0).
-\item \textbf{Invalid result} Test provided resulting statistic and there was no indication of error other than that the result was again default value of statistic (1.0). Following definition of p-value, the interpretation of such result is that the analyzed stream was almost certainly generated by TRNG. This is obviously not true, as both streams are just repeating ones or zeroes respectively. 
-\item \textbf{Stuck execution} Tests froze at a certain point in execution, did not produce any results and we were forced to manually kill the processes.
+\item \textbf{No result} Test didn't provide any p-values that would be used to calculate the final result of the test. The user is not notified of this, and the final result of the test statistic is based on default value (1.0).
+\item \textbf{Invalid result} Test provided resulting statistic and there was no indication of error other than that the result was again default value of the statistic (1.0). Following the definition of p-value, the interpretation of such result is that the analyzed stream was almost certainly random. This is obviously not true, as both streams are just repeating ones or zeroes respectively. 
+\item \textbf{Stuck execution} Tests froze at a certain point in execution, did not produce any results and we were forced to kill the processes manually.
 \end{titlemize}
 
 \subsection*{TestU01}
@@ -287,9 +288,9 @@ smarsa\_GCD                        & -                        & Stuck execution 
 
 \begin{titlemize}{Observed errors}
 \item \textbf{No results} Tests reported warning and ended without any result. This is probably caused by the tests not being applicable to provided data.
-\item \textbf{All results invalid}  All statistics of the test reported p-value very close to 1.0. This could lead user to the interpretation that the test reports the data as produced by almost perfect TRNG.
-\item \textbf{Some results invalid} Similar situation to the previous one but not all statistics of the test are close to 1.0. Results of tests statistics are either close to 0.0 or to 1.0.
-\item \textbf{Stuck execution} Tests froze at a certain point of execution. In some cases this is preceeded by an issued warning. Tests didn't produce any results and had to be killed manually.
+\item \textbf{All results invalid}  All statistics of the test reported p-value very close to 1.0. This could lead the user to the interpretation that the test reports the data as an almost perfect random stream.
+\item \textbf{Some results invalid} Similar situation to the previous one but not all statistics of the test are close to 1.0. Results of tests statistics are either close to 0.0 or 1.0.
+\item \textbf{Stuck execution} Tests froze at a certain point of execution. In some cases, this is preceded by an issued warning. Tests didn't produce any results and had to be killed manually.
 \end{titlemize}
 
 \subsection{Preventive measures in RTT}
@@ -297,7 +298,7 @@ Since we need to use the batteries in RTT with arbitrary binary data, we impleme
 \begin{itemize}
 \item Tests that don't produce any results are ignored and treated as if never executed.
 \item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we will reject the hypothesis of randomness either when the p-value is too close to 0 or too close to 1. More specifically, $H_0$ will be rejected for all p-values that falls outside of the interval $\left[\frac{\alpha}{2}, 1-\frac{\alpha}{2}\right]$. This way we reject all results that are too extreme.
-\item Each test is executed with timeout. If the test doesn't finish within defined time limit, it is automatically terminated. The test is then treated as if it didn't produce any results.
+\item Each test is executed with the timeout. If the test doesn't finish within defined time limit, we will automatically terminate it and then treat it as if it didn't produce any results.
 \end{itemize}
 
 \chapter{Randomness Testing Toolkit}
