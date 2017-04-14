@@ -155,6 +155,7 @@
 \end{itemize}
 
 \chapter{Used third-party statistical software}
+\label{chap:batteries}
 In this chapter, we will explain terminology specific to Randomness Testing Toolkit; present a quick overview of the statistical software used in the toolkit and describe the observed and unexpected behavior of the statistical software in edge cases. We also list undertaken measures to mitigate the undocumented behaviour in our further experiments.
 
 \section{Terminology}
@@ -302,18 +303,52 @@ Since we need to use the batteries in RTT with arbitrary binary data, we impleme
 \end{itemize}
 
 \chapter{Randomness Testing Toolkit}
-\begin{itemize}
-\item Motivation - unified interface to batteries, ease of use, unified result format/representation
-\item Local execution of RTT - battery and toolkit configuration, installation, brief implementation and interface overview - more thorough in documentation and comments
-\item Local result format - either database or file output storage
-\item Remote execution of RTT - toolkit deployed on server infrastructure, system overview (database, frontend, backend(s), storage), accessible through ssh on limited system or via web interface (django), results in database
-\item Remote results of RTT - email notification, webpage layout
-\item Interpretation of results of RTT
-\begin{itemize}
-\item Grouping subtests together - eliminating intertest bias
-\item How grouping works - theory, Sidak correction, partial p-value, fail/pass of a test
-\end{itemize}
-\end{itemize}
+%\begin{itemize}
+%\item Motivation - unified interface to batteries, ease of use, unified result format/representation
+%\item Local execution of RTT - battery and toolkit configuration, installation, brief implementation and interface overview - more thorough in documentation and comments
+%\item Local result format - either database or file output storage
+%\item Remote execution of RTT - toolkit deployed on server infrastructure, system overview (database, frontend, backend(s), storage), accessible through ssh on limited system or via web interface (django), results in database
+%\item Remote results of RTT - email notification, webpage layout
+%\item Interpretation of results of RTT
+%\begin{itemize}
+%\item Grouping subtests together - eliminating intertest bias
+%\item How grouping works - theory, Sidak correction, partial p-value, fail/pass of a test
+%\end{itemize}
+%\end{itemize}
+In this chapter we will present our developed tool, Randomness Testing Toolkit\footnote{Sometimes referenced as RTT.} and our motivation for developing the tool. The toolkit has several parts and use-cases for various types of users. The parts will be described in respective sections.
+
+\section{Motivation}
+Our main motivation for this project was to create a tool that would be easy-to-use even for users that are not experienced in field of statistical randomness testing. This includes easy testing of binary data as well as easy and straight-forward interpretation of results of the computation.
+
+Our next goal was to create tool that would be used by CRoCS\footnote{Centre for Research of Cryptography and Security} members for their experiments. Main advantage of all members using unified tool and result format, is that the results are comparable and the experiments are easy to conduct.
+
+In the toolkit we included three statistical tools that are generally used for analysis of binary data. These tools are described in Chapter~\ref{chap:batteries}. Each of these tools has specific interface, testing methods and result format. 
+
+Therefore, at the lowest level, RTT acts as a unifying interface to these tools. RTT accepts settings in general format and transforms them to tool-specific commands. After execution, RTT is responsible for gathering tool-specific results and transform them into easily-readable general format.
+
+Another parts of the project allow us to easily deploy RTT to server infrastructure. Point of this deployment is to further speed up the testing. The statistical tests are sometimes time and resource demanding. Deployment on multiple servers permit us to scale the computational power when it is needed. Another advantage of this approach is that the user doesn't have to install anything on its local machine. The user needs to only provide data to be tested and choose pre-defined or provide his own configuration of the RTT.
+
+One of the dravbacks of the remote testing is the need for data transfer. Because of this, we implemented two use cases. First use-case, intended for common user, is that he will go to a website and will upload his or her data via web browser. This is slower that direct upload to the server and viable only if the user doesn't have too much data to test.
+
+The second use-case was created with big data testing in mind. Upon request, the user is able to gain access directly to the server via SSH and create the computational jobs via command line interface. User can access remote storage on the server and download the data for the testing. Other option is to generate the data that will be tested using utility that was also developed in CRoCS and is intended for generating various data streams from multiple cryptographic primitives.
+
+\section{Local RTT}
+
+\section{Remote RTT}
+
+\subsection{SSH}
+
+\subsection{Webserver}
+
+\section{Results}
+
+\subsection{File}
+
+\subsection{Database}
+
+\section{Result interpretation}
+
+
  
 \chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 \begin{itemize}
