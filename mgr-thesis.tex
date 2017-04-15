@@ -315,38 +315,73 @@ Since we need to use the batteries in RTT with arbitrary binary data, we impleme
 %\item How grouping works - theory, Sidak correction, partial p-value, fail/pass of a test
 %\end{itemize}
 %\end{itemize}
-In this chapter we will present our developed tool, Randomness Testing Toolkit\footnote{Sometimes referenced as RTT.} and our motivation for developing the tool. The toolkit has several parts and use-cases for various types of users. The parts will be described in respective sections.
+One of our goals during working in this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, execution and interpretaion of the analysis.
 
-\section{Motivation}
-Our main motivation for this project was to create a tool that would be easy-to-use even for users that are not experienced in field of statistical randomness testing. This includes easy testing of binary data as well as easy and straight-forward interpretation of results of the computation.
+Another motivation was that the developed tool would unify the process of randomness analysis that is often done by reserachers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools which is difficult to manage and also complicates comparation of the experiments done by different people.
 
-Our next goal was to create tool that would be used by CRoCS\footnote{Centre for Research of Cryptography and Security} members for their experiments. Main advantage of all members using unified tool and result format, is that the results are comparable and the experiments are easy to conduct.
+Therefore we developed Randomness Testing Toolkit\footnote{Also referenced as RTT.} that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged if needed.
 
-In the toolkit we included three statistical tools that are generally used for analysis of binary data. These tools are described in Chapter~\ref{chap:batteries}. Each of these tools has specific interface, testing methods and result format. 
-
-Therefore, at the lowest level, RTT acts as a unifying interface to these tools. RTT accepts settings in general format and transforms them to tool-specific commands. After execution, RTT is responsible for gathering tool-specific results and transform them into easily-readable general format.
-
-Another parts of the project allow us to easily deploy RTT to server infrastructure. Point of this deployment is to further speed up the testing. The statistical tests are sometimes time and resource demanding. Deployment on multiple servers permit us to scale the computational power when it is needed. Another advantage of this approach is that the user doesn't have to install anything on its local machine. The user needs to only provide data to be tested and choose pre-defined or provide his own configuration of the RTT.
-
-One of the dravbacks of the remote testing is the need for data transfer. Because of this, we implemented two use cases. First use-case, intended for common user, is that he will go to a website and will upload his or her data via web browser. This is slower that direct upload to the server and viable only if the user doesn't have too much data to test.
-
-The second use-case was created with big data testing in mind. Upon request, the user is able to gain access directly to the server via SSH and create the computational jobs via command line interface. User can access remote storage on the server and download the data for the testing. Other option is to generate the data that will be tested using utility that was also developed in CRoCS and is intended for generating various data streams from multiple cryptographic primitives.
+In following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
 
 \section{Local RTT}
+\begin{huge}
+todo
+\end{huge}
+
+
+
+
+
+
+%In the toolkit we included three statistical tools that are generally used for analysis of binary data. These tools are described in Chapter~\ref{chap:batteries}. Each of these tools has specific interface, testing methods and result format. 
+
+%Therefore, at the lowest level, RTT acts as a unifying interface to these tools. RTT accepts settings in general format and transforms them to tool-specific commands. After execution, RTT is responsible for gathering tool-specific results and transform them into easily-readable general format.
+
+%Another parts of the project allow us to easily deploy RTT to server infrastructure. Point of this deployment is to further speed up the testing. The statistical tests are sometimes time and resource demanding. Deployment on multiple servers permit us to scale the computational power when it is needed. Another advantage of this approach is that the user doesn't have to install anything on its local machine. The user needs to only provide data to be tested and choose pre-defined or provide his own configuration of the RTT.
+
+%One of the drawbacks of the remote testing is the need for data transfer. Because of this, we implemented two use cases. First use-case, intended for common user, is that he will go to a website and will upload his or her data via web browser. This is slower that direct upload to the server and viable only if the user doesn't have too much data to test.
+
+%The second use-case was created with big data testing in mind. Upon request, the user is able to gain access directly to the server via SSH and create the computational jobs via command line interface. User can access remote storage on the server and download the data for the testing. Other option is to generate the data that will be tested using utility that was also developed in CRoCS and is intended for generating various data streams from multiple cryptographic primitives.
+
+
+%In this chapter we will present our developed tool, Randomness Testing Toolkit\footnote{Sometimes referenced as RTT.} and our motivation for developing the tool. The toolkit has several parts and use-cases for various types of users. The parts will be described in respective sections.
+
+
 
 \section{Remote RTT}
+\begin{huge}
+todo
+\end{huge}
 
 \subsection{SSH}
+\begin{huge}
+todo
+\end{huge}
 
 \subsection{Webserver}
+\begin{huge}
+todo
+\end{huge}
 
 \section{Results}
+\begin{huge}
+todo
+\end{huge}
 
 \subsection{File}
+\begin{huge}
+todo
+\end{huge}
 
 \subsection{Database}
+\begin{huge}
+todo
+\end{huge}
 
 \section{Result interpretation}
+\begin{huge}
+todo
+\end{huge}
 
 
  
