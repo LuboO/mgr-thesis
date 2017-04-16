@@ -85,26 +85,32 @@
 \usepackage{amsfonts}
 \usepackage{markdown} %% Lightweight markup
 
-\usepackage{listings} %% Source code highlighting
-\lstset{
-  	basicstyle      = \ttfamily,%
-  	identifierstyle = \color{black},%
-  	keywordstyle    = \color{blue},%
-  	keywordstyle    = {[2]\color{cyan}},%
-  	keywordstyle    = {[3]\color{olive}},%
- 	stringstyle     = \color{teal},%
-	commentstyle    = \itshape\color{magenta}
-}
-
 \usepackage{xcolor}
 \definecolor{link-grey}{rgb}{0.3,0.3,0.3}
 \definecolor{code-bg-grey}{rgb}{0.85,0.85,0.85}
 \definecolor{code-bg-light_grey}{rgb}{0.92,0.92,0.92}
 \definecolor{crimson}{rgb}{0.6,0,0}
 
-% For changing margins inside figures
-\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
-\let\endchangemargin=\endlist
+\usepackage{listings} %% Source code highlighting
+\lstset {
+	backgroundcolor=\color{code-bg-grey},  			% PC version ========================
+	%backgroundcolor=\color{code-bg-light_grey},  	% print version =====================
+	commentstyle=\color{red},						% PC version ========================
+	%commentstyle=\bfseries,						% print version =====================
+	frame=single,
+	language=XML,
+	breaklines=true,
+	basicstyle=\footnotesize
+}
+%\lstset{
+%  	basicstyle      = \ttfamily,%
+%  	identifierstyle = \color{black},%
+%  	keywordstyle    = \color{blue},%
+%  	keywordstyle    = {[2]\color{cyan}},%
+%  	keywordstyle    = {[3]\color{olive}},%
+% 	stringstyle     = \color{teal},%
+%	commentstyle    = \itshape\color{magenta}
+%}
 
 % Eliminates margins
 \def\nomar{\list{}{\rightmargin-\rmar\leftmargin-\lmar}\item[]}
@@ -126,6 +132,9 @@
 	\end{itemize}
  	\end{description}
 }
+
+% Let tables and figures share numbering
+\makeatletter \let\c@table\c@figure \makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -319,19 +328,114 @@ One of our goals during working in this project was to create a tool that would 
 
 Another motivation was that the developed tool would unify the process of randomness analysis that is often done by reserachers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools which is difficult to manage and also complicates comparation of the experiments done by different people.
 
-Therefore we developed Randomness Testing Toolkit\footnote{Also referenced as RTT.} that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged if needed.
+Therefore we developed Randomness Testing Toolkit\footnote{Also referenced as RTT or just the toolkit.} that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged if needed.
 
 In following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
 
 \section{Local unified interface}
-The local unified interface is at the lowest level of the developed parts of RTT. The interface is a binary executable that accepts settings and outputs the results in common format for all batteries. The executable handles transformation of general settings into the battery specific ones, running the battery executable and then transforming gathered output into general format.
+The local unified interface is at the lowest level of the developed parts of RTT. The interface is a binary executable that accepts settings and outputs the results in common format for all batteries. The executable handles transformation of general settings into the battery specific ones, running the battery executable and then transforming gathered output into general format. The process is visualized in Figure~\ref{fig:rtt_local_workflow}.
+
+\begin{figure}[h!]
+\begin{nomar}
+\centering
+\includegraphics[width=\paperwidth-4cm]{figures/local_rtt_workflow.jpg}
+\end{nomar}
+\caption{Local RTT workflow}
+\label{fig:rtt_local_workflow}
+\end{figure}
+
+\subsection{Command-line options}
+Will be done after RTT binary refactor.
+
+\subsection{Toolkit settings}
+The toolkit needs to have a few opions configured before execution. These options should be set only once and should be common for all subsequent runs. The toolkit settings does not modify settings of the battery that will be executed and by default are stored in file rtt-settings.json. Example of the file is shown in TODO Appendix.
+
+The file is in JSON format and has following structure.
+
+\begin{itemize}
+\item \texttt{toolkit-settings} -- Root tag of the file.
+\begin{itemize}
+\item \texttt{logger} -- Tag containing settings related to location of log files produced during runtime. 
+\begin{itemize}
+\item \texttt{dir-prefix} -- Optional tag, if set, value of this tag will become prefix of all log locations. Can be used when all logger directories should have same parent directory.
+\item \texttt{run-log-dir} -- Sets location of main log file.
+\item \texttt{<battery>-dir} -- Value \texttt{<battery>} is replaced by values \texttt{dieharder}, \texttt{nist-sts}, \texttt{tu01-smallcrush}, \texttt{tu01-crush}, \texttt{tu01-bigcrush}, \texttt{tu01-rabbit}, \texttt{tu01-alphabit} and \texttt{tu01-blockalphabit}. All of these tags are mandatory and set locations of files that will contain raw outputs of the respective batteries.
+\end{itemize}
+\item \texttt{result-storage} -- Section with settings related to result storages. This tag along with all child tags are optional. In case some missing options are requested by RTT, the program will issue an error. For detailed description of result storages, see Section~\ref{sec:result-storages}.
+\begin{itemize}
+\item \texttt{file} -- Section with settings needed for file result storage. All values of tags except tag \texttt{main-file} are treated as directories.
+\begin{itemize}
+\item \texttt{main-file} -- Sets filename of the file with final results of the program run. If the file already exists, results will be added to it, if not, new result file will be created.
+\item \texttt{dir-prefix} -- If set, all directory values will have this prefix.
+\item \texttt{<battery>-dir} -- Value \texttt{<battery>} can be replaced by values \texttt{dieharder}, \texttt{nist-sts}, \texttt{tu01-smallcrush}, \texttt{tu01-crush}, \texttt{tu01-bigcrush}, \texttt{tu01-rabbit}, \texttt{tu01-alphabit} and \texttt{tu01-blockalphabit}. The tags set locations of files with detailed results of respective battery.
+\end{itemize}
+\item \texttt{mysql-db} -- Section with settings needed for MySQL Database storage.
+\begin{itemize}
+\item \texttt{address} -- Address of the MySQL server with created RTT database.
+\item \texttt{port} -- Port on which the MySQL server is accessible.
+\item \texttt{credentials-file} -- Path to file that contains login information for the database. For the structure of the file see Figure~\ref{fig:credentials}.
+\end{itemize}
+\end{itemize}
+\item \texttt{binaries} -- Section with the locations of the executables of the batteries.
+\begin{itemize}
+\item \texttt{<battery>} -- Value \texttt{<battery>} is replaced by \texttt{nist-sts}, \texttt{dieharder} and \texttt{testu01}. All of the tags are mandatory. The values of the tags sets the locations of the executables of the respective batteries.
+\end{itemize}
+\item \texttt{miscelaneous} -- Section with various settings. 
+\begin{itemize}
+\item \texttt{nist-sts} -- Settings related to NIST STS battery.
+\begin{itemize}
+\item \texttt{main-result-dir} -- Sets where NIST STS stores its result files.
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\item \texttt{execution} Settings related to the execution of the statistical batteries.
+\begin{itemize}
+\item \texttt{max-parallel-tests} Sets maximum number of concurrently running test processes.
+\item \texttt{test-timeout-seconds} Sets time period after which the running tests will be considered stuck and will be killed.
+\end{itemize}
+\end{itemize}
+
+\begin{figure}[h!]
+\begin{lstlisting}
+{
+  "credentials": {
+    "username": "user",
+    "password": "password"
+  }    
+}
+\end{lstlisting}
+\caption{Example of file with credentials to MySQL Database}
+\label{fig:credentials}
+\end{figure}
+
+\subsection{Battery configuration}
+\begin{huge}
+TODO
+\end{huge}
+
+\section{Results}
+\label{sec:result-storages}
+\begin{huge}
+todo
+\end{huge}
+
+\subsection{File}
+\begin{huge}
+todo
+\end{huge}
+
+\subsection{Database}
+\begin{huge}
+todo
+\end{huge}
+
 
 \section{Remote access to RTT}
 Remote access to RTT allows the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
 
 In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the results. 
 
-\begin{titlemize}{The toolkit ecosystem}
+\begin{titlemize}{The toolkit ecosystem} % Split this into subsections and write details on each...
 \item \textbf{Database server} The machine hosting database used for holding information about pending computation jobs and storing results.
 \item \textbf{Storage server} The machine that stores binary data that are yet to be analyzed by RTT. After the analysis the data are deleted to save storage space.
 \item \textbf{Backend server} Single or multiple machines that host installed toolkit and batteries. The computation of results happens on these machines. If there are multiple backend machines, the computational jobs are scheduled based on the information stored in the database. Prior to the analysis, the data are downloaded from the storage.  After the computation, the results are stored in the database and the data is deleted.
@@ -348,21 +452,6 @@ This approach is not intended to be used for creating big amount of experiments.
 
 \subsection{SSH}
 The direct access to the frontend server is meant for advanced users that need to analyze big volumes of data. Upon request, the user is able to gain direct access to separated part of the system on the frontend machine. The separated system contains only tools that allows him to create experiments for RTT. The data for the testing can be uploaded from the users local machine, downloaded from another server using sftp or generated right on the frontend server. The tool that can be used for stream generation was developed at CRoCS and is capable of producing outputs of numerous cryptographic primitives. The settings of the generator provide high control of the output to the user. 
-
-\section{Results}
-\begin{huge}
-todo
-\end{huge}
-
-\subsection{File}
-\begin{huge}
-todo
-\end{huge}
-
-\subsection{Database}
-\begin{huge}
-todo
-\end{huge}
 
 \section{Result interpretation}
 \begin{huge}
