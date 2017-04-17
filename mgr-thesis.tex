@@ -37,6 +37,7 @@
 
 %% The following section sets up the locales used in the thesis.
 \usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
+\usepackage[utf8]{inputenc}
 \usepackage[T1,T2A]{fontenc}  %% to use the Cyrillic fonts with Russian texts.
 \usepackage[
   main=english,
@@ -46,7 +47,7 @@
 \usepackage{paratype}
 \def\textrussian#1{{\usefont{T2A}{PTSerif-TLF}{m}{rm}#1}}
 
-%%
+%%\shorthands{off}
 %% The following section sets up the metadata of the thesis.
 \thesissetup{
     date          = \the\year/\the\month/\the\day,
@@ -68,6 +69,7 @@
 \makeindex                %% helper commands for index typesetting.
 \thesisload
 
+
 \newcommand{\lmar}{3.6cm} % PC
 \newcommand{\rmar}{3.6cm} % PC
 %\newcommand{\lmar}{4cm} % Printed
@@ -75,8 +77,8 @@
 
 \usepackage[top=3cm, bottom=3.5cm, left=\lmar, right=\rmar]{geometry}
 
-
 %% These additional packages are used within the document:
+\usepackage{minted}
 \usepackage{paralist} %% Compact list environments
 \usepackage{amsmath}  %% Mathematics
 \usepackage{amsthm}
@@ -90,27 +92,6 @@
 \definecolor{code-bg-grey}{rgb}{0.85,0.85,0.85}
 \definecolor{code-bg-light_grey}{rgb}{0.92,0.92,0.92}
 \definecolor{crimson}{rgb}{0.6,0,0}
-
-\usepackage{listings} %% Source code highlighting
-\lstset {
-	backgroundcolor=\color{code-bg-grey},  			% PC version ========================
-	%backgroundcolor=\color{code-bg-light_grey},  	% print version =====================
-	commentstyle=\color{red},						% PC version ========================
-	%commentstyle=\bfseries,						% print version =====================
-	frame=single,
-	language=XML,
-	breaklines=true,
-	basicstyle=\footnotesize
-}
-%\lstset{
-%  	basicstyle      = \ttfamily,%
-%  	identifierstyle = \color{black},%
-%  	keywordstyle    = \color{blue},%
-%  	keywordstyle    = {[2]\color{cyan}},%
-%  	keywordstyle    = {[3]\color{olive}},%
-% 	stringstyle     = \color{teal},%
-%	commentstyle    = \itshape\color{magenta}
-%}
 
 % Eliminates margins
 \def\nomar{\list{}{\rightmargin-\rmar\leftmargin-\lmar}\item[]}
@@ -236,7 +217,7 @@ Tests Random Excursions and Random Excursions Variant are not applicable to all 
 Neither of the tests can be applied to a stream full of zeroes or ones. This causes absence of results when analyzing such data. The user can find out the fact that the tests are not applicable to provided stream after he inspects logs of the program; otherwise, the interpretation of the missing results is left to him.
 
 \subsection*{Dieharder}
-When processing extremely non-random data with Dieharder, we observed various erroneous events. The events are summarized in Table~\ref{tab:dieharder-errors}. 
+When processing extremely non-random data with Dieharder, we observed various erroneous events. The events are summarized in Table~\ref{tab:dieharder_errors}. 
 
 \begin{table}[h!]
 \begin{nomar}
@@ -255,7 +236,7 @@ RGB Bit Distribution                 & -                        & Stuck executio
 \end{tabular}
 \end{nomar}
 \caption{Undocumented behavior of tests in Dieharder battery}
-\label{tab:dieharder-errors}
+\label{tab:dieharder_errors}
 \end{table}
 
 \begin{titlemize}{Observed errors}
@@ -265,7 +246,7 @@ RGB Bit Distribution                 & -                        & Stuck executio
 \end{titlemize}
 
 \subsection*{TestU01}
-Batteries Small Crush, Crush, Big Crush, Rabbit, Alphabit and Block Alphabit were executed. Tests that are part of multiple batteries acted in the same way across the batteries. The behavior is summarized in Table~\ref{tab:testu01-errors}.
+Batteries Small Crush, Crush, Big Crush, Rabbit, Alphabit and Block Alphabit were executed. Tests that are part of multiple batteries acted in the same way across the batteries. The behavior is summarized in Table~\ref{tab:testu01_errors}.
 
 \begin{table}[h!]
 \begin{nomar}
@@ -293,7 +274,7 @@ smarsa\_GCD                        & -                        & Stuck execution 
 \end{tabular}
 \end{nomar}  
 \caption{Undocumented behavior of tests in TestU01 library}
-\label{tab:testu01-errors}                                                                                           
+\label{tab:testu01_errors}                                                                                           
 \end{table}
 
 \begin{titlemize}{Observed errors}
@@ -338,7 +319,7 @@ The local unified interface is at the lowest level of the developed parts of RTT
 \begin{figure}[h!]
 \begin{nomar}
 \centering
-\includegraphics[width=\paperwidth-4cm]{figures/local_rtt_workflow.jpg}
+\includegraphics[width=\paperwidth-4cm]{figures/local-rtt-workflow.jpg}
 \end{nomar}
 \caption{Local RTT workflow}
 \label{fig:rtt_local_workflow}
@@ -348,83 +329,147 @@ The local unified interface is at the lowest level of the developed parts of RTT
 Will be done after RTT binary refactor.
 
 \subsection{Toolkit settings}
-The toolkit needs to have a few opions configured before execution. These options should be set only once and should be common for all subsequent runs. The toolkit settings does not modify settings of the battery that will be executed and by default are stored in file rtt-settings.json. Example of the file is shown in TODO Appendix.
+The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json} and are related to environment in which the toolkit will be executed (e.g. locations of the files and directories). The file is created by the user after the toolkit installation and stays the same for all subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory from which the program is executed.
 
-The file is in JSON format and has following structure.
+Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}. A complete example file can be found in Appendix~\ref{app:rtt_sett_json}. 
 
+%  {
+%    "toolkit-settings": {
+%      "logger": {...},
+%      "result-storage": {
+%        "file": {...},
+%        "mysql-db": {...}
+%      },
+%      "binaries": {...},    
+%      "miscelaneous": {
+%        "nist-sts": {...}
+%      },
+%      "execution": {...}
+%    }
+%  }
+\begin{figure}[h!]
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "toolkit-settings": {
+      "logger": {
+        "comment": "Program logger settings"
+      },
+      "result-storage": {
+        "file": {
+          "comment": "File result storage settings"
+        },
+        "mysql-db": {
+          "comment": "MySQL Database storage settings"
+        }
+      },
+      "binaries": {
+        "comment": "Executable binaries locations"
+      },    
+      "miscelaneous": {
+        "nist-sts": {
+          "comment": "Miscellaneous NIST STS settings"
+        }
+      },
+      "execution": {
+        "comment": "Battery execution settings"
+      }
+    }
+  }
+\end{minted}
+\caption{Basic structure of \texttt{rtt-settings.json}}
+\label{fig:rtt_sett_short_json}
+\end{figure}
+
+The description of the individual tags and the options that can be set within them follows.
+
+\begin{description}
+\item[toolkit-settings/logger] \hfill \\
+Tag containing settings related to location of log files produced during runtime.
 \begin{itemize}
-\item \texttt{toolkit-settings} -- Root tag of the file.
+\item \textbf{dir-prefix} \textit{Optional} -- If set, value of this tag will become prefix of all log locations. Can be used when all logger directories should have same parent directory.
+\item \textbf{run-log-dir} -- Sets location of the main log file.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and set locations of files that will contain raw outputs of the respective executed batteries.
+\end{itemize}
+
+\item[toolkit-settings/result-storage/file] \textit{Optional} \hfill \\
+Section with settings needed for file result storage. All values of tags except tag \textbf{main-file} are treated as directories. For details about the storage see Section~\ref{sec:file_res_storage}.
 \begin{itemize}
-\item \texttt{logger} -- Tag containing settings related to location of log files produced during runtime. 
+\item \textbf{main-file} -- Sets path of the file with final results of the program run. If the file already exists, results will be added to it, if not, new result file will be created.
+\item \textbf{dir-prefix} -- If set, all directory values will have this prefix.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} can be replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. The tags set locations of files with detailed results of the respective battery.
+\end{itemize}
+
+\item[toolkit-settings/result-storage/mysql-db] \textit{Optional} \hfill \\
+Section with settings needed for MySQL Database storage. For details about the storage see Section~\ref{sec:mysql_res_storage}.
 \begin{itemize}
-\item \texttt{dir-prefix} -- Optional tag, if set, value of this tag will become prefix of all log locations. Can be used when all logger directories should have same parent directory.
-\item \texttt{run-log-dir} -- Sets location of main log file.
-\item \texttt{<battery>-dir} -- Value \texttt{<battery>} is replaced by values \texttt{dieharder}, \texttt{nist-sts}, \texttt{tu01-smallcrush}, \texttt{tu01-crush}, \texttt{tu01-bigcrush}, \texttt{tu01-rabbit}, \texttt{tu01-alphabit} and \texttt{tu01-blockalphabit}. All of these tags are mandatory and set locations of files that will contain raw outputs of the respective batteries.
+\item \textbf{address} Address of the MySQL server with created RTT database.
+\item \textbf{port} Port on which the MySQL server is accessible.
+\item \textbf{name} Name of the database scheme with RTT tables.
+\item \textbf{credentials-file} Path to file that contains login information for the database. The example credentials file is shown in Figure~\ref{fig:mysql_credentials}.
 \end{itemize}
-\item \texttt{result-storage} -- Section with settings related to result storages. This tag along with all child tags are optional. In case some missing options are requested by RTT, the program will issue an error. For detailed description of result storages, see Section~\ref{sec:result-storages}.
+
+\item[toolkit-settings/binaries] \hfill \\
+Section with the locations of the executables of the batteries.
 \begin{itemize}
-\item \texttt{file} -- Section with settings needed for file result storage. All values of tags except tag \texttt{main-file} are treated as directories.
+\item \textbf{<battery>} -- Value \textbf{<battery>} is replaced by nist-sts, dieharder and testu01. All of the tags are mandatory. The values of the tags sets the locations of the executables of the respective batteries.
+\end{itemize}
+
+\item[toolkit-settings/miscelaneous/nist-sts] \hfill \\
+Miscellaneous constant settings related to NIST STS battery.
 \begin{itemize}
-\item \texttt{main-file} -- Sets filename of the file with final results of the program run. If the file already exists, results will be added to it, if not, new result file will be created.
-\item \texttt{dir-prefix} -- If set, all directory values will have this prefix.
-\item \texttt{<battery>-dir} -- Value \texttt{<battery>} can be replaced by values \texttt{dieharder}, \texttt{nist-sts}, \texttt{tu01-smallcrush}, \texttt{tu01-crush}, \texttt{tu01-bigcrush}, \texttt{tu01-rabbit}, \texttt{tu01-alphabit} and \texttt{tu01-blockalphabit}. The tags set locations of files with detailed results of respective battery.
+\item \textbf{main-result-dir} -- Sets where NIST STS stores its result files.
 \end{itemize}
-\item \texttt{mysql-db} -- Section with settings needed for MySQL Database storage.
+
+\item[toolkit-settings/execution] \hfill \\
+Settings related to the execution of the statistical batteries.
 \begin{itemize}
-\item \texttt{address} -- Address of the MySQL server with created RTT database.
-\item \texttt{port} -- Port on which the MySQL server is accessible.
-\item \texttt{credentials-file} -- Path to file that contains login information for the database. For the structure of the file see Figure~\ref{fig:credentials}.
+\item \textbf{max-parallel-tests} Sets maximum number of concurrently running test processes.
+\item \textbf{test-timeout-seconds} Sets time period after which the running tests will be considered stuck and will be killed.
 \end{itemize}
-\end{itemize}
-\item \texttt{binaries} -- Section with the locations of the executables of the batteries.
-\begin{itemize}
-\item \texttt{<battery>} -- Value \texttt{<battery>} is replaced by \texttt{nist-sts}, \texttt{dieharder} and \texttt{testu01}. All of the tags are mandatory. The values of the tags sets the locations of the executables of the respective batteries.
-\end{itemize}
-\item \texttt{miscelaneous} -- Section with various settings. 
-\begin{itemize}
-\item \texttt{nist-sts} -- Settings related to NIST STS battery.
-\begin{itemize}
-\item \texttt{main-result-dir} -- Sets where NIST STS stores its result files.
-\end{itemize}
-\end{itemize}
-\end{itemize}
-\item \texttt{execution} Settings related to the execution of the statistical batteries.
-\begin{itemize}
-\item \texttt{max-parallel-tests} Sets maximum number of concurrently running test processes.
-\item \texttt{test-timeout-seconds} Sets time period after which the running tests will be considered stuck and will be killed.
-\end{itemize}
-\end{itemize}
+\end{description}
 
 \begin{figure}[h!]
-\begin{lstlisting}
-{
-  "credentials": {
-    "username": "user",
-    "password": "password"
-  }    
-}
-\end{lstlisting}
-\caption{Example of file with credentials to MySQL Database}
-\label{fig:credentials}
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "credentials": {
+      "username": "john_doe",
+      "password": "password"    
+    }  
+  }
+\end{minted}
+\caption{Example of MySQL database credentials file}
+\label{fig:mysql_credentials}
 \end{figure}
 
 \subsection{Battery configuration}
 \begin{huge}
-TODO
+todo
 \end{huge}
 
 \section{Results}
-\label{sec:result-storages}
+\label{sec:result_storages}
 \begin{huge}
 todo
 \end{huge}
 
 \subsection{File}
+\label{sec:file_res_storage}
 \begin{huge}
 todo
 \end{huge}
 
 \subsection{Database}
+\label{sec:mysql_res_storage}
 \begin{huge}
 todo
 \end{huge}
@@ -487,9 +532,100 @@ todo
 
 \printbibliography
 
-\chapter{An appendix}
-\begin{huge}
-TODO
-\end{huge}
+\chapter{Sample file with RTT settings}
+\label{app:rtt_sett_json}
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "toolkit-settings": {
+      "logger": {
+        "dir-prefix": "rtt-results/logs",
+        "run-log-dir": "run-logs",
+        "dieharder-dir": "dieharder",
+        "nist-sts-dir": "niststs",
+        "tu01-smallcrush-dir": "testu01/smallcrush",
+        "tu01-crush-dir": "testu01/crush",
+        "tu01-bigcrush-dir": "testu01/bigcrush",
+        "tu01-rabbit-dir": "testu01/rabbit",
+        "tu01-alphabit-dir": "testu01/alphabit",
+        "tu01-blockalphabit-dir": "testu01/blockalphabit"
+      },
+      "result-storage": {
+        "file": {
+          "main-file": "rtt-results/testbed-table.txt",
+          "dir-prefix": "rtt-results/reports",
+          "dieharder-dir": "dieharder",
+          "nist-sts-dir": "niststs",
+          "tu01-smallcrush-dir": "testu01/smallcrush",
+          "tu01-crush-dir": "testu01/crush",
+          "tu01-bigcrush-dir": "testu01/bigcrush",
+          "tu01-rabbit-dir": "testu01/rabbit",
+          "tu01-alphabit-dir": "testu01/alphabit",
+          "tu01-blockalphabit-dir": "testu01/blockalphabit"
+        },
+        "mysql-db": {
+          "address": "127.0.0.1",
+          "port": "3306",
+          "name": "rtt",
+          "credentials-file": "credentials.json"
+        }
+      },
+      "binaries": {
+        "nist-sts": "/home/rtt-statistical-batteries/nist-sts",
+        "dieharder": "/home/rtt-statistical-batteries/dieharder",
+        "testu01": "/home/rtt-statistical-batteries/testu01"
+      },
+      "miscelaneous": {
+        "nist-sts": {
+          "main-result-dir": "experiments/AlgorithmTesting/"
+        }
+      },
+      "execution": {
+        "max-parallel-tests": 8,
+        "test-timeout-seconds": 3600
+      }
+    }
+  }
+\end{minted}
+
 
 \end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
