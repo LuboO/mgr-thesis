@@ -507,15 +507,32 @@ The main result file (in this case \texttt{table.txt}) contains summary of the r
 In the file there is simple ASCII table that contains single row for each input data file with distinct name that was analyzed. The rows contain name of the input file, time of the last modification of the row and a proportion of passed and total number of tests for each battery. In case that a single file is analyzed multiple times by specific battery, the results are overwritten.
 
 \subsection{MySQL database storage}
+Results are stored in MySQL database. Tables experiments and jobs are used for grouping executions, storing metadata about the experiment and scheduling jobs on deployed infrastructure. Description of tables follows.
+
+\begin{description}
+\item[experiments] \hfill \\
+\item[jobs] \hfill \\
+\item[batteries] \hfill \\
+\item[battery\_errors, battery\_warnings] \hfill \\
+\item[tests] \hfill \\
+\item[variants] \hfill \\
+\item[variant\_errors, variant\_stderr, variant\_warnings] \hfill \\
+\item[user\_settings] \hfill \\
+\item[subtests] \hfill \\
+\item[test\_parameters] \hfill \\
+\item[statistics] \hfill \\
+\item[p\_values] \hfill \\
+\end{description}
+
 \label{sec:mysql_res_storage}
-%\begin{figure}[h!]
-%\begin{nomar}
-%\centering
-%\includegraphics[width=\paperwidth-4cm]{figures/database-erd-model.jpg}
-%\end{nomar}
-%\caption{ERD Model of the database}
-%\label{fig:erd_database}
-%\end{figure}
+\begin{figure}[h!]
+\begin{nomar}
+\centering
+\includegraphics[width=\paperwidth-4cm]{figures/database-erd-model.pdf}
+\end{nomar}
+\caption{ERD Model of the database}
+\label{fig:erd_database}
+\end{figure}
 
 \section{Remote access to RTT}
 Remote access to RTT allows the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
@@ -545,8 +562,6 @@ The direct access to the frontend server is meant for advanced users that need t
 todo
 \end{huge}
 
-
- 
 \chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 \begin{itemize}
 \item How the data were tested
