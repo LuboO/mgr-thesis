@@ -507,28 +507,40 @@ The main result file (in this case \texttt{table.txt}) contains summary of the r
 In the file there is simple ASCII table that contains single row for each input data file with distinct name that was analyzed. The rows contain name of the input file, time of the last modification of the row and a proportion of passed and total number of tests for each battery. In case that a single file is analyzed multiple times by specific battery, the results are overwritten.
 
 \subsection{MySQL database storage}
-Results are stored in MySQL database. Tables experiments and jobs are used for grouping executions, storing metadata about the experiment and scheduling jobs on deployed infrastructure. Description of tables follows.
+By using the database storage, RTT writes the results of the run directly into MySQL database. Layout of the database is shown in Figure~\ref{fig:erd_database}. The tables \texttt{experiments} and \texttt{jobs} are not strictly required by the toolkit as the results are written only into table \texttt{batteries} and its sub-tables. The additional tables were added because we anticipated deployment of RTT on multiple servers and the tables store needed metadata about the execution and scheduling information.
 
 \begin{description}
-\item[experiments] \hfill \\
-\item[jobs] \hfill \\
-\item[batteries] \hfill \\
-\item[battery\_errors, battery\_warnings] \hfill \\
-\item[tests] \hfill \\
-\item[variants] \hfill \\
-\item[variant\_errors, variant\_stderr, variant\_warnings] \hfill \\
-\item[user\_settings] \hfill \\
-\item[subtests] \hfill \\
-\item[test\_parameters] \hfill \\
-\item[statistics] \hfill \\
-\item[p\_values] \hfill \\
+\item[\texttt{experiments}] \hfill \\
+We treat multiple analyses of single data stream by various batteries as a single experiment. The table stores metadata about the experiment such as name of the analysed file or used configuration file.
+\item[\texttt{jobs}] \hfill \\
+The table is used for scheduling execution of RTT on remote server. It holds information about the batteries that will be executed and to what experiment the results will be tied. Single job represents single execution of RTT.
+\item[\texttt{batteries}] \hfill \\
+Represents single execution of RTT. The results of the analysis are written to this table and the tables below by the database storage. The results of multiple batteries can be assigned to single experiment.
+\item[\texttt{battery\_errors}, \texttt{battery\_warnings}] \hfill \\
+Stores information about errors or warnings respectively that happened during RTT runtime.
+\item[\texttt{tests}] \hfill \\
+Contains information about all tests that were executed in single battery.
+\item[\texttt{variants}] \hfill \\
+Information about all variants of a single test that was executed.
+\item[\texttt{variant\_errors}, \texttt{variant\_stderr}, \texttt{variant\_warnings}] \hfill \\
+The errors, warnings and standard error output that were extracted from the output of a test variant execution are stored in the tables.
+\item[\texttt{user\_settings}] \hfill \\
+Settings that were set by the user in the battery configuration file.
+\item[\texttt{subtests}] \hfill \\
+All subtests of a single variant.
+\item[\texttt{test\_parameters}] \hfill \\
+Options and parameters that were extracted from the output of the subtest.
+\item[\texttt{statistics}] \hfill \\
+List of all statistics and their results that are tied to a single subtest.
+\item[\texttt{p\_values}] \hfill \\
+List of all p-values that were extracted from the output of the subtest execution.
 \end{description}
 
 \label{sec:mysql_res_storage}
 \begin{figure}[h!]
 \begin{nomar}
 \centering
-\includegraphics[width=\paperwidth-4cm]{figures/database-erd-model.pdf}
+\includegraphics[width=\paperwidth-3.5cm]{figures/database-erd-model.pdf}
 \end{nomar}
 \caption{ERD Model of the database}
 \label{fig:erd_database}
@@ -537,17 +549,40 @@ Results are stored in MySQL database. Tables experiments and jobs are used for g
 \section{Remote access to RTT}
 Remote access to RTT allows the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
 
-In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the results. 
+In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage and that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the results. 
 
-\begin{titlemize}{The toolkit ecosystem} % Split this into subsections and write details on each...
-\item \textbf{Database server} The machine hosting database used for holding information about pending computation jobs and storing results.
-\item \textbf{Storage server} The machine that stores binary data that are yet to be analyzed by RTT. After the analysis the data are deleted to save storage space.
-\item \textbf{Backend server} Single or multiple machines that host installed toolkit and batteries. The computation of results happens on these machines. If there are multiple backend machines, the computational jobs are scheduled based on the information stored in the database. Prior to the analysis, the data are downloaded from the storage.  After the computation, the results are stored in the database and the data is deleted.
-\item \textbf{Frontend server} The users are supposed to interact only with the frontend server. The task of this machine is to accept requests from the users for data analysis and then transfer the data to the storage and create corresponding jobs in database. Users can access the server either using direct SSH or web interface which is more user-friendly and intuitive.
+The interaction of the user with the infrastructure is visualized in Figure~TODO. In following section we outline the different purposes of the servers.
+
+\subsection{Database server}
+The machine hosting MySQL server with created database for RTT as shown in Figure~\ref{fig:erd_database}. The database is used for storing the results of the analyses as well as information used for scheduling and distribution of jobs to backend servers.
+
+\subsection{Storage server}
+The server hosts a storage space that acts as a temporary deposit for the data that is not yet distributed and analysed on the backend servers. After the distribution and analysis, the data is removed from the machine.
+
+\begin{titlemize}{Scripts on the server}
+\item \texttt{clean\_cache.py} -- Script that handles removal of the data files that were already analysed. The script is executed periodically.
 \end{titlemize}
 
-The ecosystem is visualized in Figure~TODO.
+\subsection{Backend server}
+Single or multiple machines that host installed toolkit and batteries. The analysis of the data is executed on these machines. If there are multiple backend servers, the analyses are scheduled based on the information stored in the database. Prior to the analysis, the data is downloaded from the storage and stored in local cache. After the computation, the results are stored on the database server and the data is deleted.
 
+\begin{huge}
+write info about experiments and jobs status here.
+\end{huge}
+
+\begin{titlemize}{Scripts on the server}
+\item \texttt{clean\_cache.py} -- Script that handles removal of the locally cached data files that were already analysed. The script is executed periodically.
+\item \texttt{run\_jobs.py} -- Script responsible for choosing the correct computational job, downloading the data from the storage server and the execution of the analysis. The jobs are picked from the database table \texttt{jobs} with following priority:
+\begin{enumerate}
+\item Jobs of those experiments whose data was downloaded earlier and the data is present in the local cache of the server.
+\item Jobs of the experiments that hasn't been started by other backend server yet.
+\item Any jobs that are still not started by other servers.
+\end{enumerate}
+The rules are designed in such a way that a minimal amount of data is transferred over the network. If there is enough distinct experiments for all servers then each server will pick single experiment and execute all its jobs and the data of the experiment is transferred only once.
+\end{titlemize}
+
+\subsection{Frontend server}
+The users are supposed to interact only with the frontend server. The task of this machine is to accept requests from the users for data analysis and then transfer the data to the storage and create corresponding jobs in database. Users can access the server either using direct SSH or web interface which is more user-friendly and intuitive.
 
 \subsection{Access via web browser}
 The web browser interface is intended to accomodate the needs of common users. The main idea is that the user will visit our website and, using the interface, will create his experiment. For basic testing the user is only required to upload the data and suitable battery will be chosen for him. Alternatively he can also choose the desired configuration or create his own documentation from the scratch. The results of the analysis are also shown in the interface. 

@@ -49,7 +49,7 @@ data_file_sha256 : VARCHAR(64)<y:LabelModel>
           <y:Geometry height="119.0" width="280.0" x="616.75" y="248.83333333333323"/>
           <y:Fill color="#E8EEF7" color2="#B7C9E3" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="28.544921875" x="125.7275390625" y="4.0">jobs</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" backgroundColor="#B7C9E3" configuration="com.yworks.entityRelationship.label.name" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasLineColor="false" height="17.96875" horizontalTextPosition="center" iconTextGap="4" modelName="internal" modelPosition="t" textColor="#000000" verticalTextPosition="bottom" visible="true" width="28.544921875" x="125.7275390625" y="4.000000000000028">jobs</y:NodeLabel>
           <y:NodeLabel alignment="left" autoSizePolicy="content" configuration="com.yworks.entityRelationship.label.attributes" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="87.8125" horizontalTextPosition="center" iconTextGap="4" modelName="custom" textColor="#000000" verticalTextPosition="top" visible="true" width="275.095703125" x="2.0" y="29.96875000000003">id : BIGINT
 battery : VARCHAR(100)
 status : ENUM('pending', 'running', 'finished')
@@ -365,7 +365,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </node>
     <edge id="e0" source="n1" target="n0">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -376,7 +375,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e1" source="n5" target="n2">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="-48.018749999999955" tx="0.0" ty="42.141666666666765"/>
@@ -387,7 +385,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e2" source="n7" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-56.66107438016542" ty="-0.6875">
@@ -401,7 +398,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e3" source="n14" target="n11">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-49.653636363636565" ty="0.0">
@@ -415,7 +411,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e4" source="n12" target="n11">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-20.94289256198363" ty="0.0">
@@ -429,7 +424,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e5" source="n13" target="n11">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="-92.42483108108102" sy="6.0" tx="0.0" ty="0.0">
@@ -443,7 +437,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e6" source="n9" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="-0.6875">
@@ -457,7 +450,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e7" source="n8" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="-6.619752066115856" ty="-0.6875">
@@ -471,7 +463,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e8" source="n10" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="-0.6875">
@@ -485,7 +476,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e9" source="n5" target="n6">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -498,7 +488,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e10" source="n6" target="n11">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="-0.6875" tx="0.0" ty="0.0">
@@ -511,7 +500,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e11" source="n2" target="n0">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0">
@@ -519,13 +507,12 @@ subtest_id : BIGINT<y:LabelModel>
             <y:Point x="498.5" y="105.89583333333324"/>
           </y:Path>
           <y:LineStyle color="#000000" type="line" width="2.0"/>
-          <y:Arrows source="crows_foot_one" target="crows_foot_many_optional"/>
+          <y:Arrows source="crows_foot_many_optional" target="crows_foot_one"/>
           <y:BendStyle smoothed="true"/>
         </y:PolyLineEdge>
       </data>
     </edge>
     <edge id="e12" source="n3" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="78.68249999999989" ty="0.0">
@@ -540,7 +527,6 @@ subtest_id : BIGINT<y:LabelModel>
       </data>
     </edge>
     <edge id="e13" source="n4" target="n5">
-      <data key="d9"/>
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="79.68249999999989" ty="0.0">
