@@ -566,23 +566,37 @@ The server hosts a storage space that acts as a temporary deposit for the data t
 \subsection{Backend server}
 Single or multiple machines that host installed toolkit and batteries. The analysis of the data is executed on these machines. If there are multiple backend servers, the analyses are scheduled based on the information stored in the database. Prior to the analysis, the data is downloaded from the storage and stored in local cache. After the computation, the results are stored on the database server and the data is deleted.
 
-\begin{huge}
-write info about experiments and jobs status here.
-\end{huge}
+Both jobs and experiments can be in one of the three states -- \texttt{pending}, \texttt{running} and \texttt{finished}; the descriptions of the states are in Table~\ref{tab:states_jobs_exps}. Scheduling of the computation is based on the state of the experiments and jobs.
+
+\begin{table}[h!]
+\begin{nomar}
+\centering
+\begin{tabular}{l || p{4cm} | p{4cm}}
+\textbf{Status}   & \textbf{Job} & \textbf{Experiment} \\ \hline \hline
+\texttt{pending}  & The job is waiting for execution. & All of the jobs related to the experiment are waiting for execution. \\ \hline
+\texttt{running}  & The job is being \newline executed on backend server. & Some or all related jobs are being \newline executed. \\ \hline
+\texttt{finished} & The jobs execution ended. & The execution of all \newline related jobs ended. \\
+\end{tabular}
+\end{nomar}
+\caption{States of jobs and experiments}
+\label{tab:states_jobs_exps}
+\end{table}
 
 \begin{titlemize}{Scripts on the server}
 \item \texttt{clean\_cache.py} -- Script that handles removal of the locally cached data files that were already analysed. The script is executed periodically.
-\item \texttt{run\_jobs.py} -- Script responsible for choosing the correct computational job, downloading the data from the storage server and the execution of the analysis. The jobs are picked from the database table \texttt{jobs} with following priority:
+\item \texttt{run\_jobs.py} -- Script responsible for choosing the correct computational job, downloading the data from the storage server and the execution of the analysis. Th script is executed periodically. The jobs are picked from the database table \texttt{jobs} with following priority:
 \begin{enumerate}
 \item Jobs of those experiments whose data was downloaded earlier and the data is present in the local cache of the server.
-\item Jobs of the experiments that hasn't been started by other backend server yet.
-\item Any jobs that are still not started by other servers.
+\item Any jobs of the experiments that are in pending state.
+\item Any jobs that are in pending state.
 \end{enumerate}
-The rules are designed in such a way that a minimal amount of data is transferred over the network. If there is enough distinct experiments for all servers then each server will pick single experiment and execute all its jobs and the data of the experiment is transferred only once.
+The rules are designed in such a way that a minimal amount of data is transferred over the network. If there are enough distinct pending experiments for all servers then each server will pick single experiment and execute all its jobs and the data of the experiment is transferred only once.
 \end{titlemize}
 
 \subsection{Frontend server}
-The users are supposed to interact only with the frontend server. The task of this machine is to accept requests from the users for data analysis and then transfer the data to the storage and create corresponding jobs in database. Users can access the server either using direct SSH or web interface which is more user-friendly and intuitive.
+The frontend server is the only server that the user directly interacts with. The machine accepts data and request for creating an experiment. After the request, the server creates the experiment and related jobs in the database and uploads the data into the storage.
+
+The server can be accessed either via SSH, which is intended for experienced users or via web interface which is intuitive and user-friendly.
 
 \subsection{Access via web browser}
 The web browser interface is intended to accomodate the needs of common users. The main idea is that the user will visit our website and, using the interface, will create his experiment. For basic testing the user is only required to upload the data and suitable battery will be chosen for him. Alternatively he can also choose the desired configuration or create his own documentation from the scratch. The results of the analysis are also shown in the interface. 
