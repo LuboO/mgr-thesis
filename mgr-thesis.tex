@@ -179,6 +179,13 @@ Many tests can be parametrized in some ways, possibly giving different results w
 
 \item[Subtest] \hfill \\
 Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as subtests of the test. Subtests can have multiple separate statistics.
+
+\item[Job] \hfill \\
+Single execution of Randomness Testing Toolkit that will analyse single binary data file with single statistical battery.
+
+\item[Experiment] \hfill \\
+Batch of jobs that analysed single data file with various statistical batteries and settings.
+
 \end{description}
 
 \section{Batteries supported by RTT}
@@ -317,6 +324,13 @@ In following sections of this chapter, we will provide detailed description of t
 \section{Local unified interface}
 The local unified interface is at the lowest level of the developed parts of RTT. The interface is a binary executable that accepts settings and outputs the results in common format for all batteries. The executable handles transformation of general settings into the battery specific ones, running the battery executable and then transforming gathered output into general format. The process is visualized in Figure~\ref{fig:rtt_local_workflow}.
 
+The toolkit accepts settings needed for its run from three following sources:
+\begin{itemize}
+\item \textbf{Command-line arguments} -- Basic settings that change for each run, for example path to input file with binary data or to file with battery configuration.
+\item \textbf{Toolkit settings file} -- General settings for the toolkit related to the system environment e.g. paths to executables of the statistical batteries. In most cases the settings stay the same for all executions of the toolkit regardless of the battery or data used.
+\item \textbf{Battery configuration file} -- Configuration file that fully configures input settings for single or multiple batteries. The configuration of the batteries can change between the executions of the toolkit.
+\end{itemize}
+
 \begin{figure}[h!]
 \begin{nomar}
 \centering
@@ -326,8 +340,18 @@ The local unified interface is at the lowest level of the developed parts of RTT
 \label{fig:rtt_local_workflow}
 \end{figure}
 
-\subsection{Command-line options}
-Will be done after RTT binary refactor.
+\subsection{Command-line arguments}
+The basic options of the RTT execution are set through command-line arguments. RTT recognizes following options.
+
+\begin{itemize}
+\item \texttt{-h} Usage of the toolkit will be printed.
+\item \texttt{-b <battery>} Sets the battery that will be executed during the run. Values accepted as \texttt{<battery>}: dieharder, nist\_sts, tu01\_smallcrush, tu01\_crush, tu01\_bigcrush, tu01\_rabbit, tu01\_alphabit and tu01\_blockalphabit.
+\item \texttt{-t <test-id>} Optional argument. If set, only single test with id \texttt{<test-id>} will be executed in the battery.
+\item \texttt{-c <config-path>} Path to file with configuration of the battery. Details about battery configuration are in Section~\ref{sec:batt_conf}.
+\item \texttt{-f <data-path>} Path to file with the binary data that will be analyzed by the executed battery.
+\item \texttt{-r <result-storage>} Sets the type of the result storage that will be used. Accepted values are \texttt{file-report} or \texttt{db-mysql}. The option doesn't have to be set; \texttt{file-report} is then used as default option. More information about result storages is in Section~\ref{sec:result_storages}.
+\item \texttt{-eid <experiment-id>} Option mandatory only when \texttt{db-mysql} is set as result storage, is ignored otherwise. Sets to which experiment in the database will be tied the results of the analysis. 
+\end{itemize}
 
 \subsection{Toolkit settings}
 The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json} and are related to environment in which the toolkit will be executed (e.g. locations of the files and directories). The file is created by the user after the toolkit installation and stays the same for all subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory from which the program is executed.
@@ -453,6 +477,7 @@ Settings related to the execution of the statistical batteries.
 \end{figure}
 
 \subsection{Battery configuration}
+\label{sec:batt_conf}
 \begin{huge}
 todo
 \end{huge}
