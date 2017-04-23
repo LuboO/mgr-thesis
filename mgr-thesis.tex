@@ -478,9 +478,119 @@ Settings related to the execution of the statistical batteries.
 
 \subsection{Battery configuration}
 \label{sec:batt_conf}
-\begin{huge}
-todo
-\end{huge}
+The file with battery configuration defines all settings for the battery and the tests that will be executed in the program run. Each execution of RTT can have different battery configuration; the path to file with the configuration is set through command-line argument \texttt{-c}. The basic structure of the configuration file is outlined in Figure~\ref{fig:batt_conf_short_json}. The complete example of configuration is in Appendix~TODO.
+
+\begin{figure}[h!]
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "randomness-testing-toolkit": {
+      "dieharder-settings": {
+        "comment": "Settings specific to Dieharder battery",
+        "defaults": {
+          "comment": "Default settings"
+        },
+        "test-specific-settings": [
+          {
+            "comment": "Settings specific for single test",
+            "variants": [
+              {
+                "comment": "The first variant"
+              },
+              {
+                "comment": "The second variant"            
+              }            
+            ]	      
+          }
+        ]      
+      }    
+    }
+  }
+\end{minted}
+\caption{Basic structure of battery configuration file}
+\label{fig:batt_conf_short_json}
+\end{figure}
+
+We list the possible common and battery specfic tags here along with their required parent tags and descriptions.
+
+\paragraph{Common settings}
+\begin{description}
+\item[\texttt{randomness-testing-toolkit}] \hfill \\
+Root tag of the configuration file.
+
+\item[\texttt{randomness-testing-toolkit/<battery>-settings}] \hfill \\
+<battery> can be dieharder, nist-sts or testu01. This tag contains settings for specific battery.
+
+\item[\texttt{<battery>-settings/defaults}] \hfill \\
+Options inside of this tag are considered defaults. If certain test is executed and needs to have some option defined but it does not, the option falls back to the value in defaults tag inside given battery.
+
+\item[\texttt{defaults/test-ids}] \hfill \\
+Sets which tests will be executed in specific battery, if no test was specified through command-line argument. Value of this tag must be list of strings with single numbers or number ranges.
+
+\item[\texttt{<battery>-settings/test-specific-settings}] \hfill \\
+Tags inside are specific for certain tests and batteries. Options set there will be used for chosen test if that test won't have variants defined. In this tag must be list of JSON objects. Each of those objects must contain option test-id for identifying test and can contain additional options.
+
+\item[\texttt{test-specific-settings/test-id}] \hfill \\
+Used for identifying JSON objects inside test-specific-settings tag.
+
+\item[\texttt{test-specific-settings/variants}] \hfill \\
+Must be inside JSON object which is in test-specific-settings. If it is there multiple times, the test will be executed multiple times, each time with options as defined in respective variants. If some options are not defined in variant, value will at first fall back to option in test and then to defaults.
+\end{description}
+
+\paragraph{NIST STS settings}
+
+\begin{description}
+\item[\texttt{stream-size}] \hfill \\
+Sets bit size of single stream of data that will be used for testing.
+
+\item[\texttt{stream-count}] \hfill \\
+Sets number of streams of data that will be used for testing. E.g. if this value would be 100, then the test would be repeated 100 times each time with different stream of length stream-size
+
+\item[\texttt{block-length}] \hfill \\
+Some tests split data into blocks, you can modify bit length of the blocks. For details on which tests use block, see documentation of tests in NIST STS.
+
+\end{description}
+
+\paragraph{Dieharder settings}
+
+\begin{description}
+\item[\texttt{psamples}] \hfill \\
+Sets how many times will be the test repeated before final result is calculated.
+
+\item[\texttt{arguments}] \hfill \\
+Allows you to pass additional arguments to the DIEHARDER binary. Format is expected as single string of argument-value pairs separated by spaces. For summary of arguments allowed by DIEHARDER, see its documentation.
+
+\end{description}
+
+\paragraph{TestU01 settings}
+
+\begin{description}
+\item[\texttt{<battery>}] \hfill \\
+Specifies battery to which the options inside belong. Can have values small-crush, crush, big-crush, rabbit, alphabit and block-alphabit.
+
+\item[\texttt{repetitions}] \hfill \\
+Sets how many times will be the test repeated.
+
+\item[\texttt{bit-nb}] \hfill \\
+Usable only with rabbit and (block) alphabit batteries. Sets how many bytes can be processed by the test. The test will not process more bytes.
+
+\item[\texttt{bit-r}] \hfill \\
+Usable only with (block) alphabit batteries. Sets the offset in each group of 32 bits. If set to r then first r bits from each 32 bits will be ignored. Only the rest of bits in data will be tested.
+
+\item[\texttt{bit-s}] \hfill \\
+Usable only with (block) alphabit batteries. Sets how many bits from each 32 bit group will be processed, starting from bit-r. bit-r=0, bit-s=32 will process whole 32 bit group.
+
+\item[\texttt{bit-w}] \hfill \\
+Usable only with block alphabit battery. Will set reorder of bits in 32 bit groups.
+
+\item[\texttt{parameters}] \hfill \\
+Usable only with (small, big) crush batteries. Will set custom parameters on specific test. Each test has different parameters, you can find them in TestU01 documentation. You have to set values for all available parameters.
+
+\end{description}
 
 \section{Storing battery results}
 \label{sec:result_storages}
@@ -532,6 +642,7 @@ The main result file (in this case \texttt{table.txt}) contains summary of the r
 In the file there is simple ASCII table that contains single row for each input data file with distinct name that was analyzed. The rows contain name of the input file, time of the last modification of the row and a proportion of passed and total number of tests for each battery. In case that a single file is analyzed multiple times by specific battery, the results are overwritten.
 
 \subsection{MySQL database storage}
+\label{sec:mysql_res_storage}
 By using the database storage, RTT writes the results of the run directly into MySQL database. Layout of the database is shown in Figure~\ref{fig:erd_database}. The tables \texttt{experiments} and \texttt{jobs} are not strictly required by the toolkit as the results are written only into table \texttt{batteries} and its sub-tables. The additional tables were added because we anticipated deployment of RTT on multiple servers and the tables store needed metadata about the execution and scheduling information.
 
 \begin{description}
@@ -561,7 +672,6 @@ List of all statistics and their results that are tied to a single subtest.
 List of all p-values that were extracted from the output of the subtest execution.
 \end{description}
 
-\label{sec:mysql_res_storage}
 \begin{figure}[h!]
 \begin{nomar}
 \centering
@@ -572,11 +682,20 @@ List of all p-values that were extracted from the output of the subtest executio
 \end{figure}
 
 \section{Remote access to RTT}
+\begin{figure}[h!]
+\begin{nomar}
+\centering
+\includegraphics[width=\textwidth]{figures/rtt-ecosystem.pdf}
+\end{nomar}
+\caption{Interaction between user and servers}
+\label{fig:rtt_ecosystem}
+\end{figure}
+
 Remote access to RTT allows the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
 
 In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage and that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the results. 
 
-The interaction of the user with the infrastructure is visualized in Figure~TODO. In following section we outline the different purposes of the servers.
+The interaction of the user with the infrastructure is visualized in Figure~\ref{fig:rtt_ecosystem}. In following section we outline the different purposes of the servers.
 
 \subsection{Database server}
 The machine hosting MySQL server with created database for RTT as shown in Figure~\ref{fig:erd_database}. The database is used for storing the results of the analyses as well as information used for scheduling and distribution of jobs to backend servers.
