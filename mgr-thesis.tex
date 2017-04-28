@@ -685,7 +685,7 @@ List of all p-values that were extracted from the output of the subtest executio
 \begin{figure}[h!]
 \begin{nomar}
 \centering
-\includegraphics[width=\textwidth]{figures/rtt-ecosystem.pdf}
+\includegraphics[width=\paperwidth-4cm]{figures/rtt-ecosystem.pdf}
 \end{nomar}
 \caption{Interaction between user and servers}
 \label{fig:rtt_ecosystem}
@@ -738,24 +738,49 @@ The rules are designed in such a way that a minimal amount of data is transferre
 \end{titlemize}
 
 \subsection{Frontend server}
-The frontend server is the only server that the user directly interacts with. The machine accepts data and request for creating an experiment. After the request, the server creates the experiment and related jobs in the database and uploads the data into the storage.
+The frontend server is the only server that the user interacts with. The machine accepts data and request for creating an experiment. After the request, the server creates the experiment and the related jobs in the database and uploads the data into the storage. The server also presents the results from the database to the users.
 
-The server can be accessed either via SSH, which is intended for experienced users or via web interface which is intuitive and user-friendly.
+The server can be directly accessed through SSH. The direct access is meant for experienced users that need to analyze big volumes of data. Additionaly, an optional web interface can be deployed on the frontend server. The web interface can be used for interactive browsing of the analysis results as well as for submitting undemanding amount of data and experiments by the users.
 
-\subsection{Access via web browser}
-The web browser interface is intended to accomodate the needs of common users. The main idea is that the user will visit our website and, using the interface, will create his experiment. For basic testing the user is only required to upload the data and suitable battery will be chosen for him. Alternatively he can also choose the desired configuration or create his own documentation from the scratch. The results of the analysis are also shown in the interface. 
+The direct access to the server is granted to the user by the system administration. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} (cit.). The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with help of the generator tool (cit.) that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
 
-This approach is not intended to be used for creating big amount of experiments.
+\subsection*{Experiment submission utility}
 
-\subsection{SSH}
-The direct access to the frontend server is meant for advanced users that need to analyze big volumes of data. Upon request, the user is able to gain direct access to separated part of the system on the frontend machine. The separated system contains only tools that allows him to create experiments for RTT. The data for the testing can be uploaded from the users local machine, downloaded from another server using sftp or generated right on the frontend server. The tool that can be used for stream generation was developed at CRoCS and is capable of producing outputs of numerous cryptographic primitives. The settings of the generator provide high control of the output to the user. 
+To create a new experiment, the user has to use utility \texttt{submit\_experiment} that is installed on the server. The utility will transfer the user's data into the storage and will insert new computational jobs into the database. The utility accepts following command-line arguments.
+
+\begin{itemize}
+\item \texttt{-h, -{}-help} Prints the usage of the utility.
+\item \texttt{-e, -{}-email <address>} Optional argument. When set, an email with brief results of the analysis will be sent to \texttt{<address>} after end of the computation.
+\item \texttt{-c, -{}-cfg <config-path>} Path to file with configuration of the batteries that will be included in the experiment. Details about configuring the batteries are in Section~\ref{sec:batt_conf}.
+\item \texttt{-f, -{}-file <data-path>} Path to file with binary data that will be analysed by the statistical batteries included in the experiment.
+\item \texttt{-a, -{}-all\_batteries} Flag argument that will include all of the defined batteries except TestU01 Big Crush in the experiment.
+\item \texttt{-{}-nist\_sts} Switch for NIST Statistical Test Suite
+\item \texttt{-{}-dieharder} Switch for Dieharder 
+\item \texttt{-{}-tu01\_smallcrush} Switch for TestU01 Small Crush
+\item \texttt{-{}-tu01\_crush} Switch for TestU01 Crush
+\item \texttt{-{}-tu01\_bigcrush} Switch for TestU01 Big Crush
+\item \texttt{-{}-tu01\_rabbit} Switch for TestU01 Rabbit
+\item \texttt{-{}-tu01\_alphabit} Switch for TestU01 Alphabit
+\item \texttt{-{}-tu01\_blockalphabit} Switch for TestU01 Block Alphabit
+\end{itemize}
+
+The flags for the batteries switch inclusion of respective batteries in the experiment. For example, if we use arguments \texttt{-{}-all\_batteries -{}-dieharder}, then the batteries included in the experiment will be the batteries added by the \texttt{-{}-all\_batteries} flag \textbf{except} the Dieharder battery. However, if we would use only argument \texttt{--dieharder}, then Dieharder will be the only battery used is the experiment.
+
+\subsection{Web Interface for RTT}
+The web browser interface is intended to accomodate the needs of common users. The main idea is that the user will visit our website and, using the interface, will create his experiment. For basic testing the user is only required to upload the data and the suitable battery configuration will be chosen for him. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences. The web interface is not intended to be used for creating a big amount of experiments because it would be too time consuming for the user to create all the experiments manually.
+
+Another purpose of the web interface is to present results of the previous analyses to the user and help him interpret those results. 
+
+The web interface is not dependent on or required by the underlying server infrastructure that realizes analysis of the data. 
+
+We split possible the users into three roles: anonymous users, authorized users and administrators of the interface. The anonymous users can browse results of the previous analyses. The anonymous users can be given unique access code that will allow them to access creation of experiments that is otherwise restricted. The authorized users can freely create new experiments. The administrator can add or modify users (with or without administrator privileges), add or modify predefined battery configurations and create and set expiration date on the access codes for acces to experiment creation. 
+
+\chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 
 \section{Result interpretation}
 \begin{huge}
 todo
 \end{huge}
-
-\chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 \begin{itemize}
 \item How the data were tested
 \item List functions
