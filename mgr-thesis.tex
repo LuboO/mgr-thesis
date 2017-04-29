@@ -1,10 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% I, the copyright holder of this work, release this work into the
 %% public domain. This applies worldwide. In some countries this may
 %% not be legally possible; if so: I grant anyone the right to use
 %% this work for any purpose, without any conditions, unless such
 %% conditions are required by law.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \PassOptionsToPackage{
   plainpages = false,               								
@@ -750,6 +750,7 @@ To create a new experiment, the user has to use utility \texttt{submit\_experime
 
 \begin{itemize}
 \item \texttt{-h, -{}-help} Prints the usage of the utility.
+\item \texttt{-n, -{}-name <name>} Sets the name of the experiment.
 \item \texttt{-e, -{}-email <address>} Optional argument. When set, an email with brief results of the analysis will be sent to \texttt{<address>} after end of the computation.
 \item \texttt{-c, -{}-cfg <config-path>} Path to file with configuration of the batteries that will be included in the experiment. Details about configuring the batteries are in Section~\ref{sec:batt_conf}.
 \item \texttt{-f, -{}-file <data-path>} Path to file with binary data that will be analysed by the statistical batteries included in the experiment.
@@ -767,13 +768,54 @@ To create a new experiment, the user has to use utility \texttt{submit\_experime
 The flags for the batteries switch inclusion of respective batteries in the experiment. For example, if we use arguments \texttt{-{}-all\_batteries -{}-dieharder}, then the batteries included in the experiment will be the batteries added by the \texttt{-{}-all\_batteries} flag \textbf{except} the Dieharder battery. However, if we would use only argument \texttt{--dieharder}, then Dieharder will be the only battery used is the experiment.
 
 \subsection{Web Interface for RTT}
-The web browser interface is intended to accomodate the needs of common users. The main idea is that the user will visit our website and, using the interface, will create his experiment. For basic testing the user is only required to upload the data and the suitable battery configuration will be chosen for him. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences. The web interface is not intended to be used for creating a big amount of experiments because it would be too time consuming for the user to create all the experiments manually.
+The web interface is aiming to be useful in the basic use-case, where the user has some binary data that he wants to analyse. The user will upload the data through the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django (cit) framework for its ease of use.
 
-Another purpose of the web interface is to present results of the previous analyses to the user and help him interpret those results. 
+In most cases, one does not have to create new configuration for the batteries that will be executed during the analysis; a suitable configuration will be chosen for him automatically. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences.
 
-The web interface is not dependent on or required by the underlying server infrastructure that realizes analysis of the data. 
+The limitation of the interface is that the manual creation of large number of experiments would be too time-consuming and error-prone for the user, as the process can't be trivially automated. However the web interface not intended to be used in such situations; creating the experiments through direct access to the frontend server would be much more viable. 
 
-We split possible the users into three roles: anonymous users, authorized users and administrators of the interface. The anonymous users can browse results of the previous analyses. The anonymous users can be given unique access code that will allow them to access creation of experiments that is otherwise restricted. The authorized users can freely create new experiments. The administrator can add or modify users (with or without administrator privileges), add or modify predefined battery configurations and create and set expiration date on the access codes for acces to experiment creation. 
+\subsection*{User roles}
+We separate users into three categories in the context of the web interface application. It is worth noting that the user accounts existing in the web interface are independent of the accounts existing on the frontend server. In the following list we summarize the roles and their privileges.
+
+\begin{itemize}
+\item \textbf{Anonymous user privileges}
+\begin{itemize}
+\item Browse results of all previous experiments.
+\item Create an experiment if an unique access link was shared to the user.
+\end{itemize}
+\item \textbf{Authenticated user privileges}
+\begin{itemize}
+\item Create experiments.
+\item Change details and password of the account.
+\end{itemize}
+\item \textbf{Administrator privileges}
+\begin{itemize}
+\item Creating new and modifying existing users.
+\item Adding administrator privileges to user accounts.
+\item Adding or modifying predefined battery configurations.
+\item Adding or modifying unique access links to the experiment submission. Each access link has his own expiration date and is unusable after this date.
+\end{itemize}
+\end{itemize}
+
+\subsection*{Experiment submission}
+To create new experiment the user user will have to complete following settings in the online form. The screenshot of the form is included in the Appendix~\ref{chap:exp_submit_form}.
+
+\begin{itemize}
+\item \textbf{Experiment name} -- Name identifying the experiment, doesn't have to be unique.
+\item \textbf{E-Mail} -- Required only when the user is not logged in. After the computation, e-mail will be sent to the address, notifying the user about the results.
+\item \textbf{Binary data file} -- Data that will be analysed; uploaded from the user's machine.
+\item \textbf{Configuration} -- User can use default battery configuration, choose one of the predefined configurations or upload his own configuration file. The configuration files are described in Section~\ref{sec:batt_conf}.
+\item \textbf{Battery application} -- Set of switches that defines which batteries will be included in the experiment.
+\end{itemize}
+
+\subsection*{Result presentation}
+The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. Then the probability of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. Based on the probability, the possible assessments are following.
+
+\begin{itemize}
+\item \textbf{x < 0.001} -- Results with this probability of happening are deemed as a failure.
+\item \textbf{0.001 <= x < 0.01} -- Results with this probability are considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen even when the tested data is produced by a good source.
+\item \textbf{0.01 <= x} -- These results are considered to be okay.
+\end{itemize}
 
 \chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 
@@ -942,5 +984,15 @@ Diehard Runs Test test results:
 
 -----------------------------------------------------------
 \end{minted}
+
+\chapter{Experiment submission online form}
+\label{chap:exp_submit_form}
+
+\begin{figure}[h!]
+\begin{nomar}
+\centering
+\includegraphics[width=\textwidth+1.2cm]{figures/submit-experiment-form.png} 
+\end{nomar}
+\end{figure}
 
 \end{document}
