@@ -522,36 +522,51 @@ We list the possible common and battery specfic tags here along with their requi
 \item[\texttt{randomness-testing-toolkit}] \hfill \\
 Root tag of the configuration file.
 
-\item[\texttt{randomness-testing-toolkit/<battery>-settings}] \hfill \\
-<battery> can be dieharder, nist-sts or testu01. This tag contains settings for specific battery.
+\item[\texttt{<battery>-settings}] \hfill \\
+\textit{Possible parent tags: } \texttt{randomness-testing-toolkit} \\
+<battery> can be dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. This tag contains settings for specific battery.
 
-\item[\texttt{<battery>-settings/defaults}] \hfill \\
-Options inside of this tag are considered defaults. If certain test is executed and needs to have some option defined but it does not, the option falls back to the value in defaults tag inside given battery.
+\item[\texttt{defaults}] \hfill \\
+\textit{Possible parent tags: } \texttt{<battery>-settings} \\
+Options inside this tag are considered as the default options for the battery specified by the parent tag. 
 
-\item[\texttt{defaults/test-ids}] \hfill \\
-Sets which tests will be executed in specific battery, if no test was specified through command-line argument. Value of this tag must be list of strings with single numbers or number ranges.
+If certain test is executed in the battery and needs to have some option defined but it does not, the option falls back to the value defined in the \texttt{defaults} tag.
 
-\item[\texttt{<battery>-settings/test-specific-settings}] \hfill \\
-Tags inside are specific for certain tests and batteries. Options set there will be used for chosen test if that test won't have variants defined. In this tag must be list of JSON objects. Each of those objects must contain option test-id for identifying test and can contain additional options.
+\item[\texttt{test-ids}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults} \\
+The option defines which tests will be executed in the specific battery by default. The default tests are executed only if no test was specified through command-line arguments.
 
-\item[\texttt{test-specific-settings/test-id}] \hfill \\
-Used for identifying JSON objects inside test-specific-settings tag.
+Value of this tag must be array of strings. Each string can contain either a single number or range of numbers. For example, should the value of the tag be \texttt{["3", "10-13", "15"]}, then the default IDs of tests in the battery will be 3, 10, 11, 12, 13, 15.
 
-\item[\texttt{test-specific-settings/variants}] \hfill \\
-Must be inside JSON object which is in test-specific-settings. If it is there multiple times, the test will be executed multiple times, each time with options as defined in respective variants. If some options are not defined in variant, value will at first fall back to option in test and then to defaults.
+\item[\texttt{test-specific-settings}] \hfill \\
+\textit{Possible parent tags: } \texttt{<battery>-settings} \\
+This tag can contain list of single or several JSON objects. Each object defines options that are specific to a single test and the test's variants in a battery specified by the parent tag. Each of the objects must contain tag \texttt{test-id} for assigning the options to the test. 
+
+If the execution of a test requires a certain option that is not defined for the test in \texttt{test-specific-settings}, the value of the option is taken from the tag \texttt{defaults}.
+
+\item[\texttt{test-id}] \hfill \\
+\textit{Possible parent tags: } \texttt{test-specific-settings} \\
+The tag must be present in each JSON object inside of the \texttt{test-specific-settings} tag. The value of the tag is used for assigning the options in the object to actual test from the battery.
+
+\item[\texttt{variants}] \hfill \\
+\textit{Possible parent tags: } \texttt{test-specific-settings} \\
+The tag can be present in the JSON object in \texttt{test-specific-settings}. The tag can contain list of single or multiple JSON objects. Each of the variant objects can have defined additional options for test variants. The options that will be undefined by the variant object will be taken from the test object or the \texttt{defaults} tag. The variants are tied to the test which is specified by the \texttt{test-id} tag in the test object. Should the test object contain \texttt{variant} tag with list of three objects, then three variants of the test will be executed.
 \end{description}
 
 \paragraph{NIST STS settings}
 
 \begin{description}
 \item[\texttt{stream-size}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
 Sets bit size of single stream of data that will be used for testing.
 
 \item[\texttt{stream-count}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
 Sets number of streams of data that will be used for testing. E.g. if this value would be 100, then the test would be repeated 100 times each time with different stream of length stream-size
 
 \item[\texttt{block-length}] \hfill \\
-Some tests split data into blocks, you can modify bit length of the blocks. For details on which tests use block, see documentation of tests in NIST STS.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Some tests split data into blocks, you can modify bit length of the blocks. For details on which tests can be parametrized in this way, see documentation of tests in NIST STS.
 
 \end{description}
 
@@ -559,38 +574,64 @@ Some tests split data into blocks, you can modify bit length of the blocks. For 
 
 \begin{description}
 \item[\texttt{psamples}] \hfill \\
-Sets how many times will be the test repeated before final result is calculated.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Sets how many times will be the test repeated before final statistic is calculated.
 
 \item[\texttt{arguments}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
 Allows you to pass additional arguments to the DIEHARDER binary. Format is expected as single string of argument-value pairs separated by spaces. For summary of arguments allowed by DIEHARDER, see its documentation.
 
 \end{description}
 
 \paragraph{TestU01 settings}
-
 \begin{description}
-\item[\texttt{<battery>}] \hfill \\
-Specifies battery to which the options inside belong. Can have values small-crush, crush, big-crush, rabbit, alphabit and block-alphabit.
-
 \item[\texttt{repetitions}] \hfill \\
-Sets how many times will be the test repeated.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Sets how many times will be a test repeated. Setting this number to more that 1 will produce several subtests of the test.
 
 \item[\texttt{bit-nb}] \hfill \\
-Usable only with rabbit and (block) alphabit batteries. Sets how many bytes can be processed by the test. The test will not process more bytes.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only with rabbit, alphabit and block alphabit batteries. Sets how many bytes can be processed by a test. The test will not process more bytes.
 
 \item[\texttt{bit-r}] \hfill \\
-Usable only with (block) alphabit batteries. Sets the offset in each group of 32 bits. If set to r then first r bits from each 32 bits will be ignored. Only the rest of bits in data will be tested.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only with alphabit and block alphabit batteries. Sets the offset in each group of 32 bits. For example, if set to $r$ then first $r$ bits from each 32 bits will be ignored. Only the rest of the bits in each 32-bit block will be processed.
 
 \item[\texttt{bit-s}] \hfill \\
-Usable only with (block) alphabit batteries. Sets how many bits from each 32 bit group will be processed, starting from bit-r. bit-r=0, bit-s=32 will process whole 32 bit group.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only with alphabit and block alphabit batteries. Sets how many bits from each 32-bit block will be processed, starting from \texttt{bit-r}. For example, if we set $r=5, s=10$, then only 10 bits will be processed in each 32-bit block, starting from the sixth bit.
 
 \item[\texttt{bit-w}] \hfill \\
-Usable only with block alphabit battery. Will set reorder of bits in 32 bit groups.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation.
 
 \item[\texttt{parameters}] \hfill \\
-Usable only with (small, big) crush batteries. Will set custom parameters on specific test. Each test has different parameters, you can find them in TestU01 documentation. You have to set values for all available parameters.
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only with small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test can be found in the TestU01 documentation. Example of the tag setting parameters for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
 
 \end{description}
+
+\begin{figure}[h!]
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "parameters": {
+      "N": "1",
+      "n": "10000",
+      "r": "0",
+      "d": "1000000",
+      "t": "2",
+      "p": "1"
+    }
+  }
+\end{minted}
+\caption{Parameters setting for smarsa\_BirthdaySpacings test.}
+\label{fig:params_tag}
+\end{figure}
 
 \section{Storage for the analysis results}
 \label{sec:result_storages}
@@ -809,13 +850,22 @@ To create new experiment the user user will have to complete following settings 
 \end{itemize}
 
 \subsection*{Result presentation}
-The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. Then the probability of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. Based on the probability, the possible assessments are following.
+The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. Then the probability of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
 
 \begin{itemize}
-\item \textbf{x < 0.001} -- Results with this probability of happening are deemed as a failure.
-\item \textbf{0.001 <= x < 0.01} -- Results with this probability are considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen even when the tested data is produced by a good source.
-\item \textbf{0.01 <= x} -- These results are considered to be okay.
+\item \textbf{FAIL} ($0 < x < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
+\item \textbf{Suspect} ($0.001 \leq x < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
+\item \textbf{OK} ($0.01 \leq x < 1$) -- The result is evaluated as a good result and the data is considered random.
 \end{itemize}
+
+\begin{figure}[h!]
+\begin{nomar}
+\centering
+\includegraphics[width=\textwidth]{figures/rtt-assessment.png} 
+\end{nomar}
+\caption{Experiment evaluation}
+\label{fig:rtt_assessment}
+\end{figure}
 
 \chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 
