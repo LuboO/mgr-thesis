@@ -313,22 +313,22 @@ Since we need to use the batteries in RTT with arbitrary binary data, we impleme
 %\item How grouping works - theory, Sidak correction, partial p-value, fail/pass of a test
 %\end{itemize}
 %\end{itemize}
-One of our goals during working in this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, execution and interpretaion of the analysis.
+One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, and the execution and interpretaion of the analysis results.
 
-Another motivation was that the developed tool would unify the process of randomness analysis that is often done by reserachers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools which is difficult to manage and also complicates comparation of the experiments done by different people.
+Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
 
-Therefore we developed Randomness Testing Toolkit\footnote{Also referenced as RTT or just the toolkit.} that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged if needed.
+Therefore we developed Randomness Testing Toolkit\footnote{Also referenced as RTT or just the toolkit.}, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely.
 
-In following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
+In the following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
 
 \section{Local unified interface}
 The local unified interface is at the lowest level of the developed parts of RTT. The interface is a binary executable that accepts settings and outputs the results in common format for all batteries. The executable handles transformation of general settings into the battery specific ones, running the battery executable and then transforming gathered output into general format. The process is visualized in Figure~\ref{fig:rtt_local_workflow}.
 
 The toolkit accepts settings needed for its run from three following sources:
 \begin{itemize}
-\item \textbf{Command-line arguments} -- Basic settings that change for each run, for example path to input file with binary data or to file with battery configuration.
-\item \textbf{Toolkit settings file} -- General settings for the toolkit related to the system environment e.g. paths to executables of the statistical batteries. In most cases the settings stay the same for all executions of the toolkit regardless of the battery or data used.
-\item \textbf{Battery configuration file} -- Configuration file that fully configures input settings for single or multiple batteries. The configuration of the batteries can change between the executions of the toolkit.
+\item \textbf{Command-line arguments} -- Basic settings that can change in every run; e.g. path to input file with binary data or to file with battery configuration.
+\item \textbf{Toolkit settings file} -- General settings for the toolkit related to the system environment e.g. paths to executables of the statistical batteries. In most of the cases, the settings stay the same for all executions of the toolkit regardless of the battery or data used. Changes in this configuration are needed only when the environment changes.
+\item \textbf{Battery configuration file} -- Configuration file that fully configures input settings for single or multiple batteries. The configuration of the batteries can vary among the executions of the toolkit.
 \end{itemize}
 
 \begin{figure}[h!]
@@ -341,37 +341,23 @@ The toolkit accepts settings needed for its run from three following sources:
 \end{figure}
 
 \subsection{Command-line arguments}
-The basic options of the RTT execution are set through command-line arguments. RTT recognizes following options.
+The basic options of the RTT execution are set through command-line arguments. The executable recognizes following options.
 
 \begin{itemize}
 \item \texttt{-h} Usage of the toolkit will be printed.
-\item \texttt{-b <battery>} Sets the battery that will be executed during the run. Values accepted as \texttt{<battery>}: dieharder, nist\_sts, tu01\_smallcrush, tu01\_crush, tu01\_bigcrush, tu01\_rabbit, tu01\_alphabit and tu01\_blockalphabit.
-\item \texttt{-t <test-id>} Optional argument. If set, only single test with id \texttt{<test-id>} will be executed in the battery.
+\item \texttt{-b <battery>} Sets the battery that will be executed during the run. Values accepted as \texttt{<battery>}: dieharder, nist\_sts, tu01\_smallcrush, tu01\_crush, tu01\_bigcrush, tu01\_rabbit, tu01\_alphabit and tu01\_block- \linebreak alphabit.
+\item \texttt{-t <test-id>} Optional argument. If set, only single test with id \texttt{<test-id>} will be executed in the chosen battery.
 \item \texttt{-c <config-path>} Path to file with configuration of the battery. Details about battery configuration are in Section~\ref{sec:batt_conf}.
-\item \texttt{-f <data-path>} Path to file with the binary data that will be analyzed by the executed battery.
+\item \texttt{-f <data-path>} Path to the file with the binary data that will be analyzed by the chosen battery.
 \item \texttt{-r <result-storage>} Sets the type of the result storage that will be used. Accepted values are \texttt{file-report} or \texttt{db-mysql}. The option doesn't have to be set; \texttt{file-report} is then used as default option. More information about result storages is in Section~\ref{sec:result_storages}.
-\item \texttt{-eid <experiment-id>} Option mandatory only when \texttt{db-mysql} is set as result storage, is ignored otherwise. Sets to which experiment in the database will be tied the results of the analysis. 
+\item \texttt{-eid <experiment-id>} Option is mandatory only when \texttt{db-mysql} is set as a result storage; the option is ignored otherwise. Sets ID of the experiment in the database that will be assigned the results of the toolkit execution.
 \end{itemize}
 
 \subsection{Toolkit settings}
-The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json} and are related to environment in which the toolkit will be executed (e.g. locations of the files and directories). The file is created by the user after the toolkit installation and stays the same for all subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory from which the program is executed.
+The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json} and are related to the environment in which the toolkit will be executed (e.g. locations of the files and directories). The file is created by the user after the toolkit installation and stays the same for all of the subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory of the executable.
 
 Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}. A complete example file can be found in Appendix~\ref{app:rtt_sett_json}. 
 
-%  {
-%    "toolkit-settings": {
-%      "logger": {...},
-%      "result-storage": {
-%        "file": {...},
-%        "mysql-db": {...}
-%      },
-%      "binaries": {...},    
-%      "miscelaneous": {
-%        "nist-sts": {...}
-%      },
-%      "execution": {...}
-%    }
-%  }
 \begin{figure}[h!]
 \begin{minted}[mathescape,
                linenos,
@@ -410,15 +396,15 @@ Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}. A comple
 \label{fig:rtt_sett_short_json}
 \end{figure}
 
-The description of the individual tags and the options that can be set within them follows.
+The description of the individual tags and the options that can be set within them follows. The tags that are listed in the top-level description must contain JSON object with key-value pairs with options and their values. 
 
 \begin{description}
 \item[toolkit-settings/logger] \hfill \\
-Tag containing settings related to location of log files produced during runtime.
+Tag containing settings related to the location of log files produced during runtime.
 \begin{itemize}
-\item \textbf{dir-prefix} \textit{Optional} -- If set, value of this tag will become prefix of all log locations. Can be used when all logger directories should have same parent directory.
+\item \textbf{dir-prefix} \textit{Optional} -- If set, value of this tag will become prefix of all log files locations. Can be used when all logger directories should have the same parent directories.
 \item \textbf{run-log-dir} -- Sets location of the main log file.
-\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and set locations of files that will contain raw outputs of the respective executed batteries.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and their values set locations of files that will contain raw outputs of the respective executed batteries.
 \end{itemize}
 
 \item[toolkit-settings/result-storage/file] \textit{Optional} \hfill \\
@@ -435,7 +421,7 @@ Section with settings needed for MySQL Database storage. For details about the s
 \item \textbf{address} Address of the MySQL server with created RTT database.
 \item \textbf{port} Port on which the MySQL server is accessible.
 \item \textbf{name} Name of the database scheme with RTT tables.
-\item \textbf{credentials-file} Path to file that contains login information for the database. The example credentials file is shown in Figure~\ref{fig:mysql_credentials}.
+\item \textbf{credentials-file} Path to the file that contains login information for the database. The example credentials file is shown in Figure~\ref{fig:mysql_credentials}.
 \end{itemize}
 
 \item[toolkit-settings/binaries] \hfill \\
@@ -447,13 +433,13 @@ Section with the locations of the executables of the batteries.
 \item[toolkit-settings/miscelaneous/nist-sts] \hfill \\
 Miscellaneous constant settings related to NIST STS battery.
 \begin{itemize}
-\item \textbf{main-result-dir} -- Sets where NIST STS stores its result files.
+\item \textbf{main-result-dir} -- Sets the directory where NIST STS stores its result files.
 \end{itemize}
 
 \item[toolkit-settings/execution] \hfill \\
 Settings related to the execution of the statistical batteries.
 \begin{itemize}
-\item \textbf{max-parallel-tests} Sets maximum number of concurrently running test processes.
+\item \textbf{max-parallel-tests} Sets maximum number of concurrently running test processes. The higher value may cause the analysis to finish faster but will cause higher strain on the system.
 \item \textbf{test-timeout-seconds} Sets time period after which the running tests will be considered stuck and will be killed.
 \end{itemize}
 \end{description}
@@ -467,7 +453,7 @@ Settings related to the execution of the statistical batteries.
                framesep=2mm]{json}
   {
     "credentials": {
-      "username": "john_doe",
+      "username": "jane_doe",
       "password": "password"    
     }  
   }
@@ -478,7 +464,7 @@ Settings related to the execution of the statistical batteries.
 
 \subsection{Battery configuration}
 \label{sec:batt_conf}
-The file with battery configuration defines all settings for the battery and the tests that will be executed in the program run. Each execution of RTT can have different battery configuration; the path to file with the configuration is set through command-line argument \texttt{-c}. The basic structure of the configuration file is outlined in Figure~\ref{fig:batt_conf_short_json}. The complete example of configuration is in Appendix~TODO.
+The file with battery configuration defines all settings for the battery and the tests that will be executed during the program run. Each execution of RTT can have different battery configuration; the path to file with the configuration is set through command-line argument \texttt{-c}. The basic structure of the configuration file is outlined in Figure~\ref{fig:batt_conf_short_json}. The complete example of configuration is in Appendix~TODO.
 
 \begin{figure}[h!]
 \begin{minted}[mathescape,
@@ -524,7 +510,7 @@ Root tag of the configuration file.
 
 \item[\texttt{<battery>-settings}] \hfill \\
 \textit{Possible parent tags: } \texttt{randomness-testing-toolkit} \\
-<battery> can be dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. This tag contains settings for specific battery.
+<battery> can be dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. These tags contain settings for respective batteries.
 
 \item[\texttt{defaults}] \hfill \\
 \textit{Possible parent tags: } \texttt{<battery>-settings} \\
@@ -536,21 +522,21 @@ If certain test is executed in the battery and needs to have some option defined
 \textit{Possible parent tags: } \texttt{defaults} \\
 The option defines which tests will be executed in the specific battery by default. The default tests are executed only if no test was specified through command-line arguments.
 
-Value of this tag must be array of strings. Each string can contain either a single number or range of numbers. For example, should the value of the tag be \texttt{["3", "10-13", "15"]}, then the default IDs of tests in the battery will be 3, 10, 11, 12, 13, 15.
+Value of this tag must be array of strings. Each string can contain either a single number or range of numbers. For example, should the value of the tag be \texttt{["3", "10-13", "15"]}, then the default IDs of the tests in the battery will be 3, 10, 11, 12, 13, 15.
 
 \item[\texttt{test-specific-settings}] \hfill \\
 \textit{Possible parent tags: } \texttt{<battery>-settings} \\
-This tag can contain list of single or several JSON objects. Each object defines options that are specific to a single test and the test's variants in a battery specified by the parent tag. Each of the objects must contain tag \texttt{test-id} for assigning the options to the test. 
+This tag can contain list of single or several JSON objects. Each object defines options that are specific to a single test and the test's variants in the battery specified by the parent tag. Each of the objects must contain tag \texttt{test-id} for assigning the options to the test. 
 
-If the execution of a test requires a certain option that is not defined for the test in \texttt{test-specific-settings}, the value of the option is taken from the tag \texttt{defaults}.
+If the execution of a test requires a certain option that is not defined in the test object, the value of the option is taken from the tag \texttt{defaults}.
 
 \item[\texttt{test-id}] \hfill \\
 \textit{Possible parent tags: } \texttt{test-specific-settings} \\
-The tag must be present in each JSON object inside of the \texttt{test-specific-settings} tag. The value of the tag is used for assigning the options in the object to actual test from the battery.
+The tag must be present in each object that is in \texttt{test-specific-settings} object list. The value of the tag is used for assigning the options in the test object to actual test from the battery.
 
 \item[\texttt{variants}] \hfill \\
 \textit{Possible parent tags: } \texttt{test-specific-settings} \\
-The tag can be present in the JSON object in \texttt{test-specific-settings}. The tag can contain list of single or multiple JSON objects. Each of the variant objects can have defined additional options for test variants. The options that will be undefined by the variant object will be taken from the test object or the \texttt{defaults} tag. The variants are tied to the test which is specified by the \texttt{test-id} tag in the test object. Should the test object contain \texttt{variant} tag with list of three objects, then three variants of the test will be executed.
+The tag can be present in the test object in \texttt{test-specific-settings}. The tag can contain list of single or multiple JSON objects. Each of the variant objects can have defined additional options for test variants. The options that will be undefined by the variant object will be taken from the test object or the \texttt{defaults} tag. The variants are tied to the test which is specified by the \texttt{test-id} tag in the test object. For example, should the test object contain \texttt{variant} tag with list of three objects, then three variants of the test will be executed.
 \end{description}
 
 \paragraph{NIST STS settings}
@@ -562,11 +548,11 @@ Sets bit size of single stream of data that will be used for testing.
 
 \item[\texttt{stream-count}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Sets number of streams of data that will be used for testing. E.g. if this value would be 100, then the test would be repeated 100 times each time with different stream of length stream-size
+Sets number of streams of data that will be used for testing. E.g. if this value will be 100, then the test will be repeated 100 times, each time with different input data of length \texttt{stream-size}.
 
 \item[\texttt{block-length}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Some tests split data into blocks, you can modify bit length of the blocks. For details on which tests can be parametrized in this way, see documentation of tests in NIST STS.
+Some tests in NIST STS analyse the data streams in blocks. This option sets the bit size of the blocks. For details on which tests accept this parameter, see Appendix TODO.
 
 \end{description}
 
@@ -579,7 +565,7 @@ Sets how many times will be the test repeated before final statistic is calculat
 
 \item[\texttt{arguments}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Allows you to pass additional arguments to the DIEHARDER binary. Format is expected as single string of argument-value pairs separated by spaces. For summary of arguments allowed by DIEHARDER, see its documentation.
+Allows you to pass additional arguments to the Dieharder binary. Format is expected as single string of argument-value pairs separated by spaces (e.g.~\texttt{"-x 2048 -y 30"}). For summary of arguments accepted by Dieharder, see its documentation.
 
 \end{description}
 
@@ -587,27 +573,27 @@ Allows you to pass additional arguments to the DIEHARDER binary. Format is expec
 \begin{description}
 \item[\texttt{repetitions}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Sets how many times will be a test repeated. Setting this number to more that 1 will produce several subtests of the test.
+Sets how many times will be a test repeated. Setting this option to more that 1 will produce several multiple of the test.
 
 \item[\texttt{bit-nb}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only with rabbit, alphabit and block alphabit batteries. Sets how many bytes can be processed by a test. The test will not process more bytes.
+This option is valid only for rabbit, alphabit and block alphabit batteries. Sets how many bytes can be processed by a test. The test will not process more bytes.
 
 \item[\texttt{bit-r}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only with alphabit and block alphabit batteries. Sets the offset in each group of 32 bits. For example, if set to $r$ then first $r$ bits from each 32 bits will be ignored. Only the rest of the bits in each 32-bit block will be processed.
+This option is valid only for alphabit and block alphabit batteries. Sets the offset in each group of 32 bits. For example, if set to $r$ then first $r$ bits from each 32 bits will be ignored. Only the rest of the bits in each 32-bit block will be processed.
 
 \item[\texttt{bit-s}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only with alphabit and block alphabit batteries. Sets how many bits from each 32-bit block will be processed, starting from \texttt{bit-r}. For example, if we set $r=5, s=10$, then only 10 bits will be processed in each 32-bit block, starting from the sixth bit.
+This option is valid only for alphabit and block alphabit batteries. Sets how many bits from each 32-bit block will be processed, starting from \texttt{bit-r}. For example, if we set $r=5, s=10$, then only 10 bits will be processed in each 32-bit block, starting from the sixth bit.
 
 \item[\texttt{bit-w}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation.
+This option is valid only for block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation (TODO cite).
 
 \item[\texttt{parameters}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only with small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test can be found in the TestU01 documentation. Example of the tag setting parameters for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
+This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test can be found in Appendix TODO. Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
 
 \end{description}
 
@@ -629,7 +615,7 @@ This option is valid only with small crush, crush and big crush batteries. The v
     }
   }
 \end{minted}
-\caption{Parameters setting for smarsa\_BirthdaySpacings test.}
+\caption{Parameters setting for smarsa\_BirthdaySpacings test}
 \label{fig:params_tag}
 \end{figure}
 
@@ -676,42 +662,15 @@ The user can also implement his own version of the result storage module that wi
 \end{figure}
 
 \noindent
-The file storage will store results into human-readable reports. Each execution of the RTT interface will generate single battery-specific report as shown in Figure~\ref{fig:files_generated}. The newly generated files will have names based on the time when was RTT executed and the filename of the binary data that was used for analysis. Possible report file is shown in Appendix~\ref{app:file_storage_report}.
+The file storage will store results into human-readable reports. Each execution of the RTT interface will generate single battery-specific report as shown in Figure~\ref{fig:files_generated}. The newly generated files will have names based on the time of the execution and the filename of the binary data that was analysed. Possible instance of a report file is shown in Appendix~\ref{app:file_storage_report}.
 
-The main result file (in this case \texttt{table.txt}) contains summary of the result of all previous RTT executions since last deletion of the file. Therefore, if the file does not exist in time of the execution it will be generated and only modified otherwise. 
+The main result file (in this case \texttt{table.txt}) contains summary of the result of all previous RTT executions since the last deletion of the file. Therefore, if the file does not exist in time of the execution it will be generated; the file will be only modified otherwise.
 
-In the file there is simple ASCII table that contains single row for each input data file with distinct name that was analyzed. The rows contain name of the input file, time of the last modification of the row and a proportion of passed and total number of tests for each battery. In case that a single file is analyzed multiple times by specific battery, the results are overwritten.
+In the file, there is a simple ASCII table that contains single row for each input data file with distinct name that was analyzed. The rows contain name of the input file, time of the last modification of the row and a proportion of passed and total number of tests for each battery. In case that a single file is analysed multiple times by a single battery, the results are overwritten.
 
 \subsection{MySQL database storage}
 \label{sec:mysql_res_storage}
-By using the database storage, RTT writes the results of the run directly into MySQL database. Layout of the database is shown in Figure~\ref{fig:erd_database}. The tables \texttt{experiments} and \texttt{jobs} are not strictly required by the toolkit as the results are written only into table \texttt{batteries} and its sub-tables. The additional tables were added because we anticipated deployment of RTT on multiple servers and the tables store needed metadata about the execution and scheduling information.
-
-\begin{description}
-\item[\texttt{experiments}] \hfill \\
-We treat multiple analyses of single data stream by various batteries as a single experiment. The table stores metadata about the experiment such as name of the analysed file or used configuration file.
-\item[\texttt{jobs}] \hfill \\
-The table is used for scheduling execution of RTT on remote server. It holds information about the batteries that will be executed and to what experiment the results will be tied. Single job represents single execution of RTT.
-\item[\texttt{batteries}] \hfill \\
-Represents single execution of RTT. The results of the analysis are written to this table and the tables below by the database storage. The results of multiple batteries can be assigned to single experiment.
-\item[\texttt{battery\_errors}, \texttt{battery\_warnings}] \hfill \\
-Stores information about errors or warnings respectively that happened during RTT runtime.
-\item[\texttt{tests}] \hfill \\
-Contains information about all tests that were executed in single battery.
-\item[\texttt{variants}] \hfill \\
-Information about all variants of a single test that was executed.
-\item[\texttt{variant\_errors}, \texttt{variant\_stderr}, \texttt{variant\_warnings}] \hfill \\
-The errors, warnings and standard error output that were extracted from the output of a test variant execution are stored in the tables.
-\item[\texttt{user\_settings}] \hfill \\
-Settings that were set by the user in the battery configuration file.
-\item[\texttt{subtests}] \hfill \\
-All subtests of a single variant.
-\item[\texttt{test\_parameters}] \hfill \\
-Options and parameters that were extracted from the output of the subtest.
-\item[\texttt{statistics}] \hfill \\
-List of all statistics and their results that are tied to a single subtest.
-\item[\texttt{p\_values}] \hfill \\
-List of all p-values that were extracted from the output of the subtest execution.
-\end{description}
+When using the database storage, RTT writes the results of the run directly into MySQL database. Layout of the database is shown in Figure~\ref{fig:erd_database}. The tables \texttt{experiments} and \texttt{jobs} are not strictly required by the toolkit as the results are written only into table \texttt{batteries} and its sub-tables. The additional tables were added because we anticipated deployment of RTT on multiple servers and the tables store needed metadata about the execution and scheduling.
 
 \begin{figure}[h!]
 \begin{nomar}
@@ -722,7 +681,51 @@ List of all p-values that were extracted from the output of the subtest executio
 \label{fig:erd_database}
 \end{figure}
 
+\begin{description}
+\item[\texttt{experiments}] \hfill \\
+We treat multiple analyses of single data stream by various batteries as a single experiment. The table stores metadata about the experiment such as name of the analysed file or used configuration file.
+
+\item[\texttt{jobs}] \hfill \\
+The table is used for scheduling execution of RTT on remote server. It holds information about the batteries that will be executed and experiment to which they belong. Single job represents a single execution of RTT.
+
+\item[\texttt{batteries}] \hfill \\
+Each row represents results of a single execution of RTT. The analysis results are written to this table and its sub-tables by the database storage. The results of multiple RTT executions can be assigned to a single experiment.
+
+\item[\texttt{battery\_errors}, \texttt{battery\_warnings}] \hfill \\
+Stores information about errors or warnings that happened during RTT runtime.
+
+\item[\texttt{tests}] \hfill \\
+Contains information about the tests that were executed.
+
+\item[\texttt{variants}] \hfill \\
+Information about the variants of the tests that were executed.
+
+\item[\texttt{variant\_errors}, \texttt{variant\_stderr}, \texttt{variant\_warnings}] \hfill \\
+The errors, warnings and standard error output that were extracted from the outputs of the test variants are stored in the tables.
+
+\item[\texttt{user\_settings}] \hfill \\
+Settings that were set by the user in the battery configuration file.
+
+\item[\texttt{subtests}] \hfill \\
+Table with the subtests that were executed.
+
+\item[\texttt{test\_parameters}] \hfill \\
+Options and parameters that were extracted from the outputs of the subtests.
+
+\item[\texttt{statistics}] \hfill \\
+List of all extracted statistics and their results.
+
+\item[\texttt{p\_values}] \hfill \\
+List of all extracted p-values.
+\end{description}
+
 \section{Remote service}
+Randomness Testing Toolkit can be deployed on a single or multiple servers as a service, allowing the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
+
+In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage and that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the analysis. 
+
+The interaction of the user with the infrastructure is visualized in Figure~\ref{fig:rtt_ecosystem}. In following section we outline the different purposes of the servers.
+
 \begin{figure}[h!]
 \begin{nomar}
 \centering
@@ -732,14 +735,8 @@ List of all p-values that were extracted from the output of the subtest executio
 \label{fig:rtt_ecosystem}
 \end{figure}
 
-Randomness Testing Toolkit can be deployed on single or multiple servers as a service, allowing the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
-
-In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage and that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the results. 
-
-The interaction of the user with the infrastructure is visualized in Figure~\ref{fig:rtt_ecosystem}. In following section we outline the different purposes of the servers.
-
 \subsection{Database server}
-The machine hosting MySQL server with created database for RTT as shown in Figure~\ref{fig:erd_database}. The database is used for storing the results of the analyses as well as information used for scheduling and distribution of jobs to backend servers.
+The machine hosting MySQL server with created database for RTT as shown in Figure~\ref{fig:erd_database}. The database is used for storing the results of the analyses as well as the information used for scheduling and distribution of jobs to backend servers.
 
 \subsection{Storage server}
 The server hosts a storage space that acts as a temporary deposit for the data that is not yet distributed and analysed on the backend servers. After the distribution and analysis, the data is removed from the machine.
@@ -749,7 +746,7 @@ The server hosts a storage space that acts as a temporary deposit for the data t
 \end{titlemize}
 
 \subsection{Backend server}
-Single or multiple machines that host installed toolkit and batteries. The analysis of the data is executed on these machines. If there are multiple backend servers, the analyses are scheduled based on the information stored in the database. Prior to the analysis, the data is downloaded from the storage and stored in local cache. After the computation, the results are stored on the database server and the data is deleted.
+Single or multiple machines that host the installed toolkit and statistical batteries. The analysis of the data is executed on these machines. If there are multiple backend servers, the computations are scheduled based on the information stored in the database. Prior to the analysis, the data is downloaded from the storage and stored in local cache. After the computation, the results are stored on the database server and the data is deleted.
 
 Both jobs and experiments can be in one of the three states -- \texttt{pending}, \texttt{running} and \texttt{finished}; the descriptions of the states are in Table~\ref{tab:states_jobs_exps}. Scheduling of the computation is based on the state of the experiments and jobs.
 
@@ -779,11 +776,11 @@ The rules are designed in such a way that a minimal amount of data is transferre
 \end{titlemize}
 
 \subsection{Frontend server}
-The frontend server is the only server that the user interacts with. The machine accepts data and request for creating an experiment. After the request, the server creates the experiment and the related jobs in the database and uploads the data into the storage. The server also presents the results from the database to the users.
+The user interacts only with the frontend server. The machine accepts data and requests for creating an experiment. After the request, the server creates the experiment and the related jobs in the database and uploads the data into the storage. The server also presents the results from the database to the users.
 
 The server can be directly accessed through SSH. The direct access is meant for experienced users that need to analyze big volumes of data. Additionaly, an optional web interface can be deployed on the frontend server. The web interface can be used for interactive browsing of the analysis results as well as for submitting undemanding amount of data and experiments by the users.
 
-The direct access to the server is granted to the user by the system administration. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} (cit.). The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with help of the generator tool (cit.) that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
+The direct access to the server is granted to the user by the system administrator. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} (cit.). The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with help of the generator tool (cit.) that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
 
 \subsection*{Experiment submission utility}
 
@@ -792,7 +789,7 @@ To create a new experiment, the user has to use utility \texttt{submit\_experime
 \begin{itemize}
 \item \texttt{-h, -{}-help} Prints the usage of the utility.
 \item \texttt{-n, -{}-name <name>} Sets the name of the experiment.
-\item \texttt{-e, -{}-email <address>} Optional argument. When set, an email with brief results of the analysis will be sent to \texttt{<address>} after end of the computation.
+\item \texttt{-e, -{}-email <address>} Optional argument. When set, an email with brief results of the analysis will be sent to \texttt{<address>} after the end of the computation.
 \item \texttt{-c, -{}-cfg <config-path>} Path to file with configuration of the batteries that will be included in the experiment. Details about configuring the batteries are in Section~\ref{sec:batt_conf}.
 \item \texttt{-f, -{}-file <data-path>} Path to file with binary data that will be analysed by the statistical batteries included in the experiment.
 \item \texttt{-a, -{}-all\_batteries} Flag argument that will include all of the defined batteries except TestU01 Big Crush in the experiment.
@@ -806,14 +803,14 @@ To create a new experiment, the user has to use utility \texttt{submit\_experime
 \item \texttt{-{}-tu01\_blockalphabit} Switch for TestU01 Block Alphabit
 \end{itemize}
 
-The flags for the batteries switch inclusion of respective batteries in the experiment. For example, if we use arguments \texttt{-{}-all\_batteries -{}-dieharder}, then the batteries included in the experiment will be the batteries added by the \texttt{-{}-all\_batteries} flag \textbf{except} the Dieharder battery. However, if we would use only argument \texttt{--dieharder}, then Dieharder will be the only battery used is the experiment.
+The flags for the batteries switch their inclusion in the experiment. For example, if we use arguments \texttt{"-{}-all\_batteries -{}-dieharder"}, then the batteries included in the experiment will be the batteries added by the \texttt{"-{}-all\_batteries"} flag \textbf{except} the Dieharder battery. However, if we would use only argument \texttt{"-{}-dieharder"}, then Dieharder will be the \textbf{only} battery used is the experiment.
 
 \subsection{Web Interface for RTT}
-The web interface is aiming to be useful in the basic use-case, where the user has some binary data that he wants to analyse. The user will upload the data through the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django (cit) framework for its ease of use.
+The web interface is aiming to be useful in the basic use-case, where the user has some binary data in a single file that he wants to analyse. The user will upload the data through the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django (cit) framework for its ease of use.
 
-In most cases, one does not have to create new configuration for the batteries that will be executed during the analysis; a suitable configuration will be chosen for him automatically. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences.
+In most of the cases, one does not have to create new configuration for the batteries that will be executed during the analysis; a suitable configuration will be chosen for him automatically. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences.
 
-The limitation of the interface is that the manual creation of large number of experiments would be too time-consuming and error-prone for the user, as the process can't be trivially automated. However the web interface not intended to be used in such situations; creating the experiments through direct access to the frontend server would be much more viable. 
+The limitation of the interface is that the manual creation of large number of experiments would be too time-consuming and error-prone for the user, as the process can't be trivially automated. However the web interface is not intended to be used in such situations; creating the experiments through direct access to the frontend server would be much more viable. 
 
 \subsection*{User roles}
 We separate users into three categories in the context of the web interface application. It is worth noting that the user accounts existing in the web interface are independent of the accounts existing on the frontend server. In the following list we summarize the roles and their privileges.
@@ -822,7 +819,7 @@ We separate users into three categories in the context of the web interface appl
 \item \textbf{Anonymous user privileges}
 \begin{itemize}
 \item Browse results of all previous experiments.
-\item Create an experiment if an unique access link was shared to the user.
+\item Create an experiment if an unique access link was shared with the user.
 \end{itemize}
 \item \textbf{Authenticated user privileges}
 \begin{itemize}
@@ -834,29 +831,23 @@ We separate users into three categories in the context of the web interface appl
 \item Creating new and modifying existing users.
 \item Adding administrator privileges to user accounts.
 \item Adding or modifying predefined battery configurations.
-\item Adding or modifying unique access links to the experiment submission. Each access link has his own expiration date and is unusable after this date.
+\item Adding or modifying unique access links to the experiment submission. Each access link has its own expiration date and is unusable after this date.
 \end{itemize}
 \end{itemize}
 
 \subsection*{Experiment submission}
-To create new experiment the user user will have to complete following settings in the online form. The screenshot of the form is included in the Appendix~\ref{chap:exp_submit_form}.
+To create new experiment the user  will have to fill-out following settings in the online form. The screenshot of the form is included in the Appendix~\ref{chap:exp_submit_form}.
 
 \begin{itemize}
 \item \textbf{Experiment name} -- Name identifying the experiment, doesn't have to be unique.
 \item \textbf{E-Mail} -- Required only when the user is not logged in. After the computation, e-mail will be sent to the address, notifying the user about the results.
 \item \textbf{Binary data file} -- Data that will be analysed; uploaded from the user's machine.
-\item \textbf{Configuration} -- User can use default battery configuration, choose one of the predefined configurations or upload his own configuration file. The configuration files are described in Section~\ref{sec:batt_conf}.
+\item \textbf{Configuration} -- User can use default battery configuration, choose one of the predefined configurations or upload his own configuration file. The battery configuration files are described in Section~\ref{sec:batt_conf}.
 \item \textbf{Battery application} -- Set of switches that defines which batteries will be included in the experiment.
 \end{itemize}
 
 \subsection*{Result presentation}
-The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. Then the probability of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
-
-\begin{itemize}
-\item \textbf{FAIL} ($0 < x < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
-\item \textbf{Suspect} ($0.001 \leq x < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
-\item \textbf{OK} ($0.01 \leq x < 1$) -- The result is evaluated as a good result and the data is considered random.
-\end{itemize}
+The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. We denote this proportion as $x$. Then the probability $P(x)$ of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
 
 \begin{figure}[h!]
 \begin{nomar}
@@ -866,6 +857,14 @@ The web interface also presents and assesses the results of the past experiments
 \caption{Experiment evaluation}
 \label{fig:rtt_assessment}
 \end{figure}
+\begin{itemize}
+
+\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
+\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
+\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
+\end{itemize}
+
+
 
 \chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
 
