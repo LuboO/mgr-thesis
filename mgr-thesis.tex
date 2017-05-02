@@ -296,23 +296,11 @@ smarsa\_GCD                        & -                        & Stuck execution 
 Since we need to use the batteries in RTT with arbitrary binary data, we implemented following measures that mitigate above-mentioned errors in our experiments.
 \begin{itemize}
 \item Tests that don't produce any results are ignored and treated as if never executed.
-\item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we will reject the hypothesis of randomness either when the p-value is too close to 0 or too close to 1. More specifically, $H_0$ will be rejected for all p-values that falls outside of the interval $\left[\frac{\alpha}{2}, 1-\frac{\alpha}{2}\right]$. This way we reject all results that are too extreme.
+\item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we will reject the hypothesis of randomness either when the p-value is too close to 0 or is equal to 1. More specifically, $H_0$ will be rejected for all p-values that falls outside of the interval $\left[\alpha, 1\right)$.
 \item Each test is executed with the timeout. If the test doesn't finish within defined time limit, we will automatically terminate it and then treat it as if it didn't produce any results.
 \end{itemize}
 
 \chapter{Randomness Testing Toolkit}
-%\begin{itemize}
-%\item Motivation - unified interface to batteries, ease of use, unified result format/representation
-%\item Local execution of RTT - battery and toolkit configuration, installation, brief implementation and interface overview - more thorough in documentation and comments
-%\item Local result format - either database or file output storage
-%\item Remote execution of RTT - toolkit deployed on server infrastructure, system overview (database, frontend, backend(s), storage), accessible through ssh on limited system or via web interface (django), results in database
-%\item Remote results of RTT - email notification, webpage layout
-%\item Interpretation of results of RTT
-%\begin{itemize}
-%\item Grouping subtests together - eliminating intertest bias
-%\item How grouping works - theory, Sidak correction, partial p-value, fail/pass of a test
-%\end{itemize}
-%\end{itemize}
 One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, and the execution and interpretaion of the analysis results.
 
 Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
@@ -864,18 +852,58 @@ The web interface also presents and assesses the results of the past experiments
 \item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
 \end{itemize}
 
+\chapter{Analysing the cryptographic primitives outputs}
+%\section{Result interpretation}
+%\begin{huge}
+%todo
+%\end{huge}
+%\begin{itemize}
+%\item How the data were tested
+%\item List functions
+%\item List interesting (differing) results - Dieharder, NIST STS, TestU01, EACirc, polynomials(???)
+%\end{itemize}
+In this chapter we will present results of our experiments. The data that was analysed was as a output of several cryptographic primitives. Among these primitives are widely used functions and finalists of eSTREAM and SHA3 competitions. Prior to the results of the analyses we present results of analysing truly random data to provide the reader with some baseline on how Randomness Testing Toolkit behaves when processing random data.
 
+\section{Common configuration and results of the experiments}
+In this section we will present the configurations that were used to run the statistical batteries in the experiments. We will also describe format of the analysis results we expected to receive.
 
-\chapter{Analysis of outputs of cryptographic functions, comparison with EACirc}
+\subsection{Configuration of batteries}
+\label{sec:configuration_of_batteries}
+In order for the results of the toolkit to be comparable to classic batteries we setup the batteries in such a way, that the settings would be very close to default ones. We set the maximum stream size that would be processed by a single test to 8GB.
 
-\section{Result interpretation}
-\begin{huge}
-todo
-\end{huge}
+\subsection*{NIST STS}
+The settings of NIST STS battery were kept to default. Each test had stream size set to 1000000 bits and processed 1000 data streams in each run. This means that each test from NIST STS processed exactly 125MB in its run. 
+
+\subsection*{Dieharder}
+All tests except test RGB Lagged Sums is executed in its default settings and parameters. Test RGB Lagged Sums is reduced as it, with full parameters, requires 130MB of data per repetition and default repetitions being 100. Therefore the test would need 13GB of data per experiment, which would be too much. The test has reduced repetitions when needed to avoid repeating the tested data.
+
+\subsection*{TestU01}
+The batteries Small Crush and Crush are executed in their default settings. The battery Big Crush is omitted in our analysis because it would need 60GB long data streams to to be fully executed.
+
+The Rabbit, Alphabit and Block Alphabit batteries are executed in default settings and are limited to 8GB stream pre test. The Alphabit and Block Alphabit are set in such a way that they process whole 32 bit integers and don't drop any bits from the 32 bit groups. The tests from Block Alphabit battery are executed in 6 different variants where the variants test all possible bit reorderings in 32 bit blocks. 
+
+\subsection{Result interpretation}
+
 \begin{itemize}
-\item How the data were tested
-\item List functions
-\item List interesting (differing) results - Dieharder, NIST STS, TestU01, EACirc, polynomials(???)
+\item Almost default settings - limited to 8GB
+\item Atomic test vs. grouped test
+\end{itemize}
+
+\section{Baseline experiment}
+\begin{itemize}
+\item 8 terabytes of QRNG processed
+\item 1000 executions of each battery
+\item Show distribution of statistics failures
+\item Show distribution of grouped tests failures
+\item Tell the peasants that grouped is better!!
+\item Set up the empirical border for rejection - result interpretation!
+\end{itemize}
+
+\section{Results of the analysis}
+\begin{itemize}
+\item Testing is the same as before baby
+\item Show bigass table with results - compare to EACirc
+\item Conlusions - limits of EACirc, limits of RTT, differences, Rabbit, Grain are interesting af.
 \end{itemize}
 
 \chapter{Analysis of DIEHARDER results on quantum random data}
