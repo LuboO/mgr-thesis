@@ -926,6 +926,86 @@ The Rabbit, Alphabit and Block Alphabit batteries are executed in default settin
 
 \printbibliography
 
+\chapter{NIST STS Tests}
+\label{app:nist_sts_tests}
+
+\begin{titlemize}{Common parameters of all tests}
+\item \textbf{Stream size} -- 1000000
+\item \textbf{Stream count} -- 1000
+\end{titlemize}
+
+\begin{nomar}
+\centering
+\begin{tabular}{ r | l | r | r }
+\textbf{ID} & \textbf{Test name} & \textbf{Block size} & \textbf{Subtests} \\ \hline \hline
+1  & Frequency (Monobit)                           & --  & 1 \\
+2  & Frequency within a Block                      & 128 & 1 \\
+3  & Cumulative Sums (Cusums)	                   & --  & 2 \\
+4  & Runs                                          & --  & 1 \\
+5  & Longest Run of Ones in a Block                & --  & 1 \\
+6  & Random Binary Matrix Rank                     & --  & 1 \\
+7  & Discrete Fourier Transform (Spectral)         & --  & 1 \\
+8  & Non-overlapping (Aperiodic) Template Matching & 9   & 148 \\
+9  & Overlapping (Periodic) Template Matching      & 9   & 1 \\
+10 & Maurer's “Universal Statistical” 	           & --  & 1 \\
+11 & Approximate Entropy 	                       & 10  & 1 \\
+12 & Random Excursions 	                           & --  & 8 \\
+13 & Random Excursions Variant	                   & --  & 18 \\
+14 & Serial                                        & 16  & 2 \\
+15 & Linear Complexity	                           & 500 & 1 \\
+\end{tabular}
+\end{nomar}
+
+\chapter{Dieharder Tests}
+\label{app:dieharder_tests}
+Tests labeled as not used are excluded from our experiments; they are flagged as suspicious or not working in Dieharder documentation. Tests with plus sign next to stream size will process variable amount of data on each run. The value is only orientational.
+
+\begin{nomar}
+\centering
+\begin{tabular}{r | l | r | r | l}
+\textbf{ID} & \textbf{Test name} & \textbf{Stream size} & \textbf{P-samples} & \textbf{Arguments} \\ \hline \hline
+\multicolumn{5}{l}{\textbf{Diehard tests}} \\ \hline
+0   & Birthdays                    &    153 600 & 100 & -- \\
+1   & OPERM5                       &  4 000 020 & 100 & -- \\
+2   & 32$\times$32 Binary Rank     &  5 120 000 & 100 & -- \\
+3   & 6$\times$8 Binary Rank       &  2 400 000 & 100 & -- \\
+4   & Bitstream                    &  1 048 584 & 100 & -- \\
+5   & OPSO (Not used)              &         -- & --  & -- \\
+6   & OQSO (Not used)              &         -- & --  & -- \\
+7   & DNA  (Not used)              &         -- & --  & -- \\
+8   & Count the 1s (stream)        &    256 004 & 100 & -- \\
+9   & Count the 1s (byte)          &  5 120 000 & 100 & -- \\
+10  & Parking Lot                  &     96 000 & 100 & -- \\
+11  & Minimum Distance (2D Circle) &     64 000 & 100 & -- \\
+12  & Minimum Distance (3D Sphere) &     48 000 & 100 & -- \\
+13  & Squeeze 					   & 10 000 000+& 100 & -- \\
+14  & Sums (Not used)              &         -- & --  & -- \\
+15  & Runs                         &    400 000 & 100 & --\\
+16  & Craps                        & 10 000 000+& 100 & --\\
+\multicolumn{5}{l}{\textbf{Marsaglia and Tsang tests}} \\ \hline
+17  & GCD & 80 000 000 & 100 & -- \\
+\multicolumn{5}{l}{\textbf{STS tests}} \\ \hline
+100 & Monobit              & 400 000 & 100 & -- \\
+101 & Runs                 & 400 000 & 100 & -- \\
+102 & Serial (Generalized) & 400 000 & 100 & -- \\
+\multicolumn{5}{l}{\textbf{RGB tests}} \\ \hline
+200 & Bit Distribution             & n$\times$800 000 + 4 & 100 & \texttt{-n \{1..12\}} \\
+201 & Generalized Minimum Distance & n$\times$40 000 & 100 & \texttt{-t 10000 -n \{2..5\}} \\
+202 & Permutations                 & n$\times$400 000 & 100 & \texttt{-n \{2..5\}} \\
+203 & Lagged Sum                   & (n+1)$\times$4 000 000 & 100 & \texttt{-n \{0..32\}} \\
+204 & Kolmogorov-Smirnov           & 40 000 & 1000 & -- \\
+\multicolumn{5}{l}{\textbf{DAB tests}} \\ \hline
+205 & Byte Distribution & 614 400 000 & 1 & -- \\
+206 & DCT               &  51 200 000 & 1 & -- \\
+207 & Fill Tree         & 500 000 000+& 1 & -- \\
+208 & Fill Tree 2       & 200 000 000+& 1 & -- \\
+209 & Monobit 2         & 260 000 000 & 1 & -- \\
+
+
+\end{tabular}
+
+\end{nomar}
+
 \chapter{Sample file with RTT settings}
 \label{app:rtt_sett_json}
 \begin{minted}[mathescape,
@@ -1006,58 +1086,58 @@ Battery warnings:
 
 -----------------------------------------------------------
 Diehard Runs Test test results:
-    Result: Passed
-    Test partial alpha: 0.00250943
+  Result: Passed
+  Test partial alpha: 0.00250943
 
-    Variant 1:
-        User settings: 
-            P-sample count: 10
-        ************
+  Variant 1:
+    User settings: 
+      P-sample count: 10
+    ************
 
-        Subtest 1:
-            Kolmogorov-Smirnov statistic p-value: 0.78507772 Passed
-            p-values: 
-                0.05899849 0.14303914 0.25813353 0.26205674 0.29277325 
-                0.35258302 0.56733382 0.65239775 0.72661662 0.97024989 
-            ============
-        ############
+    Subtest 1:
+      Kolmogorov-Smirnov statistic p-value: 0.78507772 Passed
+      p-values: 
+        0.05899849 0.14303914 0.25813353 0.26205674 0.29277325 
+        0.35258302 0.56733382 0.65239775 0.72661662 0.97024989 
+      ============
+    ############
 
-        Subtest 2:
-            Kolmogorov-Smirnov statistic p-value: 0.98126677 Passed
-            p-values: 
-                0.06708958 0.13845018 0.24143043 0.30884227 0.34883845 
-                0.45856887 0.50099963 0.72226328 0.79368168 0.94420838 
-            ============
-        ############
+    Subtest 2:
+      Kolmogorov-Smirnov statistic p-value: 0.98126677 Passed
+      p-values: 
+        0.06708958 0.13845018 0.24143043 0.30884227 0.34883845 
+        0.45856887 0.50099963 0.72226328 0.79368168 0.94420838 
+      ============
+    ############
 
-    ^^^^^^^^^^^^
+  ^^^^^^^^^^^^
 
-    Variant 2:
-        User settings: 
-            P-sample count: 20
-        ************
+  Variant 2:
+    User settings: 
+      P-sample count: 20
+    ************
 
-        Subtest 1:
-            Kolmogorov-Smirnov statistic p-value: 0.94522158 Passed
-            p-values: 
-                0.02636030 0.05899849 0.07020394 0.11462969 0.14303914 
-                0.25813353 0.26205674 0.29277325 0.35258302 0.42201984 
-                0.49409172 0.50249791 0.50852031 0.56733382 0.65239775 
-                0.72661662 0.87379533 0.94805962 0.95109797 0.97024989 
-            ============
-        ############
+    Subtest 1:
+      Kolmogorov-Smirnov statistic p-value: 0.94522158 Passed
+      p-values: 
+        0.02636030 0.05899849 0.07020394 0.11462969 0.14303914 
+        0.25813353 0.26205674 0.29277325 0.35258302 0.42201984 
+        0.49409172 0.50249791 0.50852031 0.56733382 0.65239775 
+        0.72661662 0.87379533 0.94805962 0.95109797 0.97024989 
+      ============
+    ############
 
-        Subtest 2:
-            Kolmogorov-Smirnov statistic p-value: 0.97098651 Passed
-            p-values: 
-                0.05940416 0.06708958 0.10176118 0.13845018 0.18591525 
-                0.20171335 0.24143043 0.30884227 0.34883845 0.45856887 
-                0.47711566 0.50099963 0.51679868 0.57821548 0.72226328 
-                0.73270941 0.79368168 0.91155189 0.94420838 0.99216956 
-            ============
-        ############
+    Subtest 2:
+      Kolmogorov-Smirnov statistic p-value: 0.97098651 Passed
+      p-values: 
+        0.05940416 0.06708958 0.10176118 0.13845018 0.18591525 
+        0.20171335 0.24143043 0.30884227 0.34883845 0.45856887 
+        0.47711566 0.50099963 0.51679868 0.57821548 0.72226328 
+        0.73270941 0.79368168 0.91155189 0.94420838 0.99216956 
+      ============
+    ############
 
-    ^^^^^^^^^^^^
+  ^^^^^^^^^^^^
 
 -----------------------------------------------------------
 \end{minted}
