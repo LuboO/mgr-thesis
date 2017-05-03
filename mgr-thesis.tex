@@ -118,6 +118,9 @@
 % Let tables and figures share numbering
 \makeatletter \let\c@table\c@figure \makeatother
 
+\AtBeginEnvironment{minted}{%
+  \renewcommand{\fcolorbox}[4][]{#4}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % =================================== TEXT BEGINNING =================================== 
@@ -154,13 +157,13 @@ Throughout the thesis, we are using certain expressions in the context of Random
 
 \begin{description}
 \item[(Statistical) Battery] \hfill \\
-A program developed by a third party serving as a tool for evaluation of randomness of arbitrary binary data. A statistical battery usually contains one or multiple statistical tests. The final result of the assessment is based on the results of the tests. Examples of statistical batteries are NIST Statistical Test Suite, Dieharder or TestU01.
+A program developed by a third party serving as a tool for evaluation of randomness of arbitrary binary data. A statistical battery usually contains one or more statistical tests. The final result of the assessment is based on the results of the tests. Examples of statistical batteries are NIST Statistical Test Suite, Dieharder or TestU01.
 
 \item[(Statistical) Test] \hfill \\
 A single unit in statistical battery that measures some property of the tested binary stream (e.g. number of zeroes). The test can have multiple variants and subtests, and the result of the test is one or multiple statistics.
 
 \item[Null hypothesis - $H_0$] \hfill \\
-The hypothesis $H_0$ denotes the hypothesis that the tested data stream is random. Based on the results of the test, we can either reject $H_0$ and say that the data is not random or not reject it. In the latter case, we assume that the tested data is indeed random.
+The hypothesis $H_0$ denotes the hypothesis that the tested data stream is random. Based on the results of the test, we can either reject $H_0$ and say that the data are not random or not reject it. In the latter case, we assume that the tested data are indeed random.
 
 \item[P-value] \hfill \\
 In our hypothesis testing, a p-value is a probability of obtaining equal or more extreme test result while $H_0$ holds true. In our situation, a p-value denotes the probability that we would get same or more extreme test results when testing truly random data. Therefore, the closer the p-value is to 0 the less is the probability the tested data is random and vice versa.
@@ -178,7 +181,7 @@ A single execution of a statistical test. The result of single test execution is
 Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of a single test with different settings as separate units but rather as variants of that test.
 
 \item[Subtest] \hfill \\
-Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as subtests of the test. Subtests can have multiple separate statistics.
+Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as subtests of the test. The subtests can have multiple separate statistics.
 
 \item[Job] \hfill \\
 Single execution of Randomness Testing Toolkit that will analyse single binary data file with single statistical battery.
@@ -192,12 +195,12 @@ Batch of jobs that analysed single data file with various statistical batteries 
 \subsection{NIST Statistical Test Suite}
 The battery of statistical tests was developed by National Institute of Standards and Technology (cit.). The battery implements 15 statistical tests for evaluating randomness of input data.
 
-The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The faster version of NIST STS used in RTT was developed by Zdeněk Říha and Marek Sýs(cit.). 
+The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The faster implementation called NIST STS optimised v5.0.2 used in RTT was developed by Zdeněk Říha and Marek Sýs(cit.).
 
 \subsection{Dieharder}
 Dieharder is a battery designed by Robert G. Brown at the Duke University (cit.). The battery features user-friendly console interface with the possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from the older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author. 
 
-Since the original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder.
+Since the original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder. We modified version Dieharder 3.31.1 which is the last stable maintained release on the project page.
 
 \subsection{TestU01}
 This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. (cit.). It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries.
@@ -207,10 +210,10 @@ Small Crush battery is very fast and needs a relatively small amount of data to 
 \item[Rabbit, Alphabit, Block Alphabit] \hfill \\
 Tests in these batteries are suited for testing hardware bit generators and can be applied to an arbitrary amount of data. Data can be provided either as a binary file or PRNG implementing the TestU01 interface.
 \item[PseudoDIEHARD, FIPS\_140\_2] \hfill \\
-Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests in NIST standard(cit.) Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other supported batteries.
+Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests in NIST standard(cit.) Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other batteries.
 \end{description}
 
-Since TestU01 is available only as an ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. Our interface allows us to apply batteries to arbitrary binary data even when the batteries don't support this feature natively.
+Since TestU01-1.2.3 is available only as an ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. Our interface allows us to apply batteries to arbitrary binary data even when the batteries themselves don't support this feature natively.
 
 \section{Unexpected behavior and errors of the batteries}
 To examine the boundary behavior of the above-listed tools, we used them to process extremely non-random data streams. The data streams that we used as the input to the batteries were two binary data files consisting of only zeroes and ones respectively. The settings of the batteries remained set to default. 
@@ -301,7 +304,7 @@ Since we need to use the batteries in RTT with arbitrary binary data, we impleme
 \end{itemize}
 
 \chapter{Randomness Testing Toolkit}
-One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, and the execution and interpretaion of the analysis results.
+One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, and an execution and interpretaion of the analysis results.
 
 Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
 
@@ -342,9 +345,9 @@ The basic options of the RTT execution are set through command-line arguments. T
 \end{itemize}
 
 \subsection{Toolkit settings}
-The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json} and are related to the environment in which the toolkit will be executed (e.g. locations of the files and directories). The file is created by the user after the toolkit installation and stays the same for all of the subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory of the executable.
+The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json}. The settings are related to the environment in which the toolkit will be executed -- locations of the log files and executables, result storage options and toolkit execution options 
 
-Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}. A complete example file can be found in Appendix~\ref{app:rtt_sett_json}. 
+The file is created by the user after the toolkit installation and stays the same for all of the subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory of the executable. Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}.
 
 \begin{figure}[h!]
 \begin{minted}[mathescape,
@@ -356,26 +359,32 @@ Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}. A comple
   {
     "toolkit-settings": {
       "logger": {
-        "comment": "Program logger settings"
+        "comment": "Program logger settings",
+        "option": "value", ...
       },
       "result-storage": {
         "file": {
-          "comment": "File result storage settings"
+          "comment": "File result storage settings",
+          "option": "value", ...
         },
         "mysql-db": {
-          "comment": "MySQL Database storage settings"
+          "comment": "MySQL Database storage settings",
+          "option": "value", ...
         }
       },
       "binaries": {
-        "comment": "Executable binaries locations"
+        "comment": "Executable binaries locations",
+        "option": "value", ...
       },    
       "miscelaneous": {
         "nist-sts": {
-          "comment": "Miscellaneous NIST STS settings"
+          "comment": "Miscellaneous NIST STS settings",
+          "option": "value", ...
         }
       },
       "execution": {
-        "comment": "Battery execution settings"
+        "comment": "Battery execution settings",
+        "option": "value", ...
       }
     }
   }
@@ -384,75 +393,42 @@ Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}. A comple
 \label{fig:rtt_sett_short_json}
 \end{figure}
 
-The description of the individual tags and the options that can be set within them follows. The tags that are listed in the top-level description must contain JSON object with key-value pairs with options and their values. 
+The individual tags and their descriptions are listed here. For detailed overview of the options that can be set within individual tags see Appendix~\ref{app:toolkit_settings_detail}; for a complete example see Appendix~\ref{app:rtt_sett_json}. 
 
 \begin{description}
 \item[toolkit-settings/logger] \hfill \\
-Tag containing settings related to the location of log files produced during runtime.
-\begin{itemize}
-\item \textbf{dir-prefix} \textit{Optional} -- If set, value of this tag will become prefix of all log files locations. Can be used when all logger directories should have the same parent directories.
-\item \textbf{run-log-dir} -- Sets location of the main log file.
-\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and their values set locations of files that will contain raw outputs of the respective executed batteries.
-\end{itemize}
+Tag containing settings related to the location of log files produced during runtime. \\
+\textit{Settings: } \texttt{dir-prefix}, \texttt{run-log-dir}, \texttt{<battery>-dir}
 
-\item[toolkit-settings/result-storage/file] \textit{Optional} \hfill \\
-Section with settings needed for file result storage. All values of tags except tag \textbf{main-file} are treated as directories. For details about the storage see Section~\ref{sec:file_res_storage}.
-\begin{itemize}
-\item \textbf{main-file} -- Sets path of the file with final results of the program run. If the file already exists, results will be added to it, if not, new result file will be created.
-\item \textbf{dir-prefix} -- If set, all directory values will have this prefix.
-\item \textbf{<battery>-dir} -- Value \textbf{<battery>} can be replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. The tags set locations of files with detailed results of the respective battery.
-\end{itemize}
+\item[toolkit-settings/result-storage/file] \hfill \\
+Section with settings needed for file result storage. For details about the storage see Section~\ref{sec:file_res_storage}. \\
+\textit{Settings: } \texttt{main-file}, \texttt{dir-prefix}, \texttt{<battery>-dir}
 
 \item[toolkit-settings/result-storage/mysql-db] \textit{Optional} \hfill \\
-Section with settings needed for MySQL Database storage. For details about the storage see Section~\ref{sec:mysql_res_storage}.
-\begin{itemize}
-\item \textbf{address} Address of the MySQL server with created RTT database.
-\item \textbf{port} Port on which the MySQL server is accessible.
-\item \textbf{name} Name of the database scheme with RTT tables.
-\item \textbf{credentials-file} Path to the file that contains login information for the database. The example credentials file is shown in Figure~\ref{fig:mysql_credentials}.
-\end{itemize}
+Section with settings needed for MySQL Database storage. For details about the storage see Section~\ref{sec:mysql_res_storage}. \\
+\textit{Settings: } \texttt{address}, \texttt{port}, \texttt{name}, \texttt{credentials-file}
 
 \item[toolkit-settings/binaries] \hfill \\
-Section with the locations of the executables of the batteries.
-\begin{itemize}
-\item \textbf{<battery>} -- Value \textbf{<battery>} is replaced by nist-sts, dieharder and testu01. All of the tags are mandatory. The values of the tags sets the locations of the executables of the respective batteries.
-\end{itemize}
+Section with the locations of the executables of the batteries. \\
+\textit{Settings: } \texttt{<battery>}
 
 \item[toolkit-settings/miscelaneous/nist-sts] \hfill \\
-Miscellaneous constant settings related to NIST STS battery.
-\begin{itemize}
-\item \textbf{main-result-dir} -- Sets the directory where NIST STS stores its result files.
-\end{itemize}
+Miscellaneous constant settings related to NIST STS battery. \\
+\textit{Settings: } \texttt{main-result-dir}
 
 \item[toolkit-settings/execution] \hfill \\
-Settings related to the execution of the statistical batteries.
-\begin{itemize}
-\item \textbf{max-parallel-tests} Sets maximum number of concurrently running test processes. The higher value may cause the analysis to finish faster but will cause higher strain on the system.
-\item \textbf{test-timeout-seconds} Sets time period after which the running tests will be considered stuck and will be killed.
-\end{itemize}
-\end{description}
+Settings related to the execution of the statistical batteries. \\
+\textit{Settings: } \texttt{max-parallel-tests}, \texttt{test-timeout-seconds}
 
-\begin{figure}[h!]
-\begin{minted}[mathescape,
-               linenos,
-               numbersep=5pt,
-               gobble=2,
-               frame=lines,
-               framesep=2mm]{json}
-  {
-    "credentials": {
-      "username": "jane_doe",
-      "password": "password"    
-    }  
-  }
-\end{minted}
-\caption{Example of MySQL database credentials file}
-\label{fig:mysql_credentials}
-\end{figure}
+\end{description}
 
 \subsection{Battery configuration}
 \label{sec:batt_conf}
-The file with battery configuration defines all settings for the battery and the tests that will be executed during the program run. Each execution of RTT can have different battery configuration; the path to file with the configuration is set through command-line argument \texttt{-c}. The basic structure of the configuration file is outlined in Figure~\ref{fig:batt_conf_short_json}. The complete example of configuration is in Appendix~TODO.
+The file with battery configuration defines all settings for the battery and the tests that will be executed during the program run. Each execution of RTT can have different battery configuration; the path to file with the configuration is set through command-line argument \texttt{-c}. The basic structure of the configuration file is outlined in Figure~\ref{fig:batt_conf_short_json}. 
+
+A single configuration file can contain settings for multiple batteries. This allows the user to have only one configuration for all of his experiments. In each battery-specific section, the user can set the default values of settings for all the tests in the battery. Additionaly, settings specific only to certain tests or test variants can be also defined. 
+
+The complete guide to all common and battery specific settings is in Appendix~\ref{app:batt_conf_guide}; for example of possible battery configuration see Appendix~\ref{app:batt_conf_example}.
 
 \begin{figure}[h!]
 \begin{minted}[mathescape,
@@ -463,20 +439,27 @@ The file with battery configuration defines all settings for the battery and the
                framesep=2mm]{json}
   {
     "randomness-testing-toolkit": {
-      "dieharder-settings": {
-        "comment": "Settings specific to Dieharder battery",
+      "<battery>-settings": {
+        "comment": "Section with <battery> settings",
         "defaults": {
-          "comment": "Default settings"
+          "comment": "Default settings in <battery>",
+          "option": "value", ...
         },
         "test-specific-settings": [
           {
-            "comment": "Settings specific for single test",
+            "test-id": "<id>",
+            "comment": "Settings specific to single test <id>",
+            "option": "value", ...
             "variants": [
               {
-                "comment": "The first variant"
+                "comment": "Settings of the first "
+                           "variant of test <id>",
+                "option": "value", ...
               },
               {
-                "comment": "The second variant"            
+                "comment": "Settings of the second "
+                           "variant of test <id>",
+                "option": "value", ...        
               }            
             ]	      
           }
@@ -487,124 +470,6 @@ The file with battery configuration defines all settings for the battery and the
 \end{minted}
 \caption{Basic structure of battery configuration file}
 \label{fig:batt_conf_short_json}
-\end{figure}
-
-We list the possible common and battery specfic tags here along with their required parent tags and descriptions.
-
-\paragraph{Common settings}
-\begin{description}
-\item[\texttt{randomness-testing-toolkit}] \hfill \\
-Root tag of the configuration file.
-
-\item[\texttt{<battery>-settings}] \hfill \\
-\textit{Possible parent tags: } \texttt{randomness-testing-toolkit} \\
-<battery> can be dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. These tags contain settings for respective batteries.
-
-\item[\texttt{defaults}] \hfill \\
-\textit{Possible parent tags: } \texttt{<battery>-settings} \\
-Options inside this tag are considered as the default options for the battery specified by the parent tag. 
-
-If certain test is executed in the battery and needs to have some option defined but it does not, the option falls back to the value defined in the \texttt{defaults} tag.
-
-\item[\texttt{test-ids}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults} \\
-The option defines which tests will be executed in the specific battery by default. The default tests are executed only if no test was specified through command-line arguments.
-
-Value of this tag must be array of strings. Each string can contain either a single number or range of numbers. For example, should the value of the tag be \texttt{["3", "10-13", "15"]}, then the default IDs of the tests in the battery will be 3, 10, 11, 12, 13, 15.
-
-\item[\texttt{test-specific-settings}] \hfill \\
-\textit{Possible parent tags: } \texttt{<battery>-settings} \\
-This tag can contain list of single or several JSON objects. Each object defines options that are specific to a single test and the test's variants in the battery specified by the parent tag. Each of the objects must contain tag \texttt{test-id} for assigning the options to the test. 
-
-If the execution of a test requires a certain option that is not defined in the test object, the value of the option is taken from the tag \texttt{defaults}.
-
-\item[\texttt{test-id}] \hfill \\
-\textit{Possible parent tags: } \texttt{test-specific-settings} \\
-The tag must be present in each object that is in \texttt{test-specific-settings} object list. The value of the tag is used for assigning the options in the test object to actual test from the battery.
-
-\item[\texttt{variants}] \hfill \\
-\textit{Possible parent tags: } \texttt{test-specific-settings} \\
-The tag can be present in the test object in \texttt{test-specific-settings}. The tag can contain list of single or multiple JSON objects. Each of the variant objects can have defined additional options for test variants. The options that will be undefined by the variant object will be taken from the test object or the \texttt{defaults} tag. The variants are tied to the test which is specified by the \texttt{test-id} tag in the test object. For example, should the test object contain \texttt{variant} tag with list of three objects, then three variants of the test will be executed.
-\end{description}
-
-\paragraph{NIST STS settings}
-
-\begin{description}
-\item[\texttt{stream-size}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Sets bit size of single stream of data that will be used for testing.
-
-\item[\texttt{stream-count}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Sets number of streams of data that will be used for testing. E.g. if this value will be 100, then the test will be repeated 100 times, each time with different input data of length \texttt{stream-size}.
-
-\item[\texttt{block-length}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Some tests in NIST STS analyse the data streams in blocks. This option sets the bit size of the blocks. For details on which tests accept this parameter, see Appendix TODO.
-
-\end{description}
-
-\paragraph{Dieharder settings}
-
-\begin{description}
-\item[\texttt{psamples}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Sets how many times will be the test repeated before final statistic is calculated.
-
-\item[\texttt{arguments}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Allows you to pass additional arguments to the Dieharder binary. Format is expected as single string of argument-value pairs separated by spaces (e.g.~\texttt{"-x 2048 -y 30"}). For summary of arguments accepted by Dieharder, see its documentation.
-
-\end{description}
-
-\paragraph{TestU01 settings}
-\begin{description}
-\item[\texttt{repetitions}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Sets how many times will be a test repeated. Setting this option to more that 1 will produce several multiple of the test.
-
-\item[\texttt{bit-nb}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for rabbit, alphabit and block alphabit batteries. Sets how many bytes can be processed by a test. The test will not process more bytes.
-
-\item[\texttt{bit-r}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for alphabit and block alphabit batteries. Sets the offset in each group of 32 bits. For example, if set to $r$ then first $r$ bits from each 32 bits will be ignored. Only the rest of the bits in each 32-bit block will be processed.
-
-\item[\texttt{bit-s}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for alphabit and block alphabit batteries. Sets how many bits from each 32-bit block will be processed, starting from \texttt{bit-r}. For example, if we set $r=5, s=10$, then only 10 bits will be processed in each 32-bit block, starting from the sixth bit.
-
-\item[\texttt{bit-w}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation (TODO cite).
-
-\item[\texttt{parameters}] \hfill \\
-\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test can be found in Appendix TODO. Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
-
-\end{description}
-
-\begin{figure}[h!]
-\begin{minted}[mathescape,
-               linenos,
-               numbersep=5pt,
-               gobble=2,
-               frame=lines,
-               framesep=2mm]{json}
-  {
-    "parameters": {
-      "N": "1",
-      "n": "10000",
-      "r": "0",
-      "d": "1000000",
-      "t": "2",
-      "p": "1"
-    }
-  }
-\end{minted}
-\caption{Parameters setting for smarsa\_BirthdaySpacings test}
-\label{fig:params_tag}
 \end{figure}
 
 \section{Storage for the analysis results}
@@ -714,7 +579,7 @@ In the deployment part of the project, we developed an utility project that hand
 
 The interaction of the user with the infrastructure is visualized in Figure~\ref{fig:rtt_ecosystem}. In following section we outline the different purposes of the servers.
 
-\begin{figure}[h!]
+\begin{figure}[H]
 \begin{nomar}
 \centering
 \includegraphics[width=\paperwidth-4cm]{figures/rtt-ecosystem.pdf}
@@ -738,7 +603,7 @@ Single or multiple machines that host the installed toolkit and statistical batt
 
 Both jobs and experiments can be in one of the three states -- \texttt{pending}, \texttt{running} and \texttt{finished}; the descriptions of the states are in Table~\ref{tab:states_jobs_exps}. Scheduling of the computation is based on the state of the experiments and jobs.
 
-\begin{table}[h!]
+\begin{table}[H]
 \begin{nomar}
 \centering
 \begin{tabular}{l || p{4cm} | p{4cm}}
@@ -837,7 +702,13 @@ To create new experiment the user  will have to fill-out following settings in t
 \subsection*{Result presentation}
 The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. We denote this proportion as $x$. Then the probability $P(x)$ of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
 
-\begin{figure}[h!]
+\begin{itemize}
+\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
+\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
+\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
+\end{itemize}
+
+\begin{figure}[H]
 \begin{nomar}
 \centering
 \includegraphics[width=\textwidth]{figures/rtt-assessment.png} 
@@ -845,12 +716,6 @@ The web interface also presents and assesses the results of the past experiments
 \caption{Experiment evaluation}
 \label{fig:rtt_assessment}
 \end{figure}
-\begin{itemize}
-
-\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
-\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
-\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
-\end{itemize}
 
 \chapter{Analysing the cryptographic primitives outputs}
 %\section{Result interpretation}
@@ -1000,11 +865,74 @@ Tests labeled as not used are excluded from our experiments; they are flagged as
 207 & Fill Tree         & 500 000 000+& 1 & -- \\
 208 & Fill Tree 2       & 200 000 000+& 1 & -- \\
 209 & Monobit 2         & 260 000 000 & 1 & -- \\
-
-
 \end{tabular}
-
 \end{nomar}
+
+\chapter{Overview of options in toolkit settings}
+\label{app:toolkit_settings_detail}
+
+The tags that are listed in the top-level description must contain JSON
+object with key-value pairs with options and their values. For complete example of the JSON see Appendix~\ref{app:rtt_sett_json}.
+
+\begin{description}
+\item[toolkit-settings/logger] \hfill \\
+\begin{itemize}
+\item \textbf{dir-prefix} \textit{Optional} -- If set, value of this tag will become prefix of all log files locations. Can be used when all logger directories should have the same parent directories.
+\item \textbf{run-log-dir} -- Sets location of the main log file.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and their values set locations of files that will contain raw outputs of the respective executed batteries.
+\end{itemize}
+
+\item[toolkit-settings/result-storage/file] \textit{Optional} \hfill \\
+For details about the file storage see Section~\ref{sec:file_res_storage}.
+\begin{itemize}
+\item \textbf{main-file} -- Sets path of the file with final results of the program run. If the file already exists, results will be added to it, if not, new result file will be created.
+\item \textbf{dir-prefix} -- If set, all directory values will have this prefix.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} can be replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. The tags set locations of files with detailed results of the respective battery.
+\end{itemize}
+
+\item[toolkit-settings/result-storage/mysql-db] \textit{Optional} \hfill \\
+For details about the MySQL database storage see Section~\ref{sec:mysql_res_storage}.
+\begin{itemize}
+\item \textbf{address} Address of the MySQL server with created RTT database.
+\item \textbf{port} Port on which the MySQL server is accessible.
+\item \textbf{name} Name of the database scheme with RTT tables.
+\item \textbf{credentials-file} Path to the file that contains login information for the database. The example credentials file is shown in Figure~\ref{fig:mysql_credentials}.
+\end{itemize}
+
+\item[toolkit-settings/binaries] \hfill \\
+\begin{itemize}
+\item \textbf{<battery>} -- Value \textbf{<battery>} is replaced by nist-sts, dieharder and testu01. All of the tags are mandatory. The values of the tags sets the locations of the executables of the respective batteries.
+\end{itemize}
+\pagebreak
+\item[toolkit-settings/miscelaneous/nist-sts] \hfill \\
+\begin{itemize}
+\item \textbf{main-result-dir} -- Sets the directory where NIST STS stores its result files.
+\end{itemize}
+
+\item[toolkit-settings/execution] \hfill \\
+\begin{itemize}
+\item \textbf{max-parallel-tests} Sets maximum number of concurrently running test processes. The higher value may cause the analysis to finish faster but will cause higher strain on the system.
+\item \textbf{test-timeout-seconds} Sets time period after which the running tests will be considered stuck and will be killed.
+\end{itemize}
+\end{description}
+
+\begin{figure}[h!]
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "credentials": {
+      "username": "jane_doe",
+      "password": "password"    
+    }  
+  }
+\end{minted}
+\caption{Example of MySQL database credentials file}
+\label{fig:mysql_credentials}
+\end{figure}
 
 \chapter{Sample file with RTT settings}
 \label{app:rtt_sett_json}
@@ -1065,6 +993,134 @@ Tests labeled as not used are excluded from our experiments; they are flagged as
     }
   }
 \end{minted}
+
+\chapter{Guide to the settings in battery configuration}
+\label{app:batt_conf_guide}
+In following list we describe common as well as battery specific tags that can be present in battery configuration file. Each tag is listed with its description and list of its allowed parent tags. For example of complete configuration see Appendix~\ref{app:batt_conf_example}.
+
+\paragraph{Common settings}
+\begin{description}
+\item[\texttt{randomness-testing-toolkit}] \hfill \\
+Root tag of the configuration file.
+
+\item[\texttt{<battery>-settings}] \hfill \\
+\textit{Possible parent tags: } \texttt{randomness-testing-toolkit} \\
+<battery> can be dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. These tags contain settings for respective batteries.
+
+\item[\texttt{defaults}] \hfill \\
+\textit{Possible parent tags: } \texttt{<battery>-settings} \\
+Options inside this tag are considered as the default options for the battery specified by the parent tag. 
+
+If certain test is executed in the battery and needs to have some option defined but it does not, the option falls back to the value defined in the \texttt{defaults} tag.
+
+\item[\texttt{test-ids}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults} \\
+The option defines which tests will be executed in the specific battery by default. The default tests are executed only if no test was specified through command-line arguments.
+
+Value of this tag must be array of strings. Each string can contain either a single number or range of numbers. For example, should the value of the tag be \texttt{["3", "10-13", "15"]}, then the default IDs of the tests in the battery will be 3, 10, 11, 12, 13, 15.
+
+\item[\texttt{test-specific-settings}] \hfill \\
+\textit{Possible parent tags: } \texttt{<battery>-settings} \\
+This tag can contain list of single or several JSON objects. Each object defines options that are specific to a single test and the test's variants in the battery specified by the parent tag. Each of the objects must contain tag \texttt{test-id} for assigning the options to the test. 
+
+If the execution of a test requires a certain option that is not defined in the test object, the value of the option is taken from the tag \texttt{defaults}.
+
+\item[\texttt{test-id}] \hfill \\
+\textit{Possible parent tags: } \texttt{test-specific-settings} \\
+The tag must be present in each object that is in \texttt{test-specific-settings} object list. The value of the tag is used for assigning the options in the test object to actual test from the battery.
+
+\item[\texttt{variants}] \hfill \\
+\textit{Possible parent tags: } \texttt{test-specific-settings} \\
+The tag can be present in the test object in \texttt{test-specific-settings}. The tag can contain list of single or multiple JSON objects. Each of the variant objects can have defined additional options for test variants. The options that will be undefined by the variant object will be taken from the test object or the \texttt{defaults} tag. The variants are tied to the test which is specified by the \texttt{test-id} tag in the test object. For example, should the test object contain \texttt{variant} tag with list of three objects, then three variants of the test will be executed.
+\end{description}
+
+\paragraph{NIST STS settings}
+
+\begin{description}
+\item[\texttt{stream-size}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Sets bit size of single stream of data that will be used for testing.
+
+\item[\texttt{stream-count}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Sets number of streams of data that will be used for testing. E.g. if this value will be 100, then the test will be repeated 100 times, each time with different input data of length \texttt{stream-size}.
+
+\item[\texttt{block-length}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Some tests in NIST STS analyse the data streams in blocks. This option sets the bit size of the blocks. For details on which tests accept this parameter, see Appendix TODO.
+
+\end{description}
+
+\paragraph{Dieharder settings}
+
+\begin{description}
+\item[\texttt{psamples}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Sets how many times will be the test repeated before final statistic is calculated.
+
+\item[\texttt{arguments}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Allows you to pass additional arguments to the Dieharder binary. Format is expected as single string of argument-value pairs separated by spaces (e.g.~\texttt{"-x 2048 -y 30"}). For summary of arguments accepted by Dieharder, see its documentation.
+
+\end{description}
+
+\paragraph{TestU01 settings}
+
+\begin{description}
+\item[\texttt{repetitions}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+Sets how many times will be a test repeated. Setting this option to more that 1 will produce several multiple of the test.
+
+\item[\texttt{bit-nb}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only for rabbit, alphabit and block alphabit batteries. Sets how many bytes can be processed by a test. The test will not process more bytes.
+
+\item[\texttt{bit-r}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only for alphabit and block alphabit batteries. Sets the offset in each group of 32 bits. For example, if set to $r$ then first $r$ bits from each 32 bits will be ignored. Only the rest of the bits in each 32-bit block will be processed.
+
+\item[\texttt{bit-s}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only for alphabit and block alphabit batteries. Sets how many bits from each 32-bit block will be processed, starting from \texttt{bit-r}. For example, if we set $r=5, s=10$, then only 10 bits will be processed in each 32-bit block, starting from the sixth bit.
+
+\item[\texttt{bit-w}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only for block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation (TODO cite).
+
+\item[\texttt{parameters}] \hfill \\
+\textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
+This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test can be found in Appendix TODO. Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
+
+\end{description}
+
+\begin{figure}[H]
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{json}
+  {
+    "parameters": {
+      "N": "1",
+      "n": "10000",
+      "r": "0",
+      "d": "1000000",
+      "t": "2",
+      "p": "1"
+    }
+  }
+\end{minted}
+\caption{Parameters setting for smarsa\_BirthdaySpacings test}
+\label{fig:params_tag}
+\end{figure}
+
+
+\chapter{Example of battery configuration}
+\label{app:batt_conf_example}
+\begin{Huge}
+TODO
+\end{Huge}
 
 \chapter{Example of file storage report file}
 \label{app:file_storage_report}
