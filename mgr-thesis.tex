@@ -719,6 +719,18 @@ The web interface also presents and assesses the results of the past experiments
 \end{figure}
 
 \chapter{Analysing the cryptographic primitives outputs}
+%\begin{figure}[H]
+%\begin{nomar}
+%\centering
+%\includegraphics[width=\textwidth]{figures/dieharder-orig.pdf} 
+%\includegraphics[width=\textwidth]{figures/dieharder-corr.pdf} 
+%\caption{Placeholder}
+%\label{fig:placeholder}
+%\end{nomar}
+%\end{figure}
+
+
+
 %\section{Result interpretation}
 %\begin{huge}
 %todo
@@ -728,13 +740,21 @@ The web interface also presents and assesses the results of the past experiments
 %\item List functions
 %\item List interesting (differing) results - Dieharder, NIST STS, TestU01, EACirc, polynomials(???)
 %\end{itemize}
-In this chapter we will present results of our experiments. The data that was analysed was as a output of several cryptographic primitives. Among these primitives are widely used functions and finalists of eSTREAM and SHA3 competitions. Prior to the results of the analyses we present results of analysing truly random data to provide the reader with some baseline on how Randomness Testing Toolkit behaves when processing random data.
 
-\section{Common configuration and results of the experiments}
-In this section we will present the configurations that were used to run the statistical batteries in the experiments. We will also describe format of the analysis results we expected to receive.
+In the chapter we present the results of two distinct exeriments and describe the methods and battery configurations used for obtaining the results.
+
+In the first experiment, we analysed large quantities of random data with the statistical batteries implemented in RTT. The motivation for the experiment was that the results of the multiple repeated analyses would provide us with a reference for our further experiments. Our subsequent experiments would differ from the baseline experiment only in the input data but not in the settings of the respective batteries.
+
+In the second experiment, outputs of 15 distinct cryptographic algorithms were analysed. The specific algorithms were chosed based either on their popularity or on their success in cryptographic competitions eSTREAM (cit.) and SHA3 (cit.); among the chosen functions are algorithms such as AES, DES, RC4 or Keccak. The results of the experiment were compared with results of the analysis in EACirc framework. The EACirc framework implements alternative approach to the randomness testing and is developed in CRoCS (cit.).
+
+\section{Battery configurations used in the experiments}
+\label{sec:configuration_of_batteries}
+In this section we will present the configurations of the respective batteries that were used in both above-mentioned experiments. The settings were kept as close as possible to the default settings of the respective batteries.
+
+\subsection{Common settings}
+All batteries were provided 8000 MiB\footnote{The exact length of the files was $8000 \times 1024^2 = 8388608000$ bytes.} long data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries.
 
 \subsection{Configuration of batteries}
-\label{sec:configuration_of_batteries}
 In order for the results of the toolkit to be comparable to classic batteries we setup the batteries in such a way, that the settings would be very close to default ones. We set the maximum stream size that would be processed by a single test to 8GB.
 
 \subsection*{NIST STS}
