@@ -88,6 +88,12 @@
 \usepackage{markdown} %% Lightweight markup
 \usepackage{dirtree}
 
+\usepackage{makecell}
+\renewcommand\theadfont{\bfseries}
+
+\usepackage{siunitx}
+\sisetup{output-exponent-marker=\ensuremath{\mathrm{e}}}
+
 \usepackage{xcolor}
 \definecolor{link-grey}{rgb}{0.3,0.3,0.3}
 \definecolor{code-bg-grey}{rgb}{0.85,0.85,0.85}
@@ -114,6 +120,19 @@
 	\end{itemize}
  	\end{description}
 }
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{conjecture}{Conjecture}[section]
+\newtheorem{example}{Example}[section]
+
+\theoremstyle{remark}
+\newtheorem*{rem}{Remark}
+\newtheorem*{note}{Note}
 
 % Let tables and figures share numbering
 \makeatletter \let\c@table\c@figure \makeatother
@@ -203,7 +222,7 @@ Dieharder is a battery designed by Robert G. Brown at the Duke University (cit.)
 Since the original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder. We modified Dieharder v3.31.1 which is the last stable maintained release on the project page.
 
 \subsection{TestU01}
-This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. (cit.). It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries. The tests included in specific batteries are listed in Appendix~\ref{app:testu01_tests}.
+This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. (cit.). It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries. The tests included in specific batteries are listed in TestU01 documentation(cit.).
 
 \begin{description}
 \item[Small Crush, Crush, Big Crush] \hfill \\
@@ -297,6 +316,7 @@ smarsa\_GCD                        & -                        & Stuck execution 
 \end{titlemize}
 
 \subsection{Preventive measures in RTT}
+\label{sec:preventive_measures_rtt}
 Since we need to use the batteries in RTT with arbitrary binary data, we implemented following measures that mitigate above-mentioned errors in our experiments.
 \begin{itemize}
 \item Tests that don't produce any results are ignored and treated as if never executed.
@@ -719,27 +739,7 @@ The web interface also presents and assesses the results of the past experiments
 \end{figure}
 
 \chapter{Analysing the cryptographic primitives outputs}
-%\begin{figure}[H]
-%\begin{nomar}
-%\centering
-%\includegraphics[width=\textwidth]{figures/dieharder-orig.pdf} 
-%\includegraphics[width=\textwidth]{figures/dieharder-corr.pdf} 
-%\caption{Placeholder}
-%\label{fig:placeholder}
-%\end{nomar}
-%\end{figure}
-
-
-
-%\section{Result interpretation}
-%\begin{huge}
-%todo
-%\end{huge}
-%\begin{itemize}
-%\item How the data were tested
-%\item List functions
-%\item List interesting (differing) results - Dieharder, NIST STS, TestU01, EACirc, polynomials(???)
-%\end{itemize}
+\label{chap:crypto_fn_analysis}
 
 In the chapter we present the results of two distinct exeriments and describe the methods and battery configurations used for obtaining the results.
 
@@ -749,7 +749,7 @@ In the second experiment, outputs of 15 distinct cryptographic algorithms were a
 
 \section{Battery configurations used in the experiments}
 \label{sec:configuration_of_batteries}
-In this section we will present the configurations of the respective batteries that were used in both above-mentioned experiments. The settings were kept as close as possible to the default settings of the respective batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. 
+In this section we will present the configurations of the respective batteries that were used in both above-mentioned experiments. The settings were kept as close as possible to the default settings of the respective batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. The battery configuration file that was used in RTT is in Appendix~\ref{app:batt_conf_example}.
 
 \subsection{Common settings}
 All batteries were provided 8000 MiB\footnote{The exact length of single file was $8000 \times 1024^2 = 8388608000$ bytes.} long data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries. The file size was chosen as a compromise between the amount of data needed by the separate tests in the batteries and our capabilities to process and store such quantities of data.
@@ -763,11 +763,11 @@ The test settings of the Dieharder battery follow default settings outlined in A
 The RGB Lagged Sum test is executed in 33 variants with variable parameter \texttt{n=\{0..32\}}. The number of bytes the test variant will process scales with the parameter \texttt{n} of the variant and number of times the test variant will be repeated (p-samples) during the battery execution. To lower the amount of the needed bytes, we reduced the number of repetitions for each respective variant based on its \texttt{n}. The number of repetitions was calculated using following function.
 
 $$
-Rep(n) = \min\left(100 ; \left\lfloor \frac{ 8000 \times 1024^{2} }{ (n + 1) \times 4 \times 10^{6} } \right\rfloor \right)
+\text{Rep}(n) = \min\left(100 ; \left\lfloor \frac{ 8000 \times 1024^{2} }{ (n + 1) \times 4 \times 10^{6} } \right\rfloor \right)
 $$
 
 \subsection*{TestU01}
-The batteries Small Crush and Crush are executed in their default settings. The default settings of the tests can be found in Appendix~\ref{app:testu01_tests}.
+The batteries Small Crush and Crush are executed in their default settings. The default settings of the tests in their respective batteries can be found in TestU01 documentation (cit.).
 
 The battery Big Crush is omitted from our analysis because the tests in the battery would need at least 60 GB of data to be fully executed which is an infeasible amount.
 
@@ -776,20 +776,137 @@ The Rabbit, Alphabit and Block Alphabit batteries are executed in default test s
 The tests in the batteries Alphabit and Block Alphabit have settings that would cause them to process only certain parts of each 32 bit block in the data. These settings are not used and all bits in 32 bit blocks are analysed by the tests. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits.
 
 \section{Baseline experiment}
-\begin{itemize}
-\item 8 terabytes of QRNG processed
-\item 1000 executions of each battery
-\item Show distribution of statistics failures
-\item Show distribution of grouped tests failures
-\item Tell the peasants that grouped is better!!
-\item Set up the empirical border for rejection - result interpretation!
-\end{itemize}
+%\begin{itemize}
+%\item 8 terabytes of QRNG processed
+%\item 1000 executions of each battery
+%\item Show distribution of statistics failures
+%\item Show distribution of grouped tests failures
+%\item Tell the peasants that grouped is better!!
+%\item Set up the empirical border for rejection - result interpretation!
+%\end{itemize}
+
+Aim of this experiment was to observe behavior and results of the batteries in RTT when analysing truly random data. The observation would be then used for the interpretation of results of our other experiments. 
+
+The evaluation of the battery result is based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$ and its null hypothesis $H_0$ is rejected. The reason why we chose such interval is explained is Section~\ref{sec:preventive_measures_rtt}.
+
+When analysing truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed on the interval $[0,1]$. The uniformity is caused by the fact that we can't predict output of a TRNG and each possible output is observed with equal probability. Therefore we also can't predict result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; hence test's $H_0$ is rejected and the test fails with rate equal to significance level $\alpha$. Rejection of $H_0$, when it actually holds true, is called \textbf{Type I error} (cit.). The theoretical probability of Type I error should be equal to the value of the significance level.
+
+When we are evaluating a battery analysis based on number of failed tests, we must know how many tests we expect to fail when the $H_0$ holds true. We can calculate the expected value like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $B(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing number of failed tests in a battery with expected distribution $B(n, \alpha)$. From the definition of the binomial distribution, the expected number of the failed tests is $E(F) = n \times \alpha$.
+
+However, the expected number of failures is not necesarilly exact, as the above-mentioned calculation treats tests as a independent trials. Separate tests in a battery are not required nor proved to be independent, which can lead to differing distributions of empirical and theoretical random variables representing number of failed tests.
+
+To observe empirical distribution of the number of failed tests $F_{Obs}$ we inspected the number of failures of the respective batteries during analysis of truly random data. In total, approximately 8 terabytes of random data were downloaded from QRNG service provided by Humboldt-Universitaet zu Berlin (cit.). The data were split into 1000 blocks each of size 8000 GiB. All 7 batteries included in this experiment analysed each block of data once. Sample size of 1000 trials is enough for us to compare the distributions of the two random variables $F_{Exp}$ and $F_{Obs}$.
+
+The counts of failures of respective batteries were inspected in following two scenarios.
+
+\begin{description}
+\item[Raw second-level p-values failures] \hfill \\
+In this scenario, we assumed that all second-level p-values produced by a specific battery are independent. Therefore, all statistics calculated by the battery were treated as separate tests. For example, if some test is executed in two variants, each of those variants has two subtests and each subtest will calculate 2 statistics, in total we will get $2^3=8$ second-level p-values; we consider these eight p-values as the results of eight independent tests each of whose calculated single p-value. 
+
+\item[Corrected p-values failures] \hfill \\
+Whit this second scenario, we tried to mitigate the effect of dependent p-values in our set by grouping them together. We put the p-values that are most likely dependent into single set or group. We assumed that the p-values that are most likely inter-connected are those that are produced by a single statistical test. Therefore, all p-values belonging to a single test were reduced to only one p-value, leaving us with a single result per distinct test in a statistical battery. For the grouping of the p-values we used Šidák's correction (cit.) and the process is shown in Definition~\ref{def:sidak}.
+
+\begin{definition}
+\label{def:sidak}
+For $n$ grouped p-values $\{p_1,..,p_n\}$ with significance level $\alpha$ and null hypothesis $H_0$ we will calculate the corrected significance level $\alpha_0 = 1 - (1 - \alpha)^{\frac{1}{n}}$. If $\forall i \in [1,..,n], \exists p_i : p_i < \alpha_0$, then $H_0$ is rejected for $\{p_1,..,p_n\}$ and the whole group result is treated as a failure.
+\end{definition}
+
+\end{description}
+
+\begin{Huge}
+TODO: tell them about observed and expected counts and chi-square comparison
+\end{Huge}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Results of the analysis}
 \begin{itemize}
 \item Testing is the same as before baby
 \item Show bigass table with results - compare to EACirc
-\item Conlusions - limits of EACirc, limits of RTT, differences, Rabbit, Grain are interesting af.
+\item Conlusions - limits of EACirc, limits of RTT, differences, Rabbit, Grain are lit af.
 \end{itemize}
 
 \chapter{Analysis of DIEHARDER results on quantum random data}
@@ -844,43 +961,43 @@ The tests in the batteries Alphabit and Block Alphabit have settings that would 
 
 \chapter{Dieharder Tests}
 \label{app:dieharder_tests}
-Tests labeled as not used are excluded from our experiments; they are flagged as suspicious or not working in Dieharder documentation. Tests with plus sign next to stream size will process variable amount of data on each run. The value is only orientational.
+\textbf{Note:} Tests labeled as not used are excluded from our experiments; they are flagged as suspicious or not working in Dieharder documentation. Tests with plus sign next to the stream size will process variable amount of data on each run. The value is only orientational.
 
 \begin{nomar}
 \centering
 \begin{tabular}{r | l | r | r | l}
-\textbf{ID} & \textbf{Test name} & \textbf{Stream size} & \textbf{P-samples} & \textbf{Arguments} \\ \hline \hline
-\multicolumn{5}{l}{\textbf{Diehard tests}} \\ \hline
+\textbf{ID} & \textbf{Test name} & \textbf{Stream size (byte)} & \textbf{P-samples} & \textbf{Arguments} \\ \hline \hline
+\multicolumn{5}{l}{\textbf{Diehard tests}} \\
 0   & Birthdays                    &    153 600 & 100 & -- \\
 1   & OPERM5                       &  4 000 020 & 100 & -- \\
 2   & 32$\times$32 Binary Rank     &  5 120 000 & 100 & -- \\
 3   & 6$\times$8 Binary Rank       &  2 400 000 & 100 & -- \\
 4   & Bitstream                    &  1 048 584 & 100 & -- \\
-5   & OPSO (Not used)              &         -- & --  & -- \\
-6   & OQSO (Not used)              &         -- & --  & -- \\
-7   & DNA  (Not used)              &         -- & --  & -- \\
+5   & OPSO \textbf{(Not used)}     &         -- & --  & -- \\
+6   & OQSO \textbf{(Not used)}     &         -- & --  & -- \\
+7   & DNA \textbf{(Not used)}      &         -- & --  & -- \\
 8   & Count the 1s (stream)        &    256 004 & 100 & -- \\
 9   & Count the 1s (byte)          &  5 120 000 & 100 & -- \\
 10  & Parking Lot                  &     96 000 & 100 & -- \\
 11  & Minimum Distance (2D Circle) &     64 000 & 100 & -- \\
 12  & Minimum Distance (3D Sphere) &     48 000 & 100 & -- \\
 13  & Squeeze 					   & 10 000 000+& 100 & -- \\
-14  & Sums (Not used)              &         -- & --  & -- \\
-15  & Runs                         &    400 000 & 100 & --\\
-16  & Craps                        & 10 000 000+& 100 & --\\
-\multicolumn{5}{l}{\textbf{Marsaglia and Tsang tests}} \\ \hline
-17  & GCD & 80 000 000 & 100 & -- \\
-\multicolumn{5}{l}{\textbf{STS tests}} \\ \hline
+14  & Sums \textbf{(Not used)}     &         -- & --  & -- \\
+15  & Runs                         &    400 000 & 100 & -- \\
+16  & Craps                        & 10 000 000+& 100 & -- \\ \hline
+\multicolumn{5}{l}{\textbf{Marsaglia and Tsang tests}} \\ 
+17  & GCD & 80 000 000 & 100 & -- \\ \hline
+\multicolumn{5}{l}{\textbf{STS tests}} \\ 
 100 & Monobit              & 400 000 & 100 & -- \\
 101 & Runs                 & 400 000 & 100 & -- \\
-102 & Serial (Generalized) & 400 000 & 100 & -- \\
-\multicolumn{5}{l}{\textbf{RGB tests}} \\ \hline
+102 & Serial (Generalized) & 400 000 & 100 & -- \\ \hline
+\multicolumn{5}{l}{\textbf{RGB tests}} \\ 
 200 & Bit Distribution             & n$\times$800 000 + 4 & 100 & \texttt{-n \{1..12\}} \\
 201 & Generalized Minimum Distance & n$\times$40 000 & 100 & \texttt{-t 10000 -n \{2..5\}} \\
 202 & Permutations                 & n$\times$400 000 & 100 & \texttt{-n \{2..5\}} \\
 203 & Lagged Sum                   & (n+1)$\times$4 000 000 & 100 & \texttt{-n \{0..32\}} \\
-204 & Kolmogorov-Smirnov           & 40 000 & 1000 & -- \\
-\multicolumn{5}{l}{\textbf{DAB tests}} \\ \hline
+204 & Kolmogorov-Smirnov           & 40 000 & 1000 & -- \\ \hline
+\multicolumn{5}{l}{\textbf{DAB tests}} \\ 
 205 & Byte Distribution & 614 400 000 & 1 & -- \\
 206 & DCT               &  51 200 000 & 1 & -- \\
 207 & Fill Tree         & 500 000 000+& 1 & -- \\
@@ -888,12 +1005,6 @@ Tests labeled as not used are excluded from our experiments; they are flagged as
 209 & Monobit 2         & 260 000 000 & 1 & -- \\
 \end{tabular}
 \end{nomar}
-
-\chapter{TestU01 Tests}
-\label{app:testu01_tests}
-\begin{Huge}
-TODO
-\end{Huge}
 
 \chapter{Overview of options in toolkit settings}
 \label{app:toolkit_settings_detail}
@@ -1074,7 +1185,7 @@ Sets number of streams of data that will be used for testing. E.g. if this value
 
 \item[\texttt{block-length}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-Some tests in NIST STS analyse the data streams in blocks. This option sets the bit size of the blocks. For details on which tests accept this parameter, see Appendix TODO.
+Some tests in NIST STS analyse the data streams in blocks. This option sets the bit size of the blocks. For details on which tests accept this parameter, see Appendix~\ref{app:nist_sts_tests}.
 
 \end{description}
 
@@ -1116,7 +1227,7 @@ This option is valid only for block alphabit battery. The value must be lesser o
 
 \item[\texttt{parameters}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test can be found in Appendix TODO. Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
+This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test in respective batteries can be found in TestU01 documentation (cit.). Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
 
 \end{description}
 
@@ -1145,9 +1256,243 @@ This option is valid only for small crush, crush and big crush batteries. The va
 
 \chapter{Example of battery configuration}
 \label{app:batt_conf_example}
-\begin{Huge}
-TODO
-\end{Huge}
+Following battery configuration was used in both experiments described in Chapter~\ref{chap:crypto_fn_analysis}.
+
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               fontsize=\small,
+               framesep=2mm]{json}
+  {  
+    "randomness-testing-toolkit":{  
+      "dieharder-settings":{  
+        "defaults":{  
+          "test-ids":["0-4", "8-13", "15-17", "100-102", "200-209"],
+          "psamples":100
+        },
+        "test-specific-settings":[  
+          {  
+            "test-id":200,
+            "variants":[  
+              {"arguments":"-n 1"},
+              {"arguments":"-n 2"},
+              {"arguments":"-n 3"},
+              {"arguments":"-n 4"},
+              {"arguments":"-n 5"},
+              {"arguments":"-n 6"},
+              {"arguments":"-n 7"},
+              {"arguments":"-n 8"},
+              {"arguments":"-n 9"},
+              {"arguments":"-n 10"},
+              {"arguments":"-n 11"},
+              {"arguments":"-n 12"}
+            ]
+          },
+          {  
+            "test-id":201,
+            "psamples":1000,
+            "variants":[  
+              {"arguments":"-n 2 -t 10000"},
+              {"arguments":"-n 3 -t 10000"},
+              {"arguments":"-n 4 -t 10000"},
+              {"arguments":"-n 5 -t 10000"}
+            ]
+          },
+          {  
+            "test-id":202,
+            "variants":[  
+              {"arguments":"-n 2"},
+              {"arguments":"-n 3"},
+              {"arguments":"-n 4"},
+              {"arguments":"-n 5"}
+            ]
+          },
+          {  
+            "test-id":203,
+            "variants":[  
+              {"arguments":"-n 0"},
+              {"arguments":"-n 1"},
+              {"arguments":"-n 2"},
+              {"arguments":"-n 3"},
+              {"arguments":"-n 4"},
+              {"arguments":"-n 5"},
+              {"arguments":"-n 6"},
+              {"arguments":"-n 7"},
+              {"arguments":"-n 8"},
+              {"arguments":"-n 9"},
+              {"arguments":"-n 10"},
+              {"arguments":"-n 11"},
+              {"arguments":"-n 12"},
+              {"arguments":"-n 13"},
+              {"arguments":"-n 14"},
+              {"arguments":"-n 15"},
+              {"arguments":"-n 16"},
+              {"arguments":"-n 17"},
+              {"arguments":"-n 18"},
+              {"arguments":"-n 19"},
+              {"arguments":"-n 20", "psamples":99},
+              {"arguments":"-n 21", "psamples":95},
+              {"arguments":"-n 22", "psamples":91},
+              {"arguments":"-n 23", "psamples":87},
+              {"arguments":"-n 24", "psamples":83},
+              {"arguments":"-n 25", "psamples":80},
+              {"arguments":"-n 26", "psamples":77},
+              {"arguments":"-n 27", "psamples":74},
+              {"arguments":"-n 28", "psamples":72},
+              {"arguments":"-n 29", "psamples":69},
+              {"arguments":"-n 30", "psamples":67},
+              {"arguments":"-n 31", "psamples":65},
+              {"arguments":"-n 32", "psamples":63}
+            ]
+          },
+          {  
+            "test-id":204,
+            "psamples":1000
+          },
+          {  
+            "test-id":205,
+            "psamples":1
+          },
+          {  
+            "test-id":206,
+            "psamples":1
+          },
+          {  
+            "test-id":207,
+            "psamples":1
+          },
+          {  
+            "test-id":208,
+            "psamples":1
+          },
+          {  
+            "test-id":209,
+            "psamples":1
+          }
+        ]
+      },
+      
+      "nist-sts-settings":{  
+        "defaults":{  
+          "test-ids":["1-15"],
+          "stream-size":"1000000",
+          "stream-count":"1000"
+        }
+      },
+      
+      "tu01-smallcrush-settings":{  
+        "defaults":{  
+          "test-ids":["1-10"],
+          "repetitions":1
+        }
+      },
+      
+      "tu01-crush-settings":{  
+        "defaults":{  
+          "test-ids":["1-96"],
+          "repetitions":1
+        }
+      },
+      
+      "tu01-rabbit-settings":{  
+        "defaults":{  
+          "test-ids":["1-26"],
+          "repetitions":1,
+          "bit-nb":"8388608000"
+        }
+      },
+      
+      "tu01-alphabit-settings":{  
+        "defaults":{  
+          "test-ids":["1-9"],
+          "repetitions":1,
+          "bit-nb":"8388608000",
+          "bit-r":"0",
+          "bit-s":"32"
+        }
+      },
+      
+      "tu01-blockalphabit-settings":{  
+        "defaults":{  
+          "test-ids":[  
+            "1-9"
+          ],
+          "repetitions":1,
+          "bit-nb":"8388608000",
+          "bit-r":"0",
+          "bit-s":"32"
+        },
+        "test-specific-settings":[  
+          {  
+            "test-id":1,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":2,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":3,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":4,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":5,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"},{"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":6,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":7,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":8,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          },
+          {  
+            "test-id":9,
+            "variants":[  
+              {"bit-w":"1"}, {"bit-w":"2"}, {"bit-w":"4"},
+              {"bit-w":"8"}, {"bit-w":"16"}, {"bit-w":"32"}
+            ]
+          }
+        ]
+      }
+    }
+  }
+\end{minted}
 
 \chapter{Example of file storage report file}
 \label{app:file_storage_report}
