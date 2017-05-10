@@ -749,31 +749,31 @@ In the second experiment, outputs of 15 distinct cryptographic algorithms were a
 
 \section{Battery configurations used in the experiments}
 \label{sec:configuration_of_batteries}
-In this section we will present the configurations of the respective batteries that were used in both above-mentioned experiments. The settings were kept as close as possible to the default settings of the respective batteries.
+In this section we will present the configurations of the respective batteries that were used in both above-mentioned experiments. The settings were kept as close as possible to the default settings of the respective batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. 
 
 \subsection{Common settings}
-All batteries were provided 8000 MiB\footnote{The exact length of the files was $8000 \times 1024^2 = 8388608000$ bytes.} long data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries.
+All batteries were provided 8000 MiB\footnote{The exact length of single file was $8000 \times 1024^2 = 8388608000$ bytes.} long data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries. The file size was chosen as a compromise between the amount of data needed by the separate tests in the batteries and our capabilities to process and store such quantities of data.
 
-\subsection{Configuration of batteries}
-In order for the results of the toolkit to be comparable to classic batteries we setup the batteries in such a way, that the settings would be very close to default ones. We set the maximum stream size that would be processed by a single test to 8GB.
-
-\subsection*{NIST STS}
-The settings of NIST STS battery were kept to default. Each test had stream size set to 1000000 bits and processed 1000 data streams in each run. This means that each test from NIST STS processed exactly 125MB in its run. 
+\subsection*{NIST Statistical Testing Suite}
+The settings of the tests in NIST STS was the same as in default execution of the battery. The tests along with their default settings are listed in Appendix~\ref{app:nist_sts_tests}. In single run, each test processed 1000 data streams of size 1000000 bits; in total, each test analysed 125 MB of data in its run.
 
 \subsection*{Dieharder}
-All tests except test RGB Lagged Sums is executed in its default settings and parameters. Test RGB Lagged Sums is reduced as it, with full parameters, requires 130MB of data per repetition and default repetitions being 100. Therefore the test would need 13GB of data per experiment, which would be too much. The test has reduced repetitions when needed to avoid repeating the tested data.
+The test settings of the Dieharder battery follow default settings outlined in Appendix~\ref{app:dieharder_tests} with the single exception of test RGB Lagged Sums. In default settings, the test would need too much data\footnote{RGB Lagged Sum test with parameter \texttt{n=32} will analyse 13.2 GB of data.} for the analysis. 
+
+The RGB Lagged Sum test is executed in 33 variants with variable parameter \texttt{n=\{0..32\}}. The number of bytes the test variant will process scales with the parameter \texttt{n} of the variant and number of times the test variant will be repeated (p-samples) during the battery execution. To lower the amount of the needed bytes, we reduced the number of repetitions for each respective variant based on its \texttt{n}. The number of repetitions was calculated using following function.
+
+$$
+Rep(n) = \min\left(100 ; \left\lfloor \frac{ 8000 \times 1024^{2} }{ (n + 1) \times 4 \times 10^{6} } \right\rfloor \right)
+$$
 
 \subsection*{TestU01}
-The batteries Small Crush and Crush are executed in their default settings. The battery Big Crush is omitted in our analysis because it would need 60GB long data streams to to be fully executed.
+The batteries Small Crush and Crush are executed in their default settings. The default settings of the tests can be found in Appendix~\ref{app:testu01_tests}.
 
-The Rabbit, Alphabit and Block Alphabit batteries are executed in default settings and are limited to 8GB stream pre test. The Alphabit and Block Alphabit are set in such a way that they process whole 32 bit integers and don't drop any bits from the 32 bit groups. The tests from Block Alphabit battery are executed in 6 different variants where the variants test all possible bit reorderings in 32 bit blocks. 
+The battery Big Crush is omitted from our analysis because the tests in the battery would need at least 60 GB of data to be fully executed which is an infeasible amount.
 
-\subsection{Result interpretation}
+The Rabbit, Alphabit and Block Alphabit batteries are executed in default test settings. The tests are limited to 8000 MiB of data by the parameter \texttt{nb}.
 
-\begin{itemize}
-\item Almost default settings - limited to 8GB
-\item Atomic test vs. grouped test
-\end{itemize}
+The tests in the batteries Alphabit and Block Alphabit have settings that would cause them to process only certain parts of each 32 bit block in the data. These settings are not used and all bits in 32 bit blocks are analysed by the tests. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits.
 
 \section{Baseline experiment}
 \begin{itemize}
