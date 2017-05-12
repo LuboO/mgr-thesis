@@ -918,11 +918,13 @@ However, even with the improved result interpretation, some failure frequencies 
 The presented bounds are used for result interpretation of the subsequent experiments. If the number of failed tests will be higher than the bound, the data did not pass the battery analysis.
 
 \section{Analysis of well-known cryptographic algorithms}
-In this experiments we focused on the analysis of well-known and used cryptographic primitives. The 15 algorithms were chosen based on their popularity and success in cryptographic competitions eSTREAM (cit.) and SHA3 (cit.).
+In this experiment, we focused on the analysis of well-known and used cryptographic primitives. The 15 algorithms were chosen based on their popularity and success in cryptographic competitions eSTREAM (cit.) and SHA3 (cit.).
 
-Our motivation for this experiment was to find out how big are the security margins on common algorithms. Most of the tested algorithms could be reduced in number of their rounds. We wanted to see how much could we reduce the rounds, until we would start detecting the biases in the data.
+Our motivation for this experiment was to find out how big are the security margins on conventional algorithms. Most of the tested algorithms could be reduced in the number of their rounds. We wanted to see how much could we reduce the rounds until we would start detecting the biases in the data.
 
-The outputs of the functions were generated using the generator developed in CRoCS (cit.). The plaintext of the functions was binary counter, the key was set to random data and initialization vector to zeroes. Not all functions needed the key and IV. For each specific round and function combination we generated 8000 MiB long data file. In total, 72 distinct combinations of functions and rounds were analysed. The configurations of the batteries were the same as described in Section~\ref{sec:configuration_of_batteries}. 
+The outputs of the functions were generated using the generator developed in CRoCS (cit.). The plaintext of the functions was a binary counter; the key was randomly generated, and initialization vector was set to zeroes. Not all functions needed the key and IV. 
+
+For each particular round and function combination, we generated 8000 MiB large data file. In total,  we analysed 72 distinct combinations of functions and rounds. The configurations of the batteries were the same as described in Section~\ref{sec:configuration_of_batteries}. 
 
 The results of this experiment were also compared to the results produced by the EACirc framework (cit.). The results of the analysis of the data with EACirc are part of Karel Kubíček's diploma thesis (cit.).
 
@@ -981,49 +983,49 @@ RC$\text{4}^{\ast}$  (roundless) & -- & -- & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0.009 &
 \label{tab:crypto_alg_analysis}
 \end{table}
 
-The values in the cells express the number of failed tests in a specific battery. Each battery has defined total number of tests in the header. In some cases, not all tests in the battery could be executed; in these cases we specify the number of executed tests in the cell.
+The values in the cells express the number of failed tests in a specific battery. Each battery has defined the total number of tests in the header. In some cases, not all tests in the battery could be executed; in these cases, we specify the number of executed tests in the cell.
 
 We also provide security margins of the analysed algorithms. The security margins are based on the highest round in which the algorithm failed to pass any battery and on the default total number of rounds in the algorithm.
 
-Some algorithms in the table are marked by an asterisk. In highest shown rounds, these algorithms did pass most of the batteries; however after closer inspection we discovered some patterns in the results. These findings are summarized in Section~\ref{sec:notable_results}.
+Some algorithms in the table are marked by an asterisk. In highest shown rounds, these algorithms did pass most of the batteries; however, after closer inspection, we discovered some patterns in the results. These findings are summarized in Section~\ref{sec:notable_results}.
 
 The discovered patterns in the results were consistent failures of certain tests when analysing algorithm with fixed number of rounds. We consider a test as consistently failing when we create multiple datasets of the same algorithm and round and the test will fail in all analyses of the datasets. The generation of the datasets can vary in the used keys or plaintexts.
 
-For each suspicious algorithm with fixed round we generated additional 16000 MiB of data. The additional data shown same patterns in the results as in the original analysis, hinting the presence of a certain bias produced by the algorithm.
+For each suspicious algorithm with fixed number of rounds, we generated additional 16000 MiB of data. The additional data showed same patterns in the results as in the original analysis, hinting the presence of a particular bias produced by the algorithm.
 
 
 \subsection{Notable observations}
 \label{sec:notable_results}
-In this section we list our observations based on the above-presented results. We list these observations based on their importance.
+In this section, we list our observations based on the above-presented results. We list these observations based on their importance.
 
 \begin{description}
 \item[Biased output of Rabbit cipher] \hfill \\
-Rabbit cipher is one of the winners in the eSTREAM competition in the software section. The algorithm has total of 4 rounds. In all of its configurations, Rabbit will consistently fail tests \texttt{sstring\_HammingIndep} and \texttt{sstring\_PeriodsInStrings} in batteries Crush, Rabbit, Alphabit and Block Alphabit. 
+Rabbit cipher is one of the winners in the eSTREAM competition in the software section. The algorithm has a total of 4 rounds. In all of its configurations, Rabbit will consistently fail tests \texttt{sstring\_HammingIndep} and \texttt{sstring\_PeriodsInStrings} in batteries Crush, Rabbit, Alphabit and Block Alphabit. 
 
 The tests are aiming to discover dependencies between separate bits in the data stream. One interesting detail is that the tests in Block Alphabit will fail if and only the bits in the stream are not previously re-ordered by the battery. This fact led us to believe that there indeed is some dependency between bits in the output.
 
 Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher with the complexity of $2^{158}$.
 
 \item[Biased output of RC4 cipher] \hfill \\
-RC4 is a well-known stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version, the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery.
+RC4 is a popular stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version, the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery.
 
-Multiple papers on biases and distinguishing attacks on RC4 were published; notable publications are \textit{A Practical Attack on Broadcast RC4} (cit.), \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} (cit.) and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} (cit.).
+There are multiple known biases and distinguishing attacks on RC4; notable publications are \textit{A Practical Attack on Broadcast RC4} (cit.), \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} (cit.) and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} (cit.).
 
 \item[Security margins with respect to the statistical analysis] \hfill \\
-Majority of the analysed algorithms has the security margin higher than 0.8. This means that even if we would drastically increase our computational capability and performance of the state-of-the-art statistical tools we still wouldn't be able to detect biases in most of the function outputs. 
+The majority of the analysed algorithms has the security margin higher than 0.8. This means that even if we would drastically increase our computational capability and performance of the state-of-the-art statistical tools we still wouldn't be able to detect biases in most of the function outputs. 
 
-The margins are significantly lower only in functions with specific biases detected, namely Rabbit, RC4 and Grain.
+The margins are significantly lower only in functions with particular biases detected, namely Rabbit, RC4 and Grain.
 
 \item[Strength of the batteries and EACirc] \hfill \\
-All of the batteries implemented in RTT perform better or equally well than EACirc. This can be caused by the fact that EACirc analyses only 100 MB of data per execution and also finishes its execution more quickly. Therefore we have trade-off between the needed time and resources and strength of the tool. In many situations we aren't able to retrieve 8000 MiB (e.g. slow hardware generators in smartcards); in these cases the usage of EACirc for bias detection can be viable.
+All of the batteries implemented in RTT perform better or equally well than EACirc. The shortcomings of EACirc can be caused by the fact that the framework analyses only 100 MB of data per execution and also finishes its execution more quickly. Therefore we have a trade-off between the needed time and resources and strength of the tool. In many situations we aren't able to retrieve 8000 MiB (e.g. slow hardware generators in smartcards); in these cases, the usage of EACirc for bias detection can be viable.
 
 The batteries themselves have differing strength. While batteries NIST STS and Small Crush have more or less same bias detection capabilities as EACirc, the remaining batteries perform better and can detect even subtle biases. The remaining batteries are listed here, along with the number of times they detected a bias when other batteries failed to do so: Alphabit (2 times), Dieharder (3 times), Block Alphabit (5 times), Rabbit (6 times), Crush (8 times).
 
 \item[Biased output of round reduced Grain function] \hfill \\
-The Grain algorithm is on of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds out of 13, the test will consistently fail tests \textbf{smarsa\_MatrixRank} and \textbf{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
+The Grain algorithm is on of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds out of 13, the test will consistently fail tests \textbf{smarsa\_MatrixRank} and \textbf{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher, but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
 
 \item[Biased output of round reduced MD6 hash function] \hfill \\
-The MD6 hash function was a competitor in the SHA-3 competition but did not advance to the second round of the competition. In 9 and 10 rounds out of 94, the algorithm will consistently fail tests \texttt{smarsa\_MartixRank} and \texttt{sspectral\_Fourier3} in batteries Crush and Rabbit. While this hints us with the presence of a specific bias in the function output it does not break the security of the function; in further rounds the bias is lost and the output appear as truly random.
+The MD6 hash function was a competitor in the SHA-3 competition but did not advance to the second round of the competition. In 9 and 10 rounds out of 94, the algorithm will consistently fail tests \texttt{smarsa\_MartixRank} and \texttt{sspectral\_Fourier3} in batteries Crush and Rabbit. While this hints us with the presence of a specific bias in the function output it does not break the security of the function; in further rounds, we can no longer detect any bias, and the output appears as truly random.
 
 \end{description}
 
