@@ -72,8 +72,6 @@
 
 \newcommand{\lmar}{3.6cm} % PC
 \newcommand{\rmar}{3.6cm} % PC
-\newcommand{\gr}{\cellcolor{green!40}}
-\newcommand{\rd}{\cellcolor{red!40}}
 %\newcommand{\lmar}{4cm} % Printed
 %\newcommand{\rmar}{3.2cm} % Printed
 
@@ -105,6 +103,18 @@
 \definecolor{code-bg-grey}{rgb}{0.85,0.85,0.85}
 \definecolor{code-bg-light_grey}{rgb}{0.92,0.92,0.92}
 \definecolor{crimson}{rgb}{0.6,0,0}
+\definecolor{lvl1}{rgb}{0.13,0.51,0.26}
+\definecolor{lvl2}{rgb}{0.46,0.77,0.44}
+\definecolor{lvl3}{rgb}{0.75,0.9,0.6}
+\definecolor{lvl4}{rgb}{1,1,0.8}
+
+\newcommand{\gr}{\cellcolor{green!40}}
+\newcommand{\rd}{\cellcolor{red!40}}
+\newcommand{\cone}{\cellcolor{lvl1}}
+\newcommand{\ctwo}{\cellcolor{lvl2}}
+\newcommand{\cthree}{\cellcolor{lvl3}}
+\newcommand{\cfour}{\cellcolor{lvl4}}
+
 
 % Because czech and slovak breaks it...
 \begingroup
@@ -944,29 +954,29 @@ The results of the analysis are shown in Table~\ref{tab:crypto_alg_analysis}. We
 \multicolumn{1}{R{3.2cm}}{\textbf{Security margin} \\ \footnotesize (rounds)} &
 \multicolumn{1}{R{3.2cm}}{\textbf{Security margin} \\ \footnotesize (proportion)} \\ \midrule
 % nist diehard small crush crush rabbit alphabit blockalphabit eacirc
-AES        &  3 &  10 &  \rd8 & \rd15 &  \rd5 & \rd20 &  \rd5 &  \rd2 &  \rd4 & \rd0.182 & 7 & 0.70 \\ \midrule
-BLAKE      &  1 &  16 & \rd11 & \rd11 &  \rd5 & \rd18 & \rd5 &  \rd2 &  \rd3 & \rd0.107 & 15 & 0.93 \\ \midrule
-Grai$\text{n}^{\ast}$      &  2 &  13 & \rd14 & \rd27 & \rd9/9&\rd31/31& \rd15 &  \rd4 &  \rd4 & \rd1.000 & 7 & 0.53 \\
+AES        &  3 &  10 &  \rd8 & \rd15 &  \rd5 & \rd20 &  \rd5 &  \rd2 &  \rd4 & \rd0.182 & 7 & \ctwo 0.70 \\ \midrule
+BLAKE      &  1 &  16 & \rd11 & \rd11 &  \rd5 & \rd18 & \rd5 &  \rd2 &  \rd3 & \rd0.107 & 15 & \cone 0.93 \\ \midrule
+Grai$\text{n}^{\ast}$      &  2 &  13 & \rd14 & \rd27 & \rd9/9&\rd31/31& \rd15 &  \rd4 &  \rd4 & \rd1.000 & 7 & \cthree 0.53 \\
            &  6 &     &  1 &  0 &  0 &  3 &  1 &  0 &  0 & 0.017 &  & \\ \midrule
-Gr\o stl   &  2 &  14 & \rd12 & \rd23 &  \rd9 & \rd27 &  \rd9 &  \rd3 &  \rd3 & \rd1.000 & 12 & 0.85 \\ \midrule
-JH         &  6 &  42 &\rd12/13& \rd27 & \rd10 &\rd30/31& \rd15 &  \rd4 &  \rd4 & \rd1.000 & 36 & 0.85 \\ \midrule
-Keccak     &  2 &  24 & \rd14 & \rd27 & \rd10 & \rd31 & \rd15 &  \rd4 &  \rd4 & \rd1.000 & 21 & 0.87 \\
+Gr\o stl   &  2 &  14 & \rd12 & \rd23 &  \rd9 & \rd27 &  \rd9 &  \rd3 &  \rd3 & \rd1.000 & 12 & \cone 0.85 \\ \midrule
+JH         &  6 &  42 &\rd12/13& \rd27 & \rd10 &\rd30/31& \rd15 &  \rd4 &  \rd4 & \rd1.000 & 36 & \cone 0.85 \\ \midrule
+Keccak     &  2 &  24 & \rd14 & \rd27 & \rd10 & \rd31 & \rd15 &  \rd4 &  \rd4 & \rd1.000 & 21 & \cone 0.87 \\
            &  3 &     &  0 &  1 &  1 & \rd11 &  \rd4 &  0 &  \rd3 & 0.017 &  & \\ \midrule
-MD$\text{6}^{\ast}$         &  8 & 104 &  \rd9 & \rd19 &  \rd5 & \rd16 &  \rd8 &  \rd2 &  \rd3 & \rd0.748 & 94 & 0.90 \\
+MD$\text{6}^{\ast}$         &  8 & 104 &  \rd9 & \rd19 &  \rd5 & \rd16 &  \rd8 &  \rd2 &  \rd3 & \rd0.748 & 94 & \cone 0.90 \\
            & 10 &     &  0 &  0 &  0 &  2 &  \rd3 &  0 &  0 & 0.010 &  & \\ \midrule
-Rabbi$\text{t}^{\ast}$      &  0 &   4 &  1 &  1 &  0 &  \rd4 &  \rd3 &  1 &  1 & 0.115 & 0 & 0 \\
-           &  4 &     &  0 &  0 &  0 &  3 &  \rd3 &  1 &  1 & --    &  & \\ \midrule
-Salsa20    &  2 &  20 & \rd12 & \rd26 &  \rd8 & \rd28 & \rd11 &  \rd3 &  \rd3 & \rd1.000 & 18 & 0.90 \\ \midrule
-Single DES &  4 &  16 &  \rd7 & \rd22 &  \rd7 & \rd26 & \rd11 &  \rd4 &  \rd4 & \rd0.193 & 11 & 0.68 \\
+Rabbi$\text{t}^{\ast}$      &  0 &   4 &  1 &  1 &  0 &  \rd4 &  \rd3 &  1 &  1 & 0.017 & 0 & \cfour 0 \\
+           &  4 &     &  0 &  0 &  0 &  3 &  \rd3 &  1 &  1 & 0.009    &  & \\ \midrule
+Salsa20    &  2 &  20 & \rd12 & \rd26 &  \rd8 & \rd28 & \rd11 &  \rd3 &  \rd3 & \rd1.000 & 18 & \cone 0.90 \\ \midrule
+Single DES &  4 &  16 &  \rd7 & \rd22 &  \rd7 & \rd26 & \rd11 &  \rd4 &  \rd4 & \rd0.193 & 11 & \ctwo 0.68 \\
            &  5 &     &  1 &  \rd6 &  1 & \rd18 &  \rd5 &  \rd2 &  \rd3 & 0.010 &  & \\ \midrule
-Skein      &  3 &  72 & \rd12 & \rd27 & \rd10 & \rd30 & \rd13 &  \rd3 &  \rd4 & \rd1.000 & 68 & 0.94 \\
+Skein      &  3 &  72 & \rd12 & \rd27 & \rd10 & \rd30 & \rd13 &  \rd3 &  \rd4 & \rd1.000 & 68 & \cone 0.94 \\
            &  4 &     &  0 &  0 &  0 & \rd10 &  \rd4 &  1 &  \rd3 & 0.014 &  & \\ \midrule
-SOSEMANUK  &  4 &  25 & \rd27 &\rd13/13& \rd10 &\rd31/31& \rd16 & \rd4  &  \rd4 & ????  & 21 & 0.84 \\ \midrule
-TEA        &  3 &  32 & \rd12 & \rd27 &  \rd8 & \rd27 & \rd12 &  \rd4 &  \rd4 & \rd1.000 & 27 & 0.84 \\
-           &  5 &     &  0 &  3 &  2 &  \rd4 &  1 &  0 &  \rd3 & 0.009 &  & \\ \midrule
-Triple DES &  2 &  16 & 1\rd2 & \rd26 &  \rd9 & \rd31 & \rd15 &  \rd3 &  \rd4 & \rd1.000 & 13 & 0.81 \\
+SOSEMANUK  &  4 &  25 & \rd13/13 &\rd27& \rd10 &\rd31/31& \rd16 & \rd4  &  \rd4 & \rd1.000 & 21 & \cone 0.84 \\ \midrule
+TEA        &  4 &  32 & \rd8 & \rd19 &  \rd6 & \rd15 & \rd4 &  \rd2 &  \rd3 & \rd0.444 & 27 & \cone 0.84 \\
+           &  5 &     &  0 &  3 &  2 &  \rd4 &  1 &  0 &  \rd3 & 0.012 &  & \\ \midrule
+Triple DES &  2 &  16 & 1\rd2 & \rd26 &  \rd9 & \rd31 & \rd15 &  \rd3 &  \rd4 & \rd1.000 & 13 & \cone 0.81 \\
            &  3 &     &  1 &  \rd4 &  1 &  \rd4 &  0 &  1 &  1 & 0.017 &  & \\ \midrule
-RC$\text{4}^{\ast}$  (roundless) & -- & -- & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0.009 & -- & -- \\
+RC$\text{4}^{\ast}$  (roundless) & -- & -- & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0.009 & -- & \cfour 0 \\
 \bottomrule
 \end{tabular}
 }
@@ -980,16 +990,47 @@ The values in the cells express the number of failed tests in a specific battery
 
 We also provide security margins of the analysed algorithms. The security margins are based on the highest round in which the algorithm failed to pass any battery and on the default total number of rounds in the algorithm.
 
-\subsection{Detection of specific biases}
+Some algorithms in the table are marked by an asterisk. In highest shown rounds, these algorithms did pass most of the batteries; however after closer inspection we discovered some patterns in the results. These findings are summarized in Section~\ref{sec:notable_results}.
 
-Higher rounds of the algorithms marked by an asterisk were included in the table because after further analysis of the results, bias was found in the included rounds.
+The discovered patterns in the results were consistent failures of certain tests when analysing algorithm with fixed number of rounds. We consider a test as consistently failing when we create multiple datasets of the same algorithm and round and the test will fail in all analyses of the datasets. The generation of the datasets can vary in the used keys or plaintexts.
 
-\subsection{Notable results}
+For each suspicious algorithm with fixed round we generated additional 16000 MiB of data. The additional data shown same patterns in the results as in the original analysis, hinting the presence of a certain bias produced by the algorithm.
+
+
+\subsection{Notable observations}
 \label{sec:notable_results}
+In this section we list our observations based on the above-presented results. We list these observations based on their importance.
 
-\subsection{Discussion}
+\begin{description}
+\item[Biased output of Rabbit cipher] \hfill \\
+Rabbit cipher is one of the winners in the eSTREAM competition in the software section. The algorithm has total of 4 rounds. In all of its configurations, Rabbit will consistently fail tests \texttt{sstring\_HammingIndep} and \texttt{sstring\_PeriodsInStrings} in batteries Crush, Rabbit, Alphabit and Block Alphabit. 
 
+The tests are aiming to discover dependencies between separate bits in the data stream. One interesting detail is that the tests in Block Alphabit will fail if and only the bits in the stream are not previously re-ordered by the battery. This fact led us to believe that there indeed is some dependency between bits in the output.
 
+Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher with the complexity of $2^{158}$.
+
+\item[Biased output of RC4 cipher] \hfill \\
+RC4 is a well-known stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version, the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery.
+
+Multiple papers on biases and distinguishing attacks on RC4 were published; notable publications are \textit{A Practical Attack on Broadcast RC4} (cit.), \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} (cit.) and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} (cit.).
+
+\item[Security margins with respect to the statistical analysis] \hfill \\
+Majority of the analysed algorithms has the security margin higher than 0.8. This means that even if we would drastically increase our computational capability and performance of the state-of-the-art statistical tools we still wouldn't be able to detect biases in most of the function outputs. 
+
+The margins are significantly lower only in functions with specific biases detected, namely Rabbit, RC4 and Grain.
+
+\item[Strength of the batteries and EACirc] \hfill \\
+All of the batteries implemented in RTT perform better or equally well than EACirc. This can be caused by the fact that EACirc analyses only 100 MB of data per execution and also finishes its execution more quickly. Therefore we have trade-off between the needed time and resources and strength of the tool. In many situations we aren't able to retrieve 8000 MiB (e.g. slow hardware generators in smartcards); in these cases the usage of EACirc for bias detection can be viable.
+
+The batteries themselves have differing strength. While batteries NIST STS and Small Crush have more or less same bias detection capabilities as EACirc, the remaining batteries perform better and can detect even subtle biases. The remaining batteries are listed here, along with the number of times they detected a bias when other batteries failed to do so: Alphabit (2 times), Dieharder (3 times), Block Alphabit (5 times), Rabbit (6 times), Crush (8 times).
+
+\item[Biased output of round reduced Grain function] \hfill \\
+The Grain algorithm is on of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds out of 13, the test will consistently fail tests \textbf{smarsa\_MatrixRank} and \textbf{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
+
+\item[Biased output of round reduced MD6 hash function] \hfill \\
+The MD6 hash function was a competitor in the SHA-3 competition but did not advance to the second round of the competition. In 9 and 10 rounds out of 94, the algorithm will consistently fail tests \texttt{smarsa\_MartixRank} and \texttt{sspectral\_Fourier3} in batteries Crush and Rabbit. While this hints us with the presence of a specific bias in the function output it does not break the security of the function; in further rounds the bias is lost and the output appear as truly random.
+
+\end{description}
 
 
 
@@ -1172,8 +1213,8 @@ Higher rounds of the algorithms marked by an asterisk were included in the table
 
 \begin{nomar}
 \centering
-\begin{tabular}{ r | l | r | r }
-\textbf{ID} & \textbf{Test name} & \textbf{Block size} & \textbf{Subtests} \\ \hline \hline
+\begin{tabular}{@{}rlrr@{}} \toprule
+\textbf{ID} & \textbf{Test name} & \textbf{Block size} & \textbf{Subtests} \\ \midrule
 1  & Frequency (Monobit)                           & --  & 1 \\
 2  & Frequency within a Block                      & 128 & 1 \\
 3  & Cumulative Sums (Cusums)	                   & --  & 2 \\
@@ -1188,7 +1229,7 @@ Higher rounds of the algorithms marked by an asterisk were included in the table
 12 & Random Excursions 	                           & --  & 8 \\
 13 & Random Excursions Variant	                   & --  & 18 \\
 14 & Serial                                        & 16  & 2 \\
-15 & Linear Complexity	                           & 500 & 1 \\
+15 & Linear Complexity	                           & 500 & 1 \\ \bottomrule
 \end{tabular}
 \end{nomar}
 
@@ -1198,9 +1239,11 @@ Higher rounds of the algorithms marked by an asterisk were included in the table
 
 \begin{nomar}
 \centering
-\begin{tabular}{r | l | r | r | l}
-\textbf{ID} & \textbf{Test name} & \textbf{Stream size (byte)} & \textbf{P-samples} & \textbf{Arguments} \\ \hline \hline
-\multicolumn{5}{l}{\textbf{Diehard tests}} \\
+
+\scalebox{0.9}{
+\begin{tabular}{@{}rlrrl@{}} \toprule
+\textbf{ID} & \textbf{Test name} & \textbf{Stream size (byte)} & \textbf{P-samples} & \textbf{Arguments} \\ \midrule
+\multicolumn{5}{c}{\textbf{Diehard tests}} \\ \midrule
 0   & Birthdays                    &    153 600 & 100 & -- \\
 1   & OPERM5                       &  4 000 020 & 100 & -- \\
 2   & 32$\times$32 Binary Rank     &  5 120 000 & 100 & -- \\
@@ -1217,26 +1260,27 @@ Higher rounds of the algorithms marked by an asterisk were included in the table
 13  & Squeeze 					   & 10 000 000+& 100 & -- \\
 14  & Sums \textbf{(Not used)}     &         -- & --  & -- \\
 15  & Runs                         &    400 000 & 100 & -- \\
-16  & Craps                        & 10 000 000+& 100 & -- \\ \hline
-\multicolumn{5}{l}{\textbf{Marsaglia and Tsang tests}} \\ 
-17  & GCD & 80 000 000 & 100 & -- \\ \hline
-\multicolumn{5}{l}{\textbf{STS tests}} \\ 
+16  & Craps                        & 10 000 000+& 100 & -- \\ \midrule
+\multicolumn{5}{c}{\textbf{Marsaglia and Tsang tests}} \\ \midrule 
+17  & GCD & 80 000 000 & 100 & -- \\ \midrule
+\multicolumn{5}{c}{\textbf{STS tests}} \\ \midrule
 100 & Monobit              & 400 000 & 100 & -- \\
 101 & Runs                 & 400 000 & 100 & -- \\
-102 & Serial (Generalized) & 400 000 & 100 & -- \\ \hline
-\multicolumn{5}{l}{\textbf{RGB tests}} \\ 
+102 & Serial (Generalized) & 400 000 & 100 & -- \\ \midrule
+\multicolumn{5}{c}{\textbf{RGB tests}} \\ \midrule
 200 & Bit Distribution             & n$\times$800 000 + 4 & 100 & \texttt{-n \{1..12\}} \\
 201 & Generalized Minimum Distance & n$\times$40 000 & 100 & \texttt{-t 10000 -n \{2..5\}} \\
 202 & Permutations                 & n$\times$400 000 & 100 & \texttt{-n \{2..5\}} \\
 203 & Lagged Sum                   & (n+1)$\times$4 000 000 & 100 & \texttt{-n \{0..32\}} \\
-204 & Kolmogorov-Smirnov           & 40 000 & 1000 & -- \\ \hline
-\multicolumn{5}{l}{\textbf{DAB tests}} \\ 
+204 & Kolmogorov-Smirnov           & 40 000 & 1000 & -- \\ \midrule
+\multicolumn{5}{c}{\textbf{DAB tests}} \\ \midrule
 205 & Byte Distribution & 614 400 000 & 1 & -- \\
 206 & DCT               &  51 200 000 & 1 & -- \\
 207 & Fill Tree         & 500 000 000+& 1 & -- \\
 208 & Fill Tree 2       & 200 000 000+& 1 & -- \\
-209 & Monobit 2         & 260 000 000 & 1 & -- \\
+209 & Monobit 2         & 260 000 000 & 1 & -- \\ \bottomrule
 \end{tabular}
+}
 \end{nomar}
 
 \chapter{Overview of options in toolkit settings}
