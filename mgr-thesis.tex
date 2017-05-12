@@ -781,61 +781,61 @@ The web interface also presents and assesses the results of the past experiments
 \chapter{Analysing the cryptographic primitives outputs}
 \label{chap:crypto_fn_analysis}
 
-In the chapter we present the results of two distinct exeriments and describe the methods and battery configurations used for obtaining the results.
+In the chapter, we present the results of two distinct experiments and describe the methods and battery configurations used for obtaining the results.
 
 In the first experiment, we analysed large quantities of random data with the statistical batteries implemented in RTT. The motivation for the experiment was that the results of the multiple repeated analyses would provide us with a reference for our further experiments. Our subsequent experiments would differ from the baseline experiment only in the input data but not in the settings of the respective batteries.
 
-In the second experiment, outputs of 15 distinct cryptographic algorithms were analysed. The specific algorithms were chosed based either on their popularity or on their success in cryptographic competitions eSTREAM (cit.) and SHA3 (cit.); among the chosen functions are algorithms such as AES, DES, RC4 or Keccak. The results of the experiment were compared with results of the analysis in EACirc framework. The EACirc framework implements alternative approach to the randomness testing and is developed in CRoCS (cit.).
+In the second experiment, we analysed outputs of 15 distinct cryptographic algorithms. The specific algorithms were chosen based either on their popularity or their success in cryptographic competitions eSTREAM (cit.) and SHA3 (cit.); among the selected functions are algorithms such as AES, DES, RC4 or Keccak. We compared the results of the experiments with the results of the analysis in the EACirc framework. The EACirc framework implements an alternative approach to the randomness testing and is developed in CRoCS (cit.).
 
 \section{Battery configurations used in the experiments}
 \label{sec:configuration_of_batteries}
-In this section we will present the configurations of the respective batteries that were used in both above-mentioned experiments. The settings were kept as close as possible to the default settings of the respective batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. The battery configuration file that was used in RTT is in Appendix~\ref{app:batt_conf_example}.
+In this section, we will present the configurations of the respective batteries that we used in both experiments mentioned above. The settings were kept as close as possible to the default settings of the individual batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. The used RTT battery configuration file is in Appendix~\ref{app:batt_conf_example}.
 
 \subsection{Common settings}
-All batteries were provided 8000 MiB\footnote{The exact length of single file was $8000 \times 1024^2 = 8388608000$ bytes.} long data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries. The file size was chosen as a compromise between the amount of data needed by the separate tests in the batteries and our capabilities to process and store such quantities of data.
+All batteries were provided 8000 MiB\footnote{The exact length of a single file was $8000 \times 1024^2 = 8388608000$ bytes.} large data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries. We chose the file size as a compromise between the amount of data needed by the separate tests in the batteries and our capabilities to process and store such quantities of data.
 
 \subsection*{NIST Statistical Testing Suite}
-The settings of the tests in NIST STS was the same as in default execution of the battery. The tests along with their default settings are listed in Appendix~\ref{app:nist_sts_tests}. In single run, each test processed 1000 data streams of size 1000000 bits; in total, each test analysed 125 MB of data in its run.
+The settings of the tests in NIST STS was the same as in default execution of the battery. The tests along with their default settings are listed in Appendix~\ref{app:nist_sts_tests}. In a single run, each test processed 1000 data streams of size 1000000 bits; in total, each test analysed 125 MB of data per execution.
 
 \subsection*{Dieharder}
 The test settings of the Dieharder battery follow default settings outlined in Appendix~\ref{app:dieharder_tests} with the single exception of test RGB Lagged Sums. In default settings, the test would need too much data\footnote{RGB Lagged Sum test with parameter \texttt{n=32} will analyse 13.2 GB of data.} for the analysis. 
 
-The RGB Lagged Sum test is executed in 33 variants with variable parameter \texttt{n=\{0..32\}}. The number of bytes the test variant will process scales with the parameter \texttt{n} of the variant and number of times the test variant will be repeated (p-samples) during the battery execution. To lower the amount of the needed bytes, we reduced the number of repetitions for each respective variant based on its \texttt{n}. The number of repetitions was calculated using following function.
+The RGB Lagged Sum test is executed in 33 variants with variable parameter \texttt{n=\{0..32\}}. The number of bytes the test variant will process scales with the parameter \texttt{n} of the variant and number of times the test variant will be repeated (p-samples) during the battery execution. To lower the amount of the needed bytes, we reduced the number of repetitions for each variant based on its \texttt{n}. The number of repetitions was calculated using the following function.
 
 $$
 \text{Rep}(n) = \min\left(100 ; \left\lfloor \frac{ 8000 \times 1024^{2} }{ (n + 1) \times 4 \times 10^{6} } \right\rfloor \right)
 $$
 
 \subsection*{TestU01}
-The batteries Small Crush and Crush are executed in their default settings. The default settings of the tests in their respective batteries can be found in TestU01 documentation (cit.).
+We executed the batteries Small Crush and Crush in their default settings. The default settings of the tests in their respective batteries can be found in TestU01 documentation (cit.).
 
 The battery Big Crush is omitted from our analysis because the tests in the battery would need at least 60 GB of data to be fully executed which is an infeasible amount.
 
-The Rabbit, Alphabit and Block Alphabit batteries are executed in default test settings. The tests are limited to 8000 MiB of data by the parameter \texttt{nb}.
+The Rabbit, Alphabit and Block Alphabit batteries were executed in default test settings. We limited the tests to 8000 MiB of data by the parameter \texttt{nb}.
 
-The tests in the batteries Alphabit and Block Alphabit have settings that would cause them to process only certain parts of each 32 bit block in the data. These settings are not used and all bits in 32 bit blocks are analysed by the tests. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits.
+The tests in the batteries Alphabit and Block Alphabit have settings that would cause them to process only certain parts of each 32-bit block in the data. We did not use these settings; the tests analysed all bits in 32-bit blocks. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits.
 
 \section{Baseline experiment}
-Aim of this experiment was to observe behavior and results of the batteries in RTT when analysing truly random data. The observation would be then used for the interpretation of results of our other experiments. 
+The aim of this experiment was to observe behaviour and results of the batteries in RTT when analysing truly random data.  We will use the results of this analysis to interpret the results of our further analyses.
 
-The evaluation of the battery result is based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$ and its null hypothesis $H_0$ is rejected. The reason why we chose such interval is explained is Section~\ref{sec:preventive_measures_rtt}.
+We evaluate of the battery result based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$ and its null hypothesis $H_0$ is rejected. The reason why we chose such range is explained is Section~\ref{sec:preventive_measures_rtt}.
 
-When analysing truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed on the interval $[0,1]$. The uniformity is caused by the fact that we can't predict output of a TRNG and each possible output is observed with equal probability. Therefore we also can't predict result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; hence test's $H_0$ is rejected and the test fails with rate equal to significance level $\alpha$. Rejection of $H_0$, when it actually holds true, is called \textbf{Type I error} (cit.). The theoretical probability of Type I error should be equal to the value of the significance level.
+When analysing truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed on the interval $[0,1]$. The uniformity is caused by the fact that we can't predict the output of a TRNG and each possible output is observed with equal probability. Therefore we also can't predict the result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; hence test's $H_0$ is rejected and the test fails with a rate equal to significance level $\alpha$. Rejection of $H_0$, when it holds true, is called \textbf{Type I error} (cit.). The theoretical probability of Type I error should be equal to the value of the significance level.
 
-When we are evaluating a battery analysis based on number of failed tests, we must know how many tests we expect to fail when the $H_0$ holds true. We can calculate the expected value like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $\text{Bin}(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing number of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected number of the failed tests is $E(F_{Exp}) = n \times \alpha$. Therefore, should a battery finish with $n \times \alpha$ failed tests we still can't reject the $H_0$ for the whole battery; we will treat the data analysis as successful.
+When we are evaluating a battery analysis based on a count of failed tests, we must know how many tests we expect to fail when the $H_0$ holds true. We can calculate the expected value like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $\text{Bin}(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing the count of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected number of the failed tests is $E(F_{Exp}) = n \times \alpha$. Therefore, should a battery finish with $n \times \alpha$ failed tests we still can't reject the $H_0$ for the whole battery; we will treat the data analysis as successful.
 
-However, the expected number of failures is not necesarilly exact, as the above-mentioned calculation treats tests as a independent trials. Separate tests in a battery are not required nor proved to be independent, which can lead to differing distributions of empirical and theoretical random variables representing number of failed tests.
+However, the expected number of failures is not necessarily exact, as the calculation mentioned above treats tests as independent trials. Separate tests in a battery are not required nor proved to be independent, which can lead to differing distributions of empirical and theoretical random variables representing the count of failed tests.
 
-To observe empirical distribution of the number of failed tests $F_{Obs}$ we inspected the number of failures of the respective batteries during analysis of truly random data. In total, approximately 8 terabytes of random data were downloaded from QRNG service provided by Humboldt-Universitaet zu Berlin (cit.). The data were split into 1000 blocks each of size 8000 GiB. All 7 batteries included in this experiment analysed each block of data once. Sample size of 1000 trials is enough for us to compare the distributions of the two random variables $F_{Exp}$ and $F_{Obs}$.
+To observe the empirical distribution of the number of failed tests $F_{Obs}$ we inspected the number of failures of the respective batteries during analysis of truly random data. In total, approximately eight terabytes of random data were downloaded from QRNG service provided by Humboldt-Universitaet zu Berlin (cit.). The data were split into 1000 blocks each of size 8000 GiB. All seven batteries included in this experiment analysed each block of data once. The sample size of 1000 trials is enough for us to compare the distributions of the two random variables $F_{Exp}$ and $F_{Obs}$.
 
-The counts of failures of respective batteries were inspected in following two scenarios.
+We inspected the counts of failures of individual batteries in following two scenarios.
 
 \begin{description}
 \item[Original second-level p-values failures] \hfill \\
-In this scenario, we assumed that all second-level p-values produced by a specific battery are independent. Therefore, all statistics calculated by the battery were treated as separate tests. For example, if some test is executed in two variants, each of those variants has two subtests and each subtest will calculate 2 statistics, in total we will get $2^3=8$ second-level p-values; we consider these eight p-values as the results of eight independent tests each of whose calculated single p-value. 
+In this scenario, we assumed that all second-level p-values produced by a specific battery are independent. Therefore, we treated all statistics calculated by the battery as separate tests. For example, if we execute some test in two variants, each of those variants has two subtests, and each subtest will calculate two statistics, in total we will get $2^3=8$ second-level p-values; we consider these eight p-values as the results of eight independent tests each of whose calculated a single p-value. 
 
 \item[Corrected p-values failures] \hfill \\
-Whit this second scenario, we tried to mitigate the effect of dependent p-values in our set by grouping them together. We put the p-values that are most likely dependent into single set or group. We assumed that the p-values that are most likely inter-connected are those that are produced by a single statistical test. Therefore, all p-values belonging to a single test were reduced to only one p-value, leaving us with a single result per distinct test in a statistical battery. For example, should a single test produce eight p-values, for this test we will only have information whether the test was a failure or not. For the grouping of the p-values we used Šidák's correction (cit.) and the process is shown in Definition~\ref{def:sidak}.
+With this second scenario, we tried to mitigate the effect of dependent p-values in our set by grouping them together. We grouped the p-values that are most likely dependent, under the assumption that the p-values that are most likely inter-connected are those that are produced by a single statistical test. Therefore, all p-values belonging to a single test were reduced to only one p-value, leaving us with a single result per distinct test in a statistical battery. For example, should a single test produce eight p-values, for this test we will only have information whether the test was a failure or not. For the grouping of the p-values, we used Šidák's correction (cit.), and we show the process in Definition~\ref{def:sidak}.
 
 \begin{definition}
 \label{def:sidak}
@@ -844,7 +844,7 @@ For $n$ grouped p-values $P = \{p_1,..,p_n\}$ with significance level $\alpha$ a
 
 \end{description}
 
-To compare the feasibility of the two above-mentioned scenarios, we needed to compare both of the observed distributions to their respective expected distributions and see how they perform. We consider the approach more feasible when it is less differing from its expected distribution; the battery results are easier to interpret when they are closer to the theoretical expectations. The comparison of the distributions was realised by following steps.
+To compare the feasibility of the two scenarios, we needed to compare both of the observed distributions to their respective expected distributions and see how they perform. We consider the approach more feasible when it is less differing from its expected distribution; the battery results are easier to interpret when they are closer to the theoretical expectations. We realised the comparison of the distributions by following steps.
 
 \begin{definition}
 \label{def:freq}
@@ -865,7 +865,7 @@ Let $X = \{x_1,..,x_s\}$ be a multiset of the samples of $F_{Obs}$ and $D = \{d_
 E\left(f_{d}^{X}\right) = P(F_{Exp} = d) \times s \\
 \end{equation}
 
-Now that we have both observed frequencies $f_{d}^{X}$ and their expected values $E\left(f_{d}^{X}\right)$ for $d \in D$ we can assess their closeness. For this assessment we used Pearson's chi-squared test ($\chi^2$) that evaluates that any observed difference between two data sets (e.g. observed and expected frequencies of failure counts) happened by chance (cit.). We calculated Pearson's cumulative test statistic $\chi^2$ for each pair of expected and observed frequencies as shown in Equation~\ref{eq:chi_square_stat}.
+Now that we have both observed frequencies $f_{d}^{X}$ and their expected values $E\left(f_{d}^{X}\right)$ for $d \in D$ we can assess their closeness. For this assessment, we used Pearson's chi-squared test ($\chi^2$) that evaluates that any observed difference between two data sets (e.g. observed and expected frequencies of failure counts) happened by chance (cit.). We calculated Pearson's cumulative test statistic $\chi^2$ for each pair of expected and observed frequencies as shown in Equation~\ref{eq:chi_square_stat}.
 
 \begin{equation}
 \label{eq:chi_square_stat}
@@ -874,7 +874,7 @@ Now that we have both observed frequencies $f_{d}^{X}$ and their expected values
 
 Due to the limitation of $\chi^2$ test stating that the expected value must be at least 5, the samples that didn't satisfy this condition were summed together and treated as a single sample. We then calculated p-value using the $\chi^2$ distribution (cit.). The p-value calculation is based on the degrees of freedom that are equal to the size of the tested set minus one (in our case $k-1$) and on the value of $\chi^2$ statistic. The p-value can be then obtained by using one of the various online tools (cit.). 
 
-The resulting p-value is indicator of how close are the two tested datasets. The p-value expresses the probability that any difference between the two tested sets happened by chance. Therefore, when we are comparing the feasibility of the two failure counting scenarios (original versus corrected results) the more feasible one will have higher p-value than the other; our point was to find out which one of our approaches followed our theoretical expectations more closely.
+The resulting p-value is an indicator of how close are the two tested datasets. The p-value expresses the probability that any difference between the two measured sets happened by chance. Therefore, when we are comparing the feasibility of the two failure counting scenarios (original versus corrected results) the more feasible one will have higher p-value than the other; our point was to find out which one of our approaches followed our theoretical expectations more closely.
 
 \begin{figure}[H]
 \begin{nomar}
@@ -888,7 +888,7 @@ The resulting p-value is indicator of how close are the two tested datasets. The
 \label{fig:corr_vs_orig_hist}
 \end{figure}
 
-In Figure~\ref{fig:corr_vs_orig_hist} we can see both original and corrected failure frequecies along with their expected distributions. As the $\chi^2$ statistic p-value suggest, in the corrected version of failure counting, the observed failure frequency is much closer to the expected distribution than in the original version.
+In Figure~\ref{fig:corr_vs_orig_hist} we can see both original and corrected failure frequencies along with their expected distributions. As the $\chi^2$ statistic p-value suggest, in the corrected version of failure counting, the observed failure frequency is much closer to the expected distribution than in the original version.
 
 \begin{table}[H]
 \begin{nomar}
@@ -911,18 +911,13 @@ Block Alphabit & $1.87 \cdot 10^{-68}$    & 14/198 & \gr$5.15 \cdot 10^{-47}$ & 
 \label{tab:baseline_summary}
 \end{table}
 
-In Table~\ref{tab:baseline_summary} we present comparison of the $\chi^2$ statistic p-values between the original and the corrected results. We can see, that in general, the corrected results are closer to their expected distributions. Only in two cases (NIST STS and Rabbit), the corrected results perform worse while in the remaining batteries they offer a significant improvement. We also present the acceptance bounds for the batteries. The acceptance bound represent the maximum number of failed tests in a battery, while not rejecting the null hypothesis. Should the number of failures exceed the acceptance bound, we will reject $H_0$; the tested data failed to pass the battery.
+In Table~\ref{tab:baseline_summary} we present comparison of the $\chi^2$ statistic p-values between the original and the corrected results. We can see, that in general, the corrected results are closer to their expected distributions. Only in two cases (NIST STS and Rabbit), the corrected results perform worse while in the remaining batteries they offer a significant improvement. We also present the acceptance bounds for the batteries. The acceptance bound represents the maximum number of failed tests in a battery, while not rejecting the null hypothesis. Should the number of failures exceed the acceptance bound, we will reject $H_0$; the tested data failed to pass the battery.
 
-However, even with the improved result interpretation, some failure frequencies are still too distant from their theoretical distributions. For this reason, we decided to increase the acceptance bounds. The acceptance bounds are partly based on maximum number of observed failures in the battery and partly on the probability of observing such number of failures (see Equation~\ref{eq:bin_pmf}). In all cases, the probability of seeing the number of failures equal to acceptance bound is not lesser than 0.001.
+However, even with the improved result interpretation, some failure frequencies are still too distant from their theoretical distributions. For this reason, we decided to increase the acceptance bounds. The acceptance bounds are partly based on the maximum number of observed failures in the battery and partly on the probability of observing such number of failures (see Equation~\ref{eq:bin_pmf}). In all cases, the probability of seeing the number of failures equal to acceptance bound is not lesser than 0.001.
 
-The presented bounds are used for result interpretation of the subsequent experiments. If the number of failed tests will be higher than the bound, the data did not pass the battery analysis. 
+The presented bounds are used for result interpretation of the subsequent experiments. If the number of failed tests will be higher than the bound, the data did not pass the battery analysis.
 
 \section{Analysis of well-known cryptographic algorithms}
-%\begin{itemize}
-%\item Testing is the same as before baby
-%\item Show bigass table with results - compare to EACirc
-%\item Conlusions - limits of EACirc, limits of RTT, differences, Rabbit, Grain are lit af.
-%\end{itemize}
 In this experiments we focused on the analysis of well-known and used cryptographic primitives. The 15 algorithms were chosen based on their popularity and success in cryptographic competitions eSTREAM (cit.) and SHA3 (cit.).
 
 Our motivation for this experiment was to find out how big are the security margins on common algorithms. Most of the tested algorithms could be reduced in number of their rounds. We wanted to see how much could we reduce the rounds, until we would start detecting the biases in the data.
