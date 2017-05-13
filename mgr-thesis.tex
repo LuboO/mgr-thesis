@@ -787,6 +787,8 @@ In the first experiment, we analysed large quantities of random data with the st
 
 In the second experiment, we analysed outputs of 15 distinct cryptographic algorithms. The specific algorithms were chosen based either on their popularity or their success in cryptographic competitions eSTREAM (cit.) and SHA-3 (cit.); among the selected functions are algorithms such as AES, DES, RC4 or Keccak. We compared the results of the experiment with the results of the analysis in the EACirc framework. The EACirc framework implements an alternative approach to the randomness testing and is developed in CRoCS (cit.).
 
+In our experiments, all statistical tests have significance level $\alpha$ set to 0.01. The tests will reject the null hypothesis $H_0$ based on this significance level.
+
 \section{Battery configurations used in the experiments}
 \label{sec:configuration_of_batteries}
 In this section, we will present the configurations of the individual batteries that we used in the experiments mentioned above. The settings were kept as close as possible to the default settings of the individual batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. The used RTT battery configuration file is in Appendix~\ref{app:batt_conf_example}.
