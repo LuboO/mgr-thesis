@@ -821,6 +821,7 @@ The tests in Rabbit, Alphabit and Block Alphabit batteries were executed in thei
 The tests in the batteries Alphabit and Block Alphabit have settings that would set them to process only certain parts of each 32-bit block in the data. We did not use these settings; the tests analysed all bits in 32-bit blocks. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits(cit.).
 
 \section{Baseline experiment}
+\label{sec:baseline_exp}
 The aim of this experiment was to observe behaviour and results of the batteries in RTT when analysing truly random data.  We will use the results of this analysis to interpret the results of our further analyses.
 
 We evaluate the battery analysis based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$; null hypothesis $H_0$ of the test is rejected. The reason why we excluded one from the non-rejecting interval is explained in Section~\ref{sec:preventive_measures_rtt}.
@@ -1036,11 +1037,23 @@ The MD6 hash function was a competitor in the SHA-3 competition but did not adva
 
 \end{description}
 
+\chapter{Validation of outputs of Dieharder}
+\label{chap:validating_dieharder}
+%\begin{itemize}
+%\item Intro - seeing whether premises holds - Type I error and uniformity of statistics
+%\item Doesn't have to introduce Dieharder OR the stats
+%\item Just present the experiment and show and discuss results. 4 pages no bigge.
+%\end{itemize}
+The goal of the research presented in this chapter was to analyse validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results we analysed, we processed 8 terabytes of truly random data with each test in Dieharder. We used the same set of data as in experiment described in Section~\ref{sec:baseline_exp}.
 
+\section{Research goals??}
+To evaluate the validity of the results we evaluated the .
 
+The first hypothesis is stating that with a significance level $\alpha$, we should observe a type I error with the rate equal to $\alpha$. As we know that all tested data were originating
 
 
 
+\section{Settings of the experiment}
 
 
 
@@ -1187,12 +1200,13 @@ The MD6 hash function was a competitor in the SHA-3 competition but did not adva
 
 
 
-\chapter{Analysis of DIEHARDER results on quantum random data}
-\begin{itemize}
-\item Statistical intro, uniformity, first vs. second level p-value, etc...
-\item Two experiments - continuous p-values, blocks of 2nd level
-\item Results - non-uniform, where it will begin to show on 2nd level results
-\end{itemize}
+
+
+
+
+
+
+
 
 \chapter{Conclusions}
 \begin{itemize}
