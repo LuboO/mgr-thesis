@@ -1039,27 +1039,41 @@ The MD6 hash function was a competitor in the SHA-3 competition but did not adva
 
 \chapter{Validation of outputs of Dieharder}
 \label{chap:validating_dieharder}
-%\begin{itemize}
-%\item Intro - seeing whether premises holds - Type I error and uniformity of statistics
-%\item Doesn't have to introduce Dieharder OR the stats
-%\item Just present the experiment and show and discuss results. 4 pages no bigge.
-%\end{itemize}
-The goal of the research presented in this chapter was to analyse validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results we analysed, we processed 8 terabytes of truly random data with each test in Dieharder. We used the same set of data as in experiment described in Section~\ref{sec:baseline_exp}.
+The goal of the research presented in this chapter was to analyse validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results for later analysis, we processed 8 terabytes of truly random data with each test in Dieharder. We used the same set of data as in experiment described in Section~\ref{sec:baseline_exp}.
 
-\section{Research goals??}
-To evaluate the validity of the results we evaluated the .
+\section{Goals of the research}
+During the statistical testing of randomness, we assume that when the analysed data originate from TRNG, the first-level p-values are uniformly distributed. This assumption follows from the fact that TRNG will produce any possible output with equal probability. Therefore, we potentially feed to the test any possible data and the test will output any possible results. Hence we assume the uniformity of first-level p-value of any individual test.
 
-The first hypothesis is stating that with a significance level $\alpha$, we should observe a type I error with the rate equal to $\alpha$. As we know that all tested data were originating
+Dieharder uses this assumption to further process the results. In normal settings, the user of the battery will not be presented the first-level p-values of the tests as the result. Each test in Dieharder will be repeated multiple times resulting in multiple first-level p-values; these p-values will be then tested for uniformity by the Kolmogorov-Smirnov (K-S) test (cit.). Should the K-S test fail, the assumption of the uniformity is rejected and the test is deemed failed; the user should consider the tested data non-random.
 
-
+The aim of this research was to verify the assumption mentioned above; when we analyse random data we expect uniformly distributed first-level p-values.
 
 \section{Settings of the experiment}
+For the analysis we used the tests with their default parameters as presented in Appendix~\ref{app:dieharder_tests}. We ommited the tests that are marked as not used.
 
+We inspected the uniformity of first-level p-values of all subtests and test variants present in default Dieharder run. For example, if a single test is executed in two variants and both variants have two subtests then the test will produce four sets of first-level p-values; we treat these sets independently, as if they were produced by four separate tests. In this chapter we are reffering to these low-level tests as to atomic tests.
 
+During the default run, the battery will execute 110 atomic test; resulting in 110 individual p-value sets. To extract maximum possible amount of p-values from the eight terabytes of data, each atomic test processed this data stream from start to finish; a single test was executed as many times as the amount of data would allow without processing more than eight terabytes. The final size of the p-value set varies for each atomic test as each atomic test will process different amount of data in a single execution. Each p-value in the set represents a single execution of an atomic test.
 
+\section{Analysis of the uniformity of p-values}
+We inspected the uniformity of the p-value sets using the proportion statistic and Pearson's chi-squared ($\chi^2$) goodness-of-fit test (cit.).
 
+The proportion statistic is evaluated based on the number of observed test failures within the p-value sets. We consider the test failed if its p-value is lesser than the significance level $\alpha=0.001$. Let $F$ be a discrete random variable expressing the count of failed tests within a p-value set with $n$ elements; the p-values in the set are samples of $F$. According to our previous assumption, the p-values should be uniformly distributed on interval $[0,1]$ and therefore the probability of a single test failure is $\alpha$. Then the random variable $F$ should follow binomial distribution $\text{Bin}(n,\alpha)$ (cit.); the expected value of the variable is $E(F) = n\alpha$. The probability of observing $x$ failures within the p-value set is calculated using the probability mass function of binomial distribution shown in Equation~\ref{eq:binom_pmf_5}.
 
+\begin{equation}
+\label{eq:binom_pmf_5}
+P(F = x) = \binom xn \alpha^x(1-\alpha)^{n-x}
+\end{equation}
 
+If we observe $x$ failures, we can calculate the probability of observing same or more extreme count of failures under the assumption that $F_{Obs}$ follows the distribution $\text{Bin}(n,\alpha)$. The more extreme result is a result more distant from the expected value than the observed one. The probability is calculated as shown in Equation~\ref{eq:prop_statistic}.
+
+\begin{align}
+D &= \lvert E(F) - x \rvert \\
+\label{eq:prop_statistic}
+P(\lvert F - E(F) \rvert \geq D) &= 1 - \left( \sum\limits_{k=\lfloor E(F)-D \rfloor + 1}^{\lceil E(F)+D \rceil - 1} P(F = x) \right)
+\end{align}
+
+The p-value of the proportion statistic is the probability described above. If the p-value is lesser than 0.001, we reject the hypothesis that $F$ follows the binomial distribution $\text{Bin}(n. \alpha)$ and consider the inspected p-value set non-uniform.
 
 
 
