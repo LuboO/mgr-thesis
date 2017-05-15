@@ -956,30 +956,29 @@ The results of the analysis are shown in Table~\ref{tab:crypto_alg_analysis}. We
 \multicolumn{1}{R{3.2cm}}{\textbf{EACirc} \\ \footnotesize (proportion)} &
 \multicolumn{1}{R{3.2cm}}{\textbf{Security margin} \\ \footnotesize (rounds)} &
 \multicolumn{1}{R{3.2cm}}{\textbf{Security margin} \\ \footnotesize (proportion)} \\ \midrule
-% nist diehard small crush crush rabbit alphabit blockalphabit eacirc
-AES        &  3 &  10 &  \rd8 & \rd15 &  \rd5 & \rd20 &  \rd5 &  \rd2 &  \rd4 & \rd0.182 & 7 & \ctwo 0.70 \\ \midrule
-BLAKE      &  1 &  16 & \rd11 & \rd11 &  \rd5 & \rd18 & \rd5 &  \rd2 &  \rd3 & \rd0.107 & 15 & \cone 0.93 \\ \midrule
-Grai$\text{n}^{\ast}$      &  2 &  13 & \rd14 & \rd27 & \rd9/9&\rd31/31& \rd15 &  \rd4 &  \rd4 & \rd1.000 & 7 & \cthree 0.53 \\
-           &  6 &     &  1 &  0 &  0 &  3 &  1 &  0 &  0 & 0.017 &  & \\ \midrule
-Gr\o stl   &  2 &  14 & \rd12 & \rd23 &  \rd9 & \rd27 &  \rd9 &  \rd3 &  \rd3 & \rd1.000 & 12 & \cone 0.85 \\ \midrule
-JH         &  6 &  42 &\rd12/13& \rd27 & \rd10 &\rd30/31& \rd15 &  \rd4 &  \rd4 & \rd1.000 & 36 & \cone 0.85 \\ \midrule
-Keccak     &  2 &  24 & \rd14 & \rd27 & \rd10 & \rd31 & \rd15 &  \rd4 &  \rd4 & \rd1.000 & 21 & \cone 0.87 \\
-           &  3 &     &  0 &  1 &  1 & \rd11 &  \rd4 &  0 &  \rd3 & 0.017 &  & \\ \midrule
-MD$\text{6}^{\ast}$         &  8 & 104 &  \rd9 & \rd19 &  \rd5 & \rd16 &  \rd8 &  \rd2 &  \rd3 & \rd0.748 & 94 & \cone 0.90 \\
-           & 10 &     &  0 &  0 &  0 &  2 &  \rd3 &  0 &  0 & 0.010 &  & \\ \midrule
-Rabbi$\text{t}^{\ast}$      &  0 &   4 &  1 &  1 &  0 &  \rd4 &  \rd3 &  1 &  1 & 0.017 & 0 & \cfour 0 \\
-           &  4 &     &  0 &  0 &  0 &  3 &  \rd3 &  1 &  1 & 0.009    &  & \\ \midrule
-Salsa20    &  2 &  20 & \rd12 & \rd26 &  \rd8 & \rd28 & \rd11 &  \rd3 &  \rd3 & \rd1.000 & 18 & \cone 0.90 \\ \midrule
-Single DES &  4 &  16 &  \rd7 & \rd22 &  \rd7 & \rd26 & \rd11 &  \rd4 &  \rd4 & \rd0.193 & 11 & \ctwo 0.68 \\
-           &  5 &     &  1 &  \rd6 &  1 & \rd18 &  \rd5 &  \rd2 &  \rd3 & 0.010 &  & \\ \midrule
-Skein      &  3 &  72 & \rd12 & \rd27 & \rd10 & \rd30 & \rd13 &  \rd3 &  \rd4 & \rd1.000 & 68 & \cone 0.94 \\
-           &  4 &     &  0 &  0 &  0 & \rd10 &  \rd4 &  1 &  \rd3 & 0.014 &  & \\ \midrule
-SOSEMANUK  &  4 &  25 & \rd13/13 &\rd27& \rd10 &\rd31/31& \rd16 & \rd4  &  \rd4 & \rd1.000 & 21 & \cone 0.84 \\ \midrule
-TEA        &  4 &  32 & \rd8 & \rd19 &  \rd6 & \rd15 & \rd4 &  \rd2 &  \rd3 & \rd0.444 & 27 & \cone 0.84 \\
-           &  5 &     &  0 &  3 &  2 &  \rd4 &  1 &  0 &  \rd3 & 0.012 &  & \\ \midrule
-Triple DES &  2 &  16 & 1\rd2 & \rd26 &  \rd9 & \rd31 & \rd15 &  \rd3 &  \rd4 & \rd1.000 & 13 & \cone 0.81 \\
-           &  3 &     &  1 &  \rd4 &  1 &  \rd4 &  0 &  1 &  1 & 0.017 &  & \\ \midrule
-RC$\text{4}^{\ast}$  (roundless) & -- & -- & 0 & 0 & 0 & 3 & 0 & 0 & 0 & 0.009 & -- & \cfour 0 \\
+AES                              &  3 &  10 &  8    \rd & 15 \rd &  5   \rd & 20    \rd &  5 \rd & 2 \rd & 4 \rd & 0.182 \rd & 7  & 0.70 \ctwo   \\ \midrule
+BLAKE                            &  1 &  16 & 11    \rd & 11 \rd &  5   \rd & 18    \rd &  5 \rd & 2 \rd & 3 \rd & 0.107 \rd & 15 & 0.93 \cone   \\ \midrule
+Grai$\text{n}^{\ast}$            &  2 &  13 & 14    \rd & 27 \rd &  9/9 \rd & 31/31 \rd & 15 \rd & 4 \rd & 4 \rd & 1.000 \rd & 7  & 0.53 \cthree \\
+                                 &  6 &     &  1        &  0     &  0       &  3        &  1     & 0     & 0     & 0.017     &    &              \\ \midrule
+Gr\o stl                         &  2 &  14 & 12    \rd & 23 \rd &  9 \rd   & 27    \rd &  9 \rd & 3 \rd & 3 \rd & 1.000 \rd & 12 & 0.85 \cone   \\ \midrule
+JH                               &  6 &  42 & 12/13 \rd & 27 \rd & 10 \rd   & 30/31 \rd & 15 \rd & 4 \rd & 4 \rd & 1.000 \rd & 36 & 0.85 \cone   \\ \midrule
+Keccak                           &  2 &  24 & 14    \rd & 27 \rd & 10 \rd   & 31    \rd & 15 \rd & 4 \rd & 4 \rd & 1.000 \rd & 21 & 0.87 \cone   \\
+                                 &  3 &     &  0        &  1     &  1       & 11    \rd &  4 \rd & 0     & 3 \rd & 0.017     &    &              \\ \midrule
+MD$\text{6}^{\ast}$              &  8 & 104 &  9    \rd & 19 \rd &  5 \rd   & 16    \rd &  8 \rd & 2 \rd & 3 \rd & 0.748 \rd & 94 & 0.90 \cone   \\
+                                 & 10 &     &  0        &  0     &  0       &  2        &  3 \rd & 0     & 0     & 0.010     &    &              \\ \midrule
+Rabbi$\text{t}^{\ast}$           &  0 &   4 &  1        &  1     &  0       &  4    \rd &  3 \rd & 1     & 1     & 0.017     &  0 & 0    \cfour  \\
+                                 &  4 &     &  0        &  0     &  0       &  3        &  3 \rd & 1     & 1     & 0.009     &    &              \\ \midrule
+Salsa20                          &  2 &  20 & 12    \rd & 26 \rd &  8 \rd   & 28    \rd & 11 \rd & 3 \rd & 3 \rd & 1.000 \rd & 18 & 0.90 \cone   \\ \midrule
+Single DES                       &  4 &  16 &  7    \rd & 22 \rd &  7 \rd   & 26    \rd & 11 \rd & 4 \rd & 4 \rd & 0.193 \rd & 11 & 0.68 \ctwo   \\
+                                 &  5 &     &  1        &  6 \rd &  1       & 18    \rd &  5 \rd & 2 \rd & 3 \rd & 0.010     &    &              \\ \midrule
+Skein                            &  3 &  72 & 12    \rd & 27 \rd & 10 \rd   & 30    \rd & 13 \rd & 3 \rd & 4 \rd & 1.000 \rd & 68 & 0.94 \cone   \\
+                                 &  4 &     &  0        &  0     &  0       & 10    \rd &  4 \rd & 1     & 3 \rd & 0.014     &    &              \\ \midrule
+SOSEMANUK                        &  4 &  25 & 13/13 \rd & 27 \rd & 10 \rd   & 31/31 \rd & 16 \rd & 4 \rd & 4 \rd & 1.000 \rd & 21 & 0.84 \cone   \\ \midrule
+TEA                              &  4 &  32 &  8    \rd & 19 \rd &  6 \rd   & 15    \rd &  4 \rd & 2 \rd & 3 \rd & 0.444 \rd & 27 & 0.84 \cone   \\
+                                 &  5 &     &  0        &  3     &  2       &  4    \rd &  1     & 0     & 3 \rd & 0.012     &    &              \\ \midrule
+Triple DES                       &  2 &  16 & 12    \rd & 26 \rd &  9 \rd   & 31    \rd & 15 \rd & 3 \rd & 4 \rd & 1.000 \rd & 13 & 0.81 \cone   \\
+                                 &  3 &     &  1        &  4 \rd &  1       &  4    \rd &  0     & 1     & 1     & 0.017     &    &              \\ \midrule
+RC$\text{4}^{\ast}$  (roundless) & -- & --  &  0        &  0     &  0       &  3        &  0     & 0     & 0     & 0.009     & -- & 0    \cfour  \\
 \bottomrule
 \end{tabular}
 }
@@ -1039,43 +1038,43 @@ The MD6 hash function was a competitor in the SHA-3 competition but did not adva
 
 \chapter{Validation of outputs of Dieharder}
 \label{chap:validating_dieharder}
-The goal of the research presented in this chapter was to analyse validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results for later analysis, we processed 8 terabytes of truly random data with each test in Dieharder. We used the same set of data as in experiment described in Section~\ref{sec:baseline_exp}.
+The goal of the research presented in this chapter was to analyse the validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results for later analysis, we processed eight terabytes of truly random data with each test in Dieharder. We used the same set of data as in the experiment described in Section~\ref{sec:baseline_exp}.
 
 \section{Goals of the research}
-During the statistical testing of randomness, we assume that when the analysed data originate from TRNG, the first-level p-values are uniformly distributed. This assumption follows from the fact that TRNG will produce any possible output with equal probability. Therefore, we potentially feed to the test any possible data and the test will output any possible results. Hence we assume the uniformity of first-level p-value of any individual test.
+During the statistical testing of randomness, we assume that when the analysed data originate from TRNG, the first-level p-values are uniformly distributed. This assumption follows from the fact that TRNG will produce any possible output with equal probability. Therefore, we potentially feed any possible data to the test, and the output will be any possible results. Hence we assume the uniformity of the first-level p-values of any individual test.
 
-Dieharder uses this assumption to further process the results. In normal settings, the user of the battery will not be presented the first-level p-values of the tests as the result. Each test in Dieharder will be repeated multiple times resulting in multiple first-level p-values; these p-values will be then tested for uniformity by the Kolmogorov-Smirnov (K-S) test (cit.). Should the K-S test fail, the assumption of the uniformity is rejected and the test is deemed failed; the user should consider the tested data non-random.
+Dieharder uses this assumption to process the results further. In standard settings, the user of the battery will not be presented the first-level p-values of the tests as a result. Each test in Dieharder will be repeated multiple times resulting in multiple first-level p-values; these p-values will be then tested for uniformity by the Kolmogorov-Smirnov (K-S) test (cit.). Should the K-S test fail, the assumption of the uniformity is rejected, and the test is deemed failed; the user should consider the tested data non-random.
 
-The aim of this research was to verify the assumption mentioned above; when we analyse random data we expect uniformly distributed first-level p-values.
+The aim of this research was to verify the assumption mentioned above; that the analysis of data produced by TRNG yields uniform results.
 
 \section{Settings of the experiment}
-For the analysis we used the tests with their default parameters as presented in Appendix~\ref{app:dieharder_tests}. We ommited the tests that are marked as not used.
+We analysed outputs of the tests executed with their default settings; the used parameters can be found in Appendix~\ref{app:dieharder_tests}. The tests marked as not used were omitted from our analysis.
 
-We inspected the uniformity of first-level p-values of all subtests and test variants present in default Dieharder run. For example, if a single test is executed in two variants and both variants have two subtests then the test will produce four sets of first-level p-values; we treat these sets independently, as if they were produced by four separate tests. In this chapter we are reffering to these low-level tests as to atomic tests.
+We inspected the uniformity of first-level p-values of all subtests and test variants present in default Dieharder run. For example, if a single test is executed in two variants and both variants have two subtests then the test will produce four sets of first-level p-values; we treat these sets independently as if four separate tests produced them. In this chapter, we are referring to these low-level tests as to atomic tests.
 
-During the default run, the battery will execute 110 atomic test; resulting in 110 individual p-value sets. To extract maximum possible amount of p-values from the eight terabytes of data, each atomic test processed this data stream from start to finish; a single test was executed as many times as the amount of data would allow without processing more than eight terabytes. The final size of the p-value set varies for each atomic test as each atomic test will process different amount of data in a single execution. Each p-value in the set represents a single execution of an atomic test.
+During the default run, the battery will execute 110 atomic tests, resulting in 110 individual p-value sets. Each atomic test processed the eight terabytes of data from start to finish to extract the maximum possible amount of p-values. The final size of the p-value set varies, as each atomic test processed a different amount of data in a single execution. Each p-value in the set represents a single execution of an atomic test.
 
 \section{Testing the uniformity of p-values}
 We inspected the uniformity of the p-value sets using the proportion statistic and Pearson's chi-squared ($\chi^2$) goodness-of-fit test (cit.).
 
-The proportion statistic is evaluated based on the number of observed test failures within the p-value sets. We consider the test failed if its p-value is lesser than the significance level $\alpha=0.001$. Let $F$ be a discrete random variable expressing the count of failed tests within a p-value set with $n$ elements; the p-values in the set are samples of $F$. According to our previous assumption, the p-values should be uniformly distributed on interval $[0,1]$ and therefore the probability of a single test failure is $\alpha$. Then the random variable $F$ should follow binomial distribution $\text{Bin}(n,\alpha)$ (cit.); the expected value of the variable is $E(F) = n\alpha$. The probability of observing $x$ failures within the p-value set is calculated using the probability mass function of binomial distribution shown in Equation~\ref{eq:binom_pmf_5}.
+The proportion statistic is evaluated based on the number of observed test failures within the p-value sets. We consider the test failed if its p-value is lesser than the significance level $\alpha=0.001$. Let $F$ be a discrete random variable expressing the count of failed tests within a p-value set with $n$ elements; the p-values in the set are samples of $F$. According to our previous assumption, the p-values should be uniformly distributed on the interval $[0,1]$, and therefore the probability of a single test failure is $\alpha$. Then the random variable $F$ should follow binomial distribution $\text{Bin}(n,\alpha)$ (cit.); the expected value of the variable is $E(F) = n\alpha$. The probability of observing $x$ failures within the p-value set is calculated using the probability mass function of binomial distribution shown in Equation~\ref{eq:binom_pmf_5}.
 
 \begin{equation}
 \label{eq:binom_pmf_5}
 P(F = x) = \binom xn \alpha^x(1-\alpha)^{n-x}
 \end{equation}
 
-If we observe $x$ failures, we can calculate the probability of observing same or more extreme count of failures under the assumption that $F_{Obs}$ follows the distribution $\text{Bin}(n,\alpha)$. The more extreme result is a result more distant from the expected value. The probability is calculated as shown in Equation~\ref{eq:prop_statistic}.
+If we observe $x$ failures, we can calculate the probability of observing equal or more extreme count of failures under the assumption that $F$ follows the distribution $\text{Bin}(n,\alpha)$. The more extreme result is a result more distant from the expected value. The probability is calculated as shown in Equation~\ref{eq:prop_statistic}.
 
 \begin{align}
 D &= \lvert E(F) - x \rvert \\
 \label{eq:prop_statistic}
-P(\lvert F - E(F) \rvert \geq D) &= 1 - \left( \sum\limits_{k=\lfloor E(F)-D \rfloor + 1}^{\lceil E(F)+D \rceil - 1} P(F = x) \right)
+P(\lvert E(F) - F \rvert \geq D) &= 1 - \left( \sum\limits_{k=\lfloor E(F)-D \rfloor + 1}^{\lceil E(F)+D \rceil - 1} P(F = x) \right)
 \end{align}
 
 The p-value of the proportion statistic is the probability described above. If the p-value is lesser than 0.001, we reject the hypothesis that $F$ follows the binomial distribution $\text{Bin}(n,\alpha)$ and consider the inspected p-value set non-uniform.
 
-The Pearson's chi-squared test evaluates distribution of p-values on the whole interval $[0,1]$. First, the set of p-values $P$ is split into several bins; in this testing we used $k=1000$ bins. The individual bins in the set $B = \{b_1,..,b_k\}$ have values as follows; the bin $b_i \in B$ has value equal to the count of p-values $p \in P$ such that $\left(\frac{i-1}{k} \leq p < \frac{i}{k}\right)$. For example, the value of the bin $b_i$ will be equal to the count of p-values greater or equal to zero and lesser than 0.001. The expected value of $b_i$ is calculated as $E(b_i) = \frac{n}{k}$. The Pearson's chi-squared test statistic $\chi^2$ is calculated based on the values of the bins and their expected values as shown in Equation~\ref{eq:binned_chi_square_stat}.
+The Pearson's chi-squared test evaluates the distribution of the p-values on the entire interval $[0,1]$. First, the set of p-values $P$ is split into several bins; in this testing we used $k=1000$ bins. The individual bins in the set $B = \{b_1,..,b_k\}$ have values as follows; the bin $b_i \in B$ has value equal to the count of p-values $p \in P$ such that $\left(\frac{i-1}{k} \leq p < \frac{i}{k}\right)$. For example, the value of the bin $b_i$ will be equal to the count of p-values greater or equal to zero and lesser than 0.001. The expected value of $b_i$ is calculated as $E(b_i) = \frac{n}{k}$. The Pearson's chi-squared test statistic $\chi^2$ is calculated based on the values of the bins and their expected values as shown in Equation~\ref{eq:binned_chi_square_stat}.
 
 \begin{equation}
 \label{eq:binned_chi_square_stat}
@@ -1085,6 +1084,94 @@ The Pearson's chi-squared test evaluates distribution of p-values on the whole i
 The p-value of the $\chi^2$ test statistic is calculated as $1-\text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution and $df$ are the degrees of freedom ($df=k-1$)(cit.). If the calculated statistic p-value is lesser than 0.001, we reject the hypothesis that the p-values from the set $P$ are uniformly distributed.
 
 \section{Results of the testing}
+The resulting p-values of the uniformity testing are presented in Table~\ref{tab:non_uniform_atomic_tests}. We included only the atomic tests that failed one or both uniformity tests. For each atomic test, we show the total count of extracted p-values, the expected and observed count of failures within the set and p-values of both uniformity statistics we calculated. The cells that contain p-values lesser than 0.001 are marked.
+
+In Figure~\ref{fig:non_uniform_pval_hist} we visualise distributions of p-value sets of four chosen atomic tests. The Diehard Minimum Distance (2d Circe) test was included because its p-values are uniformly distributed, and the graph can be used as a baseline for comparison with other visualised sets. The histograms also contain the p-values of the calculated $\chi^2$ statistics.
+
+From the presented results we can see that out of 110 atomic tests, 39 produced non-uniform p-values. This number is significantly higher than we expected before this experiment. The discovery is important in the context of further processing of p-values by the Dieharder battery. The battery assumes that if the null hypothesis holds, the first-level p-values are uniformly distributed; the uniformity of the set is tested by the K-S test. However, the fact that some p-value sets are significantly and consistently non-uniform breaks this assumption.
+
+\begin{figure}[h]
+\begin{nomar}
+\centering
+\includegraphics[width=0.6\textwidth]{figures/010.png} 
+\includegraphics[width=0.6\textwidth]{figures/011.png}
+\\
+\includegraphics[width=0.6\textwidth]{figures/200_-n_12.png} 
+\includegraphics[width=0.6\textwidth]{figures/202_-n_2.png}
+\end{nomar}
+\caption{Histograms of p-values of chosen atomic tests}
+\label{fig:non_uniform_pval_hist}
+\end{figure}
+
+This non-uniformity of results might not be apparent in basic usage of Dieharder for two reasons. The first possible reason is that, during normal usage, only small sets of p-values (usually 100) are tested for the uniformity; in a limited number of p-values, the non-uniform patterns are harder to detect. 
+
+The second potential reason is that, in default Dieharder, a test is considered failed only if its second-level p-value is lesser than $10^{-6}$. If we assume that everything is functioning properly, we should see a failure of a test once in a million of executions. Due to the non-uniformity of the underlying p-values, the actual number of failures can be higher (10 or even 100) but still too small to notice in the common use-case. Additionally, the small significance level introduces high type II error; the tests in Dieharder have lowered sensitivity and might not reject the null hypothesis for non-random data.
+
+\begin{table}
+\begin{nomar}
+\centering
+\scalebox{.85}
+{
+\begin{tabular}{@{}lrrrrr@{}} \toprule
+                               &                   & \multicolumn{2}{c}{\textbf{Failure counts}} & \multicolumn{2}{c}{\textbf{P-values}} \\ \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+\textbf{Test name}             & \textbf{P-value count}     & \textbf{Expected}      & \textbf{Observed}      & \textbf{Fail prop.}        & \textbf{$\chi^2$ unif.}      \\ \midrule
+\multicolumn{6}{c}{\textbf{Diehard tests}} \\ \midrule
+Birthday                       & 54613333          & 54613.3       & 60109         & $<1\cdot 10^{-8}$  \rd & $<1\cdot 10^{-323}$   \rd \\
+32x32 Binary Rank              & 1638399           & 1638.4        & 1634          & 0.931                  & $2 \cdot 10^{-29}$    \rd \\
+6x8 Binary Rank                & 3495253           & 3495.3        & 4911          & $<1\cdot 10^{-8}$  \rd & $<1\cdot 10^{-323}$   \rd \\
+Bitstream                      & 7999938           & 8000          & 7951          & 0.587                  & $<1\cdot 10^{-323}$   \rd \\
+Count the 1s (stream)          & 32767487          & 32767.5       & 44779         & $1.9\cdot 10^{-8}$ \rd & $<1\cdot 10^{-323}$   \rd \\
+Count the 1s (byte)            & 1638399           & 1638.4        & 2249          & $<1\cdot 10^{-8}$  \rd & $3.1 \cdot 10^{-67}$  \rd \\
+Parking Lot                    & 87381333          & 87381.3       & 93227         & $<1\cdot 10^{-8}$  \rd & $<1\cdot 10^{-323}$   \rd \\
+Min Distance (3d sphere)       & 174762666         & 174762.7      & 176065        & 0.002                  & $4.7 \cdot 10^{-28}$  \rd \\
+Runs - subtest 1               & 20971519          & 20971.5       & 35308         & $<1\cdot 10^{-8}$  \rd & $<1\cdot 10^{-323}$   \rd \\
+Runs - subtest 2               & 20971519          & 20971.5       & 35246         & $<1\cdot 10^{-8}$  \rd & $<1\cdot 10^{-323}$   \rd \\
+Craps - subtest 1              & 838860            & 838.9         & 825           & 0.641                  & $<1\cdot 10^{-323}$   \rd \\ \midrule
+\multicolumn{6}{c}{\textbf{NIST STS tests}} \\ \midrule
+Monobit                        & 20971519          & 20971.5       & 20742         & 0.113                  & $<1\cdot 10^{-323}$   \rd \\
+Runs                           & 20971519          & 20971.5       & 21256         & 0.050                  & $<1\cdot 10^{-323}$   \rd \\ 
+Serial - Subtest 1             & 20970519          & 20970.5       & 20740         & 0.111                  & $<1\cdot 10^{-323}$   \rd \\
+Serial - Subtest 2             & 20970519          & 20970.5       & 21131         & 0.270                  & $3.7 \cdot 10^{-228}$ \rd \\ 
+Serial - Subtest 4             & 20970519          & 20970.5       & 21125         & 0.289                  & $8.7 \cdot 10^{-192}$ \rd \\ 
+Serial - Subtest 23            & 20970519          & 20970.5       & 20971         & 1.000                  & $9.8 \cdot 10^{-5}$   \rd \\ 
+Serial - Subtest 24            & 20970519          & 20970.5       & 20930         & 0.780                  & 0.0002                \rd \\ 
+Serial - Subtest 25            & 20970519          & 20970.5       & 21125         & 0.289                  & $4.7 \cdot 10^{-15}$  \rd \\
+Serial - Subtest 26            & 20970519          & 20970.5       & 20968         & 0.986                  & $1 \cdot 10^{-7}$     \rd \\
+Serial - Subtest 27            & 20970519          & 20970.5       & 21124         & 0.292                  & $6.6 \cdot 10^{-81}$  \rd \\
+Serial - Subtest 28            & 20970519          & 20970.5       & 21005         & 0.817                  & $2.8 \cdot 10^{-15}$  \rd \\
+Serial - Subtest 29            & 20970519          & 20970.5       & 20990         & 0.898                  & $3.1 \cdot 10^{-228}$ \rd \\
+Serial - Subtest 30            & 20970519          & 20970.5       & 21029         & 0.691                  & $1 \cdot 10^{-67}$    \rd \\ \midrule
+\multicolumn{6}{c}{\textbf{RGB tests}} \\ \midrule
+Bit Distribution (n=2)         & 5242866           & 5242.9        & 5516          & $1.7\cdot 10^{-4}$ \rd & 0.3641                \\
+Bit Distribution (n=8)         & 1310719           & 1310.7        & 1286          & 0.498                  & $3.2 \cdot 10^{-11}$  \rd \\
+Bit Distribution (n=9)         & 1165083           & 1165.1        & 1301          & $7.4\cdot 10^{-5}$ \rd & $<1\cdot 10^{-323}$   \rd \\
+Bit Distribution (n=10)        & 1048575           & 1048.6        & 1050          & 0.988                  & $<1\cdot 10^{-323}$   \rd \\
+Bit Distribution (n=11)        & 953250            & 953.3         & 1041          & 0.005                  & $<1\cdot 10^{-323}$   \rd \\
+Bit Distribution (n=12)        & 873812            & 873.8         & 895           & 0.488                  & $<1\cdot 10^{-323}$   \rd \\
+Generalized Min Distance (n=4) & 52428799          & 52428.8       & 51953         & 0.038                  & $<1\cdot 10^{-323}$   \rd \\
+Generalized Min Distance (n=5) & 41943039          & 41943         & 41561         & 0.062                  & $<1\cdot 10^{-323}$   \rd \\
+Permutations (n=2)             & 10485759          & 10485.8       & 10341         & 0.158                  & $<1\cdot 10^{-323}$   \rd \\
+Permutations (n=3)             & 6990506           & 6990.5        & 6974          & 0.843                  & $1.8 \cdot 10^{-5}$   \rd \\
+Permutations (n=4)             & 5242879           & 5242.9        & 5247          & 0.961                  & $2.7 \cdot 10^{-19}$  \rd \\
+Permutations (n=5)             & 4194303           & 4194.3        & 4241          & 0.473                  & $9.1 \cdot 10^{-114}$ \rd \\
+Kolmogorov-Smirnov Test        & 209715199         & 209715.2      & 202696        & $3.8\cdot 10^{-8}$ \rd & $<1\cdot 10^{-323}$   \rd \\ \midrule
+\multicolumn{6}{c}{\textbf{DAB tests}} \\ \midrule
+DCT                            & 163839            & 163.8         & 162           & 0.907                  & $2.9 \cdot 10^{-40}$  \rd \\
+Monobit 2                      & 32263             & 32.3          & 28            & 0.537                  & $1.2 \cdot 10^{-132}$ \rd \\ \bottomrule
+\end{tabular}
+}
+\end{nomar}
+\caption{Atomic tests with significantly non-uniform p-value sets}
+\label{tab:non_uniform_atomic_tests}
+\end{table}
+
+During the experiment, we made several observations. The most obvious one is that the Pearson's $\chi^2$ test is much more viable for testing the uniformity than the proportion test. The $\chi^2$ test evaluates the entire interval between 0 and 1, while the proportion test inspects only the beginning of the interval. The superiority of the $\chi^2$ test is supported by the fact, that only in a single case, the proportion test detected non-uniformity when the $\chi^2$ test did not. 
+
+Our further observation was that even within a single test, its variants and subtests could produce both uniform and non-uniform results. Specifically, some subtests of the STS Serial test produced non-uniform p-values while the remaining subtests produced valid results. Similarly, the uniformity of results of the RGB Bit Distribution test depends on its \texttt{n} parameter. This behaviour can be noticed in multiple various tests.
+
+The results of this experiment inspired our further research that aims to inspect the non-uniformity of the atomic tests more deeply. Another goal of the further work is to find out the exact impact of the non-uniformity on the second-level p-values.
+
+
 
 
 
