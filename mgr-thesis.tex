@@ -786,26 +786,26 @@ The web interface also presents and assesses the results of the past experiments
 
 In the chapter, we present the results of two distinct experiments and describe the methods and battery configurations used for obtaining the results.
 
-In the first experiment, we analysed large quantities of random data with the statistical batteries implemented in RTT. The motivation for the experiment was that the results of the multiple repeated analyses would provide us with a baseline for our further experiments. Our subsequent experiments would differ from the baseline analysis only in the input data but not in the settings of the respective batteries.
+In the first experiment, we analysed large quantities of random data with the statistical batteries implemented in RTT. The primary motivation for the experiment was to establish a baseline for further experiments -- how many tests and how frequently are expected to fail with truly random sequences. Our subsequent experiments would differ from the baseline analysis only in the input data but will keep the configuration settings of the tests in the batteries the same.
 
-In the second experiment, we analysed outputs of 15 distinct cryptographic algorithms. The specific algorithms were chosen based either on their popularity or their success in cryptographic competitions eSTREAM (cit.) and SHA-3 (cit.); among the selected functions are algorithms such as AES, DES, RC4 or Keccak. We compared the results of the experiment with the results of the analysis in the EACirc framework. The EACirc framework implements an alternative approach to the randomness testing and is developed in CRoCS (cit.).
+In the second experiment, we analysed outputs of 15 distinct cryptographic algorithms. The specific algorithms were chosen based either on their real-world popularity and utility or their success in cryptographic competitions eSTREAM (cit.) and SHA-3 (cit.). The chosen algorithms were AES, BLAKE, Grain, Gr\o stl, JH, Keccak, MD6, Rabbit, Salsa20, DES, 3-DES, Skein, SOSEMANUK, TES and RC4. We compared the results of the experiment with the results of the analysis in the EACirc framework. The EACirc framework developed at CRoCS implements an alternative approach to the randomness testing (cit.).
 
 In our experiments, all statistical tests have significance level $\alpha$ set to 0.01. The tests will reject the null hypothesis $H_0$ based on this significance level.
 
-\section{Battery configurations used in the experiments}
+\section{Battery configurations in the experiments}
 \label{sec:configuration_of_batteries}
-In this section, we will present the configurations of the individual batteries that we used in the experiments mentioned above. The settings were kept as close as possible to the default settings of the individual batteries; because of this, the results of the batteries executed through RTT are comparable to the results of the batteries when directly executed. The used RTT battery configuration file is in Appendix~\ref{app:batt_conf_example}.
+In this section, we will present the configurations of the individual batteries that we used in the experiments mentioned above. To enable direct comparison with batteries executed as stand-alone tools instead of a part of RTT, we kept the settings as close as possible to the default settings of the individual batteries. The used RTT battery configuration file is in Appendix~\ref{app:batt_conf_example}.
 
 \subsection{Common settings}
-All batteries were provided 8000 MiB\footnote{The exact length of a single file was $8000 \cdot 1024^2 = 8388608000$ bytes.} large data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not permitted to the batteries. We chose the file size as a compromise between the amount of data needed by the separate tests in the batteries and our capabilities to process and store such quantities of data.
+All batteries were provided with 8000 MiB\footnote{The exact length of a single file was $8000 \cdot 1024^2 = 8388608000$ bytes.} large data files for the analysis in each execution. The batteries were not required to process the entirety of the data; however rewinding the file and reading more bytes was not allowed. We chose the file size as a compromise between the amount of data needed by the separate tests in the batteries and our capabilities to process and store such quantities of data.
 
 \subsection*{NIST Statistical Testing Suite}
-The settings of the tests in NIST STS was the same as in default execution of the battery. The tests along with their default settings are listed in Appendix~\ref{app:nist_sts_tests}. In a single run, each test processed 1000 data streams of size 1000000 bits; in total, each test analysed 125 MB of data per execution.
+The settings of the tests in NIST STS was the same as the execution of the battery with default settings. The tests along with their default settings are listed in Appendix~\ref{app:nist_sts_tests}. In a single run, each test processed 1000 data streams of size 1000000 bits each; in total, each test analysed 125 MB of data per execution.
 
 \subsection*{Dieharder}
-The test settings of the Dieharder battery follow default settings outlined in Appendix~\ref{app:dieharder_tests} with the single exception of the RGB Lagged Sums test. In default settings, the test would need too much data\footnote{RGB Lagged Sum test with parameter \texttt{n=32} will analyse 13.2 GB of data.} for the analysis. 
+The test settings of the Dieharder battery follow default settings as outlined in Appendix~\ref{app:dieharder_tests} with the single exception of the RGB Lagged Sums test. In default settings, the test would require too much data\footnote{RGB Lagged Sum test with parameter \texttt{n=32} will analyse 13.2 GB of data.} for the analysis. 
 
-The RGB Lagged Sum test is executed in 33 variants with variable parameter \texttt{n=\{0..32\}}. The number of bytes processed by the test variant scales with the parameter \texttt{n} of the variant and the number of times the variant will be repeated (p-samples option) during the battery execution. To lower the amount of the needed bytes, we reduced the number of repetitions for each variant based on its \texttt{n}. The number of repetitions was calculated using the following function.
+The RGB Lagged Sum test is executed in 33 variants with variable parameter \texttt{n=\{0..32\}}. The number of bytes processed by the test variant scales with the parameter \texttt{n} of the variant and the number of times the variant will be repeated (p-samples option) during the battery execution. To lower the amount of the necessary bytes, we reduced the number of repetitions for each variant based on its \texttt{n}. The number of repetitions was calculated using the following function.
 
 $$
 \text{Rep}(n) = \min\left(100 ; \left\lfloor \frac{ 8000 \cdot 1024^{2} }{ (n + 1) \cdot 4 \cdot 10^{6} } \right\rfloor \right)
@@ -822,15 +822,17 @@ The tests in the batteries Alphabit and Block Alphabit have settings that would 
 
 \section{Baseline experiment}
 \label{sec:baseline_exp}
-The aim of this experiment was to observe behaviour and results of the batteries in RTT when analysing truly random data.  We will use the results of this analysis to interpret the results of our further analyses.
+The aim of this experiment was to observe behaviour and results of the batteries in RTT when analysing truly random data.  We use the results of this analysis to interpret the results of our further analyses.
 
 We evaluate the battery analysis based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$; null hypothesis $H_0$ of the test is rejected. The reason why we excluded one from the non-rejecting interval is explained in Section~\ref{sec:preventive_measures_rtt}.
 
-When analysing a truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed on the interval $[0,1]$. The uniformity is caused by the fact that we can't predict the output of a TRNG and each possible output is observed with equal probability. Therefore, we also can't predict the result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; test's $H_0$ will be rejected with probability $\alpha$. When the null hypothesis of a test is rejected, we assess the test as failed.
+When analysing a truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed over the interval $[0,1]$. The uniformity is caused by the fact that we cannot predict the output of a TRNG and each possible output is observed with equal probability. Therefore, we also can't predict the result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; test's $H_0$ will be rejected with probability $\alpha$. When the null hypothesis of a test is rejected, we assess the test as failed.
 
-When we are evaluating a battery analysis based on a count of failed tests, we must know how many tests we expect to fail when $H_0$ holds true. We can calculate the expected value like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $\text{Bin}(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing the count of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected value of a random variable is $E(F_{Exp}) = n\alpha$. Therefore, should a battery finish with $n\alpha$ failed tests we still can't reject $H_0$ for the whole battery; we will treat the analysed data as random.
+When we are evaluating a battery analysis based on a count of failed tests, we must know how many tests we expect to fail when $H_0$ holds true. Let's have a battery with 40 independent tests and the significance level 0.01. If we don't know the expected number of failures, we must reject $H_0$ if we observe any number of failures. However, in this case, the probability that more than zero tests fail is approximately 33 \%; we would incorrectly reject $H_0$ in one-third of the battery executions.
 
-However, the expected number of failures is not necessarily exact, as the calculation described above treats tests as independent trials. Separate tests in a battery are not required nor proved to be independent, which can lead to differing distributions of empirical and theoretical random variables representing the counts of failed tests in the batteries.
+We can calculate the expected count of failed tests like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $\text{Bin}(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing the count of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected value of a random variable is $E(F_{Exp}) = n\alpha$. Therefore, should a battery finish with $n\alpha$ failed tests we still can't reject $H_0$ for the whole battery; we will treat the analysed data as random.
+
+However, the expected number of failures is not necessarily exact, as the calculation described above treats tests as independent trials. Separate tests in a battery are neither required nor proved to be independent, which can lead to differing distributions of empirical and theoretical random variables representing the counts of failed tests in the batteries.
 
 To observe the empirical distribution of the number of failed tests $F_{Obs}$, we inspected the number of failures of the individual batteries during the analysis of truly random data. In total, approximately eight terabytes of random data were downloaded from QRNG service provided by Humboldt-Universitaet zu Berlin (cit.). The data were split into 1000 blocks each of size 8000 GiB. All seven batteries included in this experiment analysed each block of data once. The sample size of 1000 trials is enough for us to compare the distributions of the two random variables $F_{Exp}$ and $F_{Obs}$.
 
@@ -878,7 +880,7 @@ Now that we have both the observed frequency $f_{d}^{X}$ and its expected value 
 \chi^2 = \sum\limits_{i=1}^{k} \frac{  \left(f_{d_i}^{X} - E \left(f_{d_i}^{X}\right) \right)^2 }{E \left(f_{d_i}^{X}\right)}
 \end{equation}
 
-Due to the limitation of Pearson's $\chi^2$ test stating that the expected value must be at least 5, the samples that didn't satisfy this condition were summed together and treated as a single sample. We then calculated p-value using $\chi^2$ distribution (cit.). The p-value calculation is based on the number of the degrees of freedom that is equal to $k-1$ and the value of $\chi^2$ statistic. The p-value of the $\chi^2$ test statistic can be calculated as $1 - \text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution, $df$ are the degrees of freedom and $\chi^2$ is the value of the $\chi^2$ test statistic.
+Due to the limitation of Pearson's $\chi^2$ test stating that the expected value must be at least 5 (cit.), the samples that didn't satisfy this condition were summed together and treated as a single sample. We then calculated p-value using $\chi^2$ distribution (cit.). The p-value calculation is based on the number of the degrees of freedom that is equal to $k-1$ and the value of $\chi^2$ statistic. The p-value of the $\chi^2$ test statistic can be calculated as $1 - \text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution, $df$ are the degrees of freedom and $\chi^2$ is the value of the $\chi^2$ test statistic.
 
 The resulting p-value is an indicator of how close are the two tested datasets. The p-value expresses the probability that any difference between the two measured sets happened by chance. Therefore, when we are comparing the feasibility of the two failure counting scenarios (original versus corrected results) the more feasible one will have higher p-value than the other; our point was to find out which one of our approaches followed our theoretical expectations more closely.
 
@@ -887,9 +889,10 @@ The resulting p-value is an indicator of how close are the two tested datasets. 
 \centering
 
 \includegraphics[width=.42\paperwidth]{figures/dieharder-orig.pdf} 
-\includegraphics[width=.42\paperwidth]{figures/dieharder-corr.pdf} 
+\includegraphics[clip, width=.42\paperwidth]{figures/dieharder-corr.pdf} 
 
 \end{nomar}
+\setlength{\abovecaptionskip}{-15pt}
 \caption{Test failure frequency distributions in Dieharder battery}
 \label{fig:corr_vs_orig_hist}
 \end{figure}
@@ -919,18 +922,16 @@ Block Alphabit & $1.87 \cdot 10^{-68}$    & 14/198 & \gr$5.15 \cdot 10^{-47}$ & 
 
 In Table~\ref{tab:baseline_summary} we present comparison of the $\chi^2$ statistic p-values between the original and the corrected results. We can see, that in general, the corrected results are closer to their expected distributions. Only in two cases (NIST STS and Rabbit), the corrected results perform worse while in the remaining batteries they offer a significant improvement. We also present the acceptance bounds for the batteries. The acceptance bound represents the maximum number of failed tests in a battery, while not rejecting the null hypothesis. Should the number of failures exceed the acceptance bound, we will reject $H_0$; the tested data failed to pass the battery.
 
-However, even with the improved result interpretation, some failure frequencies are still too distant from their theoretical distributions. For this reason, we decided to increase the acceptance bounds. We set the acceptance bounds in such a way that the probability of Type I error is not higher than 0.001.
+However, even with the improved result interpretation, some test failure counts are still too different from their expected values. This is probably caused by currently unknown dependencies existing between the grouped tests; the accurate detection of the dependencies is a part of our future research. To correct the inaccuracies, we decided to increase the acceptance bounds. We set the acceptance bounds in such a way that the probability of Type I error is not higher than 0.001.
 
 The presented bounds are used for result interpretation of the subsequent experiments. If the number of failed tests will be higher than the bound, the data did not pass the battery analysis.
 
 \section{Analysis of well-known cryptographic algorithms}
-In this experiment, we focused on the analysis of well-known and used cryptographic primitives. The 15 algorithms were chosen based on their popularity and success in cryptographic competitions eSTREAM (cit.) and SHA-3 (cit.).
-
-Our motivation for this experiment was to find out how big are the security margins on conventional algorithms. Most of the tested algorithms could be reduced in the number of their rounds. We wanted to see how much could we reduce the rounds until we would start detecting the biases in the data.
+In this experiment, we focused on the analysis of well-known and used cryptographic primitives. Our motivation for this experiment was to find out how big are the security margins of conventional algorithms. Most of the tested algorithms could be reduced in the number of their rounds. We investigated how much could we reduce the rounds until we would start detecting the biases in the data.
 
 The outputs of the functions were generated using the generator developed in CRoCS (cit.). The plaintext of the functions was a binary counter; the key was randomly generated, and initialization vector was set to zeroes. Not all functions needed the key and IV. 
 
-For each particular round and function combination, we generated 8000 MiB large data file. In total,  we analysed 72 distinct combinations of functions and rounds. The configurations of the batteries were the same as described in Section~\ref{sec:configuration_of_batteries}. 
+For each particular round and function combination, we generated a data file with the size of 8000 MiB. In total,  we analysed 72 distinct combinations of functions and rounds. The configurations of the batteries were the same as described in Section~\ref{sec:configuration_of_batteries}. 
 
 The results of this experiment were also compared to the results produced by the EACirc framework (cit.). The results of the analysis of the data with EACirc are part of Karel Kubíček's diploma thesis (cit.).
 
@@ -984,21 +985,21 @@ RC$\text{4}^{\ast}$  (roundless) & -- & --  &  0        &  0     &  0       &  3
 }
 
 \end{nomar}
-\caption{Results of the analysis of cryptographic algorithms}
+\caption{Analysis of the cryptographic algorithms with RTT and EACirc}
 \label{tab:crypto_alg_analysis}
 \end{table}
 
 The values in the battery columns express the number of failed tests in a specific battery. Each battery has defined the total number of tests in the header. In some cases, not all tests in the battery could be executed; in these cases, we specify the number of performed tests in the cell. 
 
-The values in EACirc column display the proportion of EACirc executions that rejected the null hypothesis for the tested data. We do not consider the data random when the value of the proportion is higher than 0.2.
+The values in EACirc column display the proportion of EACirc executions that rejected the null hypothesis for the tested data. When analysing random data, we expect that EACirc will reject the hypothesis in 0.01 runs. If the proportion is greater than 0.02, we can confidently consider the data as non-random.
 
-We also provide security margins of the analysed algorithms. The security margins are based on the highest round in which the algorithm failed to pass any battery and on the default total number of rounds in the algorithm.
+We also provide security margins of the analysed algorithms. The security margins are based on the highest round in which the algorithm failed to pass at least one of the batteries and on the default total number of rounds in the algorithm.
 
-Some algorithms in the table are marked by an asterisk. In highest shown rounds, these algorithms did pass most of the batteries; however, after closer inspection, we discovered some patterns in the results. These findings are summarized in Section~\ref{sec:notable_results}.
+Some algorithms in the table are marked by an asterisk. In highest shown rounds, some of these algorithms passed all of the batteries (e.g. RC4 and Grain); however, after closer inspection, we discovered some notable patterns in the results. These findings are summarized in Section~\ref{sec:notable_results}.
 
-The discovered patterns in the results were consistent failures of certain tests when analysing algorithm with fixed number of rounds. We consider a test as consistently failing when we create multiple datasets of the same algorithm and round and the test will fail in all analyses of the datasets. The generation of the datasets can vary in the used keys or plaintexts.
+The discovered patterns in the results were consistent failures of certain tests when analysing algorithm with fixed number of rounds (e.g. Rabbit with 4 round will not pass the \texttt{sstring\_HammingIndep} test). We consider a test as consistently failing when we create multiple datasets of the same algorithm and round and the test will fail in all analyses of the datasets. The generation of the datasets can vary in the used keys or plaintexts.
 
-For each suspicious algorithm with fixed number of rounds, we generated additional 16000 MiB of data. The additional data showed the same patterns in the results as in the original analysis, hinting the presence of a particular bias produced by the algorithm.
+For each suspicious algorithm with fixed number of rounds, we generated additional 16000 MiB of data. The additional data showed the same patterns in the results as in the original analysis, hinting the presence of a particular bias produced by an algorithm.
 
 
 \subsection{Notable observations}
@@ -1011,25 +1012,25 @@ Rabbit cipher is one of the winners in the eSTREAM competition in the software s
 
 The tests are aiming to discover dependencies between separate bits in the data stream. One interesting detail is that the tests in Block Alphabit will fail if and only the bits in the stream are not previously re-ordered by the battery. This fact led us to believe that there indeed is some dependency between bits in the output.
 
-Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher with the complexity of $2^{158}$.
+Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher with the complexity of $2^{158}$. Under the assumption that the plaintext encrypted by Rabbit was not 
 
 \item[Biased output of the RC4 cipher] \hfill \\
-RC4 is a popular stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version, the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery.
+RC4 is a popular stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version (no reduction of rounds or algorithm), the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery from TestU01.
 
 There are multiple known biases and distinguishing attacks on RC4; notable publications are \textit{A Practical Attack on Broadcast RC4} (cit.), \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} (cit.) and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} (cit.). Any of these biases can be causing the failure of the statistical tests.
 
 \item[Security margins with respect to the statistical analysis] \hfill \\
-The majority of the analysed algorithms has the security margin higher than 0.8. This means that even if we would drastically increase our computational capability and performance of the state-of-the-art statistical tools we still wouldn't be able to detect biases in most of the function outputs. 
+The majority of the analysed algorithms has the security margin higher than 0.8. This means that even if we would drastically increase our computational capability and performance of the state-of-the-art statistical tools, biases in full versions of algorithms (without reduction of rounds) will not be detected.
 
 The margins are significantly lower only for functions with particular biases detected, namely Rabbit, RC4 and Grain.
 
-\item[Strength of the batteries and EACirc] \hfill \\
+\item[Strength of the batteries in comparison to EACirc] \hfill \\
 All of the batteries implemented in RTT perform better or equally well than EACirc. The shortcomings of EACirc can be caused by the fact that the framework analyses only 100 MB of data per execution and also finishes its execution more quickly. Therefore we have a trade-off between the needed time and resources and strength of the tool. In many situations we aren't able to retrieve 8000 MiB (e.g. slow hardware generators in smartcards); in these cases, the usage of EACirc for bias detection can be viable.
 
-The batteries themselves have differing strength. While batteries NIST STS and Small Crush have more or less same bias detection capabilities as EACirc, the remaining batteries perform better and can detect even subtle biases. The remaining batteries are listed here, along with the number of times they detected a bias when other batteries failed to do so: Alphabit (2 times), Dieharder (3 times), Block Alphabit (5 times), Rabbit (6 times), Crush (8 times).
+The batteries themselves have differing strength. While batteries NIST STS and Small Crush have more or less same bias detection capabilities as EACirc, the remaining batteries perform better and can detect subtler biases. The remaining batteries are listed here, along with the number of times they detected a bias when other batteries failed to do so: Alphabit (2 times), Dieharder (3 times), Block Alphabit (5 times), Rabbit (6 times), Crush (8 times).
 
 \item[Biased output of round reduced Grain function] \hfill \\
-The Grain algorithm is on of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds out of 13, the test will consistently fail tests \texttt{smarsa\_MatrixRank} and \texttt{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher, but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
+The Grain algorithm is on of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds (out of 13), the test will consistently fail tests \texttt{smarsa\_MatrixRank} and \texttt{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher, but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
 
 \item[Biased output of round reduced MD6 hash function] \hfill \\
 The MD6 hash function was a competitor in the SHA-3 competition but did not advance to the second round of the competition. In 9 and 10 rounds out of 94, the algorithm will consistently fail tests \texttt{smarsa\_MartixRank} and \texttt{sspectral\_Fourier3} in batteries Crush and Rabbit. While this hints us with the presence of a specific bias in the function output it does not break the security of the function; in further rounds, we can no longer detect any bias, and the output appears as truly random.
