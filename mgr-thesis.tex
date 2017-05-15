@@ -878,7 +878,7 @@ Now that we have both the observed frequency $f_{d}^{X}$ and its expected value 
 \chi^2 = \sum\limits_{i=1}^{k} \frac{  \left(f_{d_i}^{X} - E \left(f_{d_i}^{X}\right) \right)^2 }{E \left(f_{d_i}^{X}\right)}
 \end{equation}
 
-Due to the limitation of Pearson's $\chi^2$ test stating that the expected value must be at least 5, the samples that didn't satisfy this condition were summed together and treated as a single sample. We then calculated p-value using $\chi^2$ distribution (cit.). The p-value calculation is based on the number of the degrees of freedom that is equal to $k-1$ and the value of $\chi^2$ statistic. The p-value of the $\chi^2$ test statistic can be calculated as $1 - \text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution, df are the degrees of freedom and $\chi^2$ is the value of the $\chi^2$ test statistic.
+Due to the limitation of Pearson's $\chi^2$ test stating that the expected value must be at least 5, the samples that didn't satisfy this condition were summed together and treated as a single sample. We then calculated p-value using $\chi^2$ distribution (cit.). The p-value calculation is based on the number of the degrees of freedom that is equal to $k-1$ and the value of $\chi^2$ statistic. The p-value of the $\chi^2$ test statistic can be calculated as $1 - \text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution, $df$ are the degrees of freedom and $\chi^2$ is the value of the $\chi^2$ test statistic.
 
 The resulting p-value is an indicator of how close are the two tested datasets. The p-value expresses the probability that any difference between the two measured sets happened by chance. Therefore, when we are comparing the feasibility of the two failure counting scenarios (original versus corrected results) the more feasible one will have higher p-value than the other; our point was to find out which one of our approaches followed our theoretical expectations more closely.
 
@@ -1055,7 +1055,7 @@ We inspected the uniformity of first-level p-values of all subtests and test var
 
 During the default run, the battery will execute 110 atomic test; resulting in 110 individual p-value sets. To extract maximum possible amount of p-values from the eight terabytes of data, each atomic test processed this data stream from start to finish; a single test was executed as many times as the amount of data would allow without processing more than eight terabytes. The final size of the p-value set varies for each atomic test as each atomic test will process different amount of data in a single execution. Each p-value in the set represents a single execution of an atomic test.
 
-\section{Analysis of the uniformity of p-values}
+\section{Testing the uniformity of p-values}
 We inspected the uniformity of the p-value sets using the proportion statistic and Pearson's chi-squared ($\chi^2$) goodness-of-fit test (cit.).
 
 The proportion statistic is evaluated based on the number of observed test failures within the p-value sets. We consider the test failed if its p-value is lesser than the significance level $\alpha=0.001$. Let $F$ be a discrete random variable expressing the count of failed tests within a p-value set with $n$ elements; the p-values in the set are samples of $F$. According to our previous assumption, the p-values should be uniformly distributed on interval $[0,1]$ and therefore the probability of a single test failure is $\alpha$. Then the random variable $F$ should follow binomial distribution $\text{Bin}(n,\alpha)$ (cit.); the expected value of the variable is $E(F) = n\alpha$. The probability of observing $x$ failures within the p-value set is calculated using the probability mass function of binomial distribution shown in Equation~\ref{eq:binom_pmf_5}.
@@ -1065,7 +1065,7 @@ The proportion statistic is evaluated based on the number of observed test failu
 P(F = x) = \binom xn \alpha^x(1-\alpha)^{n-x}
 \end{equation}
 
-If we observe $x$ failures, we can calculate the probability of observing same or more extreme count of failures under the assumption that $F_{Obs}$ follows the distribution $\text{Bin}(n,\alpha)$. The more extreme result is a result more distant from the expected value than the observed one. The probability is calculated as shown in Equation~\ref{eq:prop_statistic}.
+If we observe $x$ failures, we can calculate the probability of observing same or more extreme count of failures under the assumption that $F_{Obs}$ follows the distribution $\text{Bin}(n,\alpha)$. The more extreme result is a result more distant from the expected value. The probability is calculated as shown in Equation~\ref{eq:prop_statistic}.
 
 \begin{align}
 D &= \lvert E(F) - x \rvert \\
@@ -1073,14 +1073,18 @@ D &= \lvert E(F) - x \rvert \\
 P(\lvert F - E(F) \rvert \geq D) &= 1 - \left( \sum\limits_{k=\lfloor E(F)-D \rfloor + 1}^{\lceil E(F)+D \rceil - 1} P(F = x) \right)
 \end{align}
 
-The p-value of the proportion statistic is the probability described above. If the p-value is lesser than 0.001, we reject the hypothesis that $F$ follows the binomial distribution $\text{Bin}(n. \alpha)$ and consider the inspected p-value set non-uniform.
+The p-value of the proportion statistic is the probability described above. If the p-value is lesser than 0.001, we reject the hypothesis that $F$ follows the binomial distribution $\text{Bin}(n,\alpha)$ and consider the inspected p-value set non-uniform.
 
+The Pearson's chi-squared test evaluates distribution of p-values on the whole interval $[0,1]$. First, the set of p-values $P$ is split into several bins; in this testing we used $k=1000$ bins. The individual bins in the set $B = \{b_1,..,b_k\}$ have values as follows; the bin $b_i \in B$ has value equal to the count of p-values $p \in P$ such that $\left(\frac{i-1}{k} \leq p < \frac{i}{k}\right)$. For example, the value of the bin $b_i$ will be equal to the count of p-values greater or equal to zero and lesser than 0.001. The expected value of $b_i$ is calculated as $E(b_i) = \frac{n}{k}$. The Pearson's chi-squared test statistic $\chi^2$ is calculated based on the values of the bins and their expected values as shown in Equation~\ref{eq:binned_chi_square_stat}.
 
+\begin{equation}
+\label{eq:binned_chi_square_stat}
+\chi^2 = \sum\limits_{i=1}^{k} \frac{ \left( b_i - E(b_i) \right)^{2} }{E(b_i)}
+\end{equation}
 
+The p-value of the $\chi^2$ test statistic is calculated as $1-\text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution and $df$ are the degrees of freedom ($df=k-1$)(cit.). If the calculated statistic p-value is lesser than 0.001, we reject the hypothesis that the p-values from the set $P$ are uniformly distributed.
 
-
-
-
+\section{Results of the testing}
 
 
 
