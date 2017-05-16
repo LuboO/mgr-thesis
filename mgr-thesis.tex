@@ -58,7 +58,7 @@
     gender        = m,
     advisor       = {RNDr. Petr Švenda, Ph.D.},
     title         = {Randomness Testing Toolkit},
-    TeXtitle      = {The automated testing of randomness with multiple statistical batteries},
+    TeXtitle      = {The automated testing of~randomness with multiple statistical batteries},
     keywords      = {TODO},
     TeXkeywords   = {TODO},
     abstract      = {TODO},
@@ -206,6 +206,83 @@
 \item Randomness, why should we test it (defects, low entropy, etc...)
 \item Statistical testing of randomness
 \end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \chapter{Used third-party statistical software}
 \label{chap:batteries}
@@ -826,9 +903,9 @@ The aim of this experiment was to observe behaviour and results of the batteries
 
 We evaluate the battery analysis based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$; null hypothesis $H_0$ of the test is rejected. The reason why we excluded one from the non-rejecting interval is explained in Section~\ref{sec:preventive_measures_rtt}.
 
-When analysing a truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed over the interval $[0,1]$. The uniformity is caused by the fact that we cannot predict the output of a TRNG and each possible output is observed with equal probability. Therefore, we also can't predict the result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; test's $H_0$ will be rejected with probability $\alpha$. When the null hypothesis of a test is rejected, we assess the test as failed.
+When analysing a truly random data repeatedly with a statistical test, we will observe that the resulting p-values are uniformly distributed over the interval $[0,1]$. The uniformity is caused by the fact that we cannot predict the output of a TRNG and each possible output is observed with equal probability. Therefore, we also cannot predict the result of the analysis with a statistical test. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; test's $H_0$ will be rejected with probability $\alpha$. When the null hypothesis of a test is rejected, we assess the test as failed.
 
-When we are evaluating a battery analysis based on a count of failed tests, we must know how many tests we expect to fail when $H_0$ holds true. Let's have a battery with 40 independent tests and the significance level 0.01. If we don't know the expected number of failures, we must reject $H_0$ if we observe any number of failures. However, in this case, the probability that more than zero tests fail is approximately 33 \%; we would incorrectly reject $H_0$ in one-third of the battery executions.
+When we are evaluating a battery analysis based on a count of failed tests, we must know how many tests we expect to fail when $H_0$ holds true. Let's have a battery with 40 independent tests and the significance level 0.01. If we don't know the expected number of failures, we must reject $H_0$ if we observe any number of failures. However, in this case, the probability that at least one test fails is approximately 33 \% (the probability is calculated as a complement of the probability of failing exactly zero tests, see Equation~\ref{eq:bin_pmf}); we would incorrectly reject $H_0$ in one-third of all battery executions.
 
 We can calculate the expected count of failed tests like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $\text{Bin}(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing the count of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected value of a random variable is $E(F_{Exp}) = n\alpha$. Therefore, should a battery finish with $n\alpha$ failed tests we still can't reject $H_0$ for the whole battery; we will treat the analysed data as random.
 
@@ -922,7 +999,7 @@ Block Alphabit & $1.87 \cdot 10^{-68}$    & 14/198 & \gr$5.15 \cdot 10^{-47}$ & 
 
 In Table~\ref{tab:baseline_summary} we present comparison of the $\chi^2$ statistic p-values between the original and the corrected results. We can see, that in general, the corrected results are closer to their expected distributions. Only in two cases (NIST STS and Rabbit), the corrected results perform worse while in the remaining batteries they offer a significant improvement. We also present the acceptance bounds for the batteries. The acceptance bound represents the maximum number of failed tests in a battery, while not rejecting the null hypothesis. Should the number of failures exceed the acceptance bound, we will reject $H_0$; the tested data failed to pass the battery.
 
-However, even with the improved result interpretation, some test failure counts are still too different from their expected values. This is probably caused by currently unknown dependencies existing between the grouped tests; the accurate detection of the dependencies is a part of our future research. To correct the inaccuracies, we decided to increase the acceptance bounds. We set the acceptance bounds in such a way that the probability of Type I error is not higher than 0.001.
+However, even with the improved result interpretation, some test failure counts are still too different from their expected values. This is probably caused by currently unknown dependencies existing between the groups of tests; the accurate detection of the dependencies is a part of our future research. To correct the inaccuracies, we decided to increase the acceptance bounds. We set the acceptance bounds in such a way that the probability of Type I error is not higher than 0.001. Therefore, we are evaluating the whole battery with the significance level $\alpha=0.001$ and the individual tests with $\alpha=0.01$.
 
 The presented bounds are used for result interpretation of the subsequent experiments. If the number of failed tests will be higher than the bound, the data did not pass the battery analysis.
 
@@ -1001,7 +1078,6 @@ The discovered patterns in the results were consistent failures of certain tests
 
 For each suspicious algorithm with fixed number of rounds, we generated additional 16000 MiB of data. The additional data showed the same patterns in the results as in the original analysis, hinting the presence of a particular bias produced by an algorithm.
 
-
 \subsection{Notable observations}
 \label{sec:notable_results}
 In this section, we list our observations based on the above-presented results, according to their importance.
@@ -1012,7 +1088,7 @@ Rabbit cipher is one of the winners in the eSTREAM competition in the software s
 
 The tests are aiming to discover dependencies between separate bits in the data stream. One interesting detail is that the tests in Block Alphabit will fail if and only the bits in the stream are not previously re-ordered by the battery. This fact led us to believe that there indeed is some dependency between bits in the output.
 
-Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher with the complexity of $2^{158}$. Under the assumption that the plaintext encrypted by Rabbit was not 
+Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher that would need $2^{158}$ bits of output. With the help of RTT, we are able to distinguish the Rabbit cipher in just 8 GB of data; however, we make strong assumption about zero initialization vector, while the authors of the paper do not assume anything.
 
 \item[Biased output of the RC4 cipher] \hfill \\
 RC4 is a popular stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version (no reduction of rounds or algorithm), the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery from TestU01.
@@ -1172,156 +1248,37 @@ Our further observation was that even within a single test, its variants and sub
 
 The results of this experiment inspired our further research that aims to inspect the non-uniformity of the atomic tests more deeply. Another goal of the further work is to find out the exact impact of the non-uniformity on the second-level p-values.
 
+\chapter{Summary}
+The aim of this work was to explore and assess current state-of-the-art approaches to the statistical testing of randomness. Our further goal was to design and implement an interface to these statistical tools and to unify them into a single toolkit.
 
+We presented an overview of the statistical tools used for randomness testing; to observe the unexpected behaviour of the tools we executed them with border-case inputs. When we run the batteries with extremely non-random data (e.g. stream of zeroes), we observed various undocumented situations such as frozen battery execution or invalid test results. Based on the findings, we made adjustments in our toolkit design. 
 
+With respect to the design and the initial requirements of the project, we developed Randomness Testing Toolkit (cit.), or RTT for short. RTT implements an interface for the three presented tools: NIST Statistical Testing Suite (cit.), Dieharder (cit.) and TestU01 (cit.). It is possible to extend the framework to include additional statistical tools in the future.
 
+The RTT framework consists of multiple parts intended for various purposes. Currently, the framework can be used on user's local machine, but it can also be deployed on multiple servers and accessed through the web or console interface. The web interface also eases the result interpretation for the user.
 
+To establish a baseline for the interpretation of the results of the statistical tools, we used RTT to analyse eight terabytes of binary data; the data were generated using quantum random number generator (cit.). All batteries analysed the data in their default settings. We used the established baseline to interpret our subsequent experiments. 
 
+In our further experiment, we analysed 15 distinct popular and well-known cryptographic algorithms such as AES, Keccak or RC4. The results of the analysis were compared to the results produced by the EACirc framework; EACirc, a tool developed at CRoCS, implements an alternative approach to the statistical testing (cit.). From the comparison of the results, we concluded that RTT could detect subtler biases present in the data better that EACirc. However, there is a trade-off between the two approaches as the EACirc framework needs a much lesser amount of data and resources for the analysis. 
 
+The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit (cit.) and RC4 (cit.) stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM (cit.) cryptographic competition and RC4 is an algorithm widely used in TLS up until the version 1.3. The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
 
+We also inspected the validity of the results produced by the Dieharder battery tests. The validity evaluation was based on the assumption that the test results should be uniformly distributed over the interval $[0,1]$ when random data were analysed. We processed eight terabytes of random data with each test in the Dieharder battery; this way we obtained 110 sets of results while each set was assumed to be uniformly distributed. We found out that 39 (out of 110) sets broke this assumption and were non-uniform. This is significantly more than we originally anticipated as the Dieharder battery relies on the assumption during post-processing of the results.
 
+\section{Future work}
+The future development and research can follow up on this thesis in multiple different directions.
 
+\begin{description}
+\item[Further development of RTT] \hfill \\
+The one possibility of extending RTT is to add more statistical batteries into the interface. Viable candidates for addition are the PractRand battery (cit.) and the EACirc framework (cit.). The other possible extension of RTT is the implementation of the result visualisation directly in the web interface; the visualisation would make the interpretation of the data analysis yet more easy for the user.
 
+\item[Study of the dependencies between the statistical tests] \hfill \\
+As stated in Section~\ref{sec:baseline_exp}, we lack a deep understanding of dependency between the individual tests in the statistical batteries. For NIST STS, the research was done in (cit.); however, no such research exists for Dieharder or TestU01. The advanced knowledge of the dependencies would allow us to further improve the accuracy of the battery results interpretation.
 
+\item[Impact of Dieharder non-uniformity on overall battery results] \hfill \\
+In Chapter~\ref{chap:validating_dieharder} we discovered that a large number of tests in Dieharder produce non-uniform results. Further research on this topic is necessary as we know neither what is causing the non-uniformity nor the exact impact of the broken assumptions on the overall results of Dieharder.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\chapter{Conclusions}
-\begin{itemize}
-\item Developed user-friendly tool for easy analysis of arbitrary binary data - Randomness Testing Toolkit
-\item Interpretation of results
-\item Comparison of batteries with EACirc, polynomials
-\item Defects in Dieharder, their relevance, etc...
-\item Future work, same analysis on TestU01, dependence between tests(?), continuous development of RTT, call for flawless statistical battery ( :) )
-\end{itemize}
+\end{description}
 
 \appendix
 
