@@ -59,8 +59,8 @@
     advisor       = {RNDr. Petr Švenda, Ph.D.},
     title         = {Randomness Testing Toolkit},
     TeXtitle      = {The automated testing of~randomness with multiple statistical batteries},
-    keywords      = {TODO},
-    TeXkeywords   = {TODO},
+    keywords      = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
+    TeXkeywords   = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
     abstract      = {TODO},
     thanks        = {TODO},
     bib           = bibliography.bib,
@@ -202,87 +202,21 @@
 \begin{document}
 
 \chapter{Introduction}
-\begin{itemize}
-\item Randomness, why should we test it (defects, low entropy, etc...)
-\item Statistical testing of randomness
-\end{itemize}
+In modern cryptography, one of the required properties of cryptographic primitives is the randomness of their output. The algorithms lacking this attribute can leak information about the secret key or the plaintext, which is not desirable; thus the need for the randomness testing arose.
 
+Since the advent of cryptography, multiple tools addressing this problem were developed; most of them evaluate statistical properties of the tested data. In this thesis, we closely work with three statistical tools: NIST Statistical Testing Suite (cit.), Dieharder (cit.) and TestU01 (cit.). Other notable tools are CryptX (cit.) and Diehard (cit.), which pioneered the statistical randomness evaluation, and EACirc (cit.) that employs alternative, adaptive approach.
 
+The aim of this thesis is to design and develop a unifying interface for the statistical tools. The interface would allow its users to test the randomness of arbitrary binary data in an easy and user-friendly manner. The interface would also present and interpret the results of the randomness assessment in a consistent way. 
 
+We named the interface Randomness Testing Toolkit\footnote{Also refered to as RTT or just the toolkit.} and described its functionality and implementation details in Chapter~\ref{chap:rtt}. The overview of the software used in RTT is in Chapter~\ref{chap:batteries}. 
 
+In Chapter~\ref{chap:crypto_fn_analysis}, we outline the experiments done with the RTT interface. In~our first experiment we analysed large quantities of random data to establish a baseline, based on which we would interpret our further analyses. For the next experiment, we analysed the randomness of outputs of 15 well-known cryptographic algorithms\footnote{We refer to both ciphers and hashing functions simply as to cryptographic algorithms or primitives.} such as AES or Keccak. We compared the results of the experiment to the results previously obtained with EACirc and compared viability of the different approaches. Based on the outcomes, we drew the security margins of the tested algorithms with respect to the statistical analysis.
 
+Chapter~\ref{chap:validating_dieharder} contains details about our inspection of the validity of the Dieharder battery. To evaluate the validity, we processed a big amount of random data with the battery and analysed the outputs of the processing.
 
+We conclude the thesis with the summary in Chapter~\ref{chap:summary}. In the chapter, we summarise the thesis, briefly list the achieved results and propose possible directions for future research and development.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Refered to simply as CRoCS.}, Masaryk University; related problems, ideas and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Petr Švenda, Marek Sýs, Karel Kubíček, Radka Cieslarová, Michal Hajas, Jiří Novotný, Matúš Nemec, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
 
 \chapter{Used third-party statistical software}
 \label{chap:batteries}
@@ -445,11 +379,12 @@ Since we need to use the batteries in RTT with arbitrary binary data, we impleme
 \end{itemize}
 
 \chapter{Randomness Testing Toolkit}
+\label{chap:rtt}
 One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, and an execution and interpretaion of the analysis results.
 
-Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS\footnote{Centre for Research of Cryptography and Security}. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
+Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
 
-Therefore we developed Randomness Testing Toolkit\footnote{Also referenced as RTT or just the toolkit.}, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely.
+Therefore we developed Randomness Testing Toolkit, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely.
 
 In the following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
 
@@ -1091,7 +1026,7 @@ The tests are aiming to discover dependencies between separate bits in the data 
 Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher that would need $2^{158}$ bits of output. With the help of RTT, we are able to distinguish the Rabbit cipher in just 8 GB of data; however, we make strong assumption about zero initialization vector, while the authors of the paper do not assume anything.
 
 \item[Biased output of the RC4 cipher] \hfill \\
-RC4 is a popular stream cipher widely used in WEP and TLS up until version 1.3. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version (no reduction of rounds or algorithm), the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery from TestU01.
+RC4 is a popular stream cipher widely used in WEP and TLS up until the version 1.3 when it was discontinued. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version (no reduction of rounds or algorithm), the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery from TestU01.
 
 There are multiple known biases and distinguishing attacks on RC4; notable publications are \textit{A Practical Attack on Broadcast RC4} (cit.), \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} (cit.) and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} (cit.). Any of these biases can be causing the failure of the statistical tests.
 
@@ -1249,6 +1184,7 @@ Our further observation was that even within a single test, its variants and sub
 The results of this experiment inspired our further research that aims to inspect the non-uniformity of the atomic tests more deeply. Another goal of the further work is to find out the exact impact of the non-uniformity on the second-level p-values.
 
 \chapter{Summary}
+\label{chap:summary}
 The aim of this work was to explore and assess current state-of-the-art approaches to the statistical testing of randomness. Our further goal was to design and implement an interface to these statistical tools and to unify them into a single toolkit.
 
 We presented an overview of the statistical tools used for randomness testing; to observe the unexpected behaviour of the tools we executed them with border-case inputs. When we run the batteries with extremely non-random data (e.g. stream of zeroes), we observed various undocumented situations such as frozen battery execution or invalid test results. Based on the findings, we made adjustments in our toolkit design. 
@@ -1261,7 +1197,7 @@ To establish a baseline for the interpretation of the results of the statistical
 
 In our further experiment, we analysed 15 distinct popular and well-known cryptographic algorithms such as AES, Keccak or RC4. The results of the analysis were compared to the results produced by the EACirc framework; EACirc, a tool developed at CRoCS, implements an alternative approach to the statistical testing (cit.). From the comparison of the results, we concluded that RTT could detect subtler biases present in the data better that EACirc. However, there is a trade-off between the two approaches as the EACirc framework needs a much lesser amount of data and resources for the analysis. 
 
-The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit (cit.) and RC4 (cit.) stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM (cit.) cryptographic competition and RC4 is an algorithm widely used in TLS up until the version 1.3. The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
+The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit (cit.) and RC4 (cit.) stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM (cit.) cryptographic competition and RC4 is an algorithm widely used in TLS up until the version 1.3 (RC4 in not included in TLS v1.3 draft). The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
 
 We also inspected the validity of the results produced by the Dieharder battery tests. The validity evaluation was based on the assumption that the test results should be uniformly distributed over the interval $[0,1]$ when random data were analysed. We processed eight terabytes of random data with each test in the Dieharder battery; this way we obtained 110 sets of results while each set was assumed to be uniformly distributed. We found out that 39 (out of 110) sets broke this assumption and were non-uniform. This is significantly more than we originally anticipated as the Dieharder battery relies on the assumption during post-processing of the results.
 
@@ -1491,7 +1427,7 @@ For details about the MySQL database storage see Section~\ref{sec:mysql_res_stor
   }
 \end{minted}
 
-\chapter{Guide to the settings in battery configuration}
+\chapter{Guide to the settings in the battery configuration}
 \label{app:batt_conf_guide}
 In following list we describe common as well as battery specific tags that can be present in battery configuration file. Each tag is listed with its description and list of its allowed parent tags. For example of complete configuration see Appendix~\ref{app:batt_conf_example}.
 
