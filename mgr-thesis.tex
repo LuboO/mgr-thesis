@@ -205,11 +205,11 @@
 \chapter{Introduction}
 In modern cryptography, one of the required properties of cryptographic primitives is the randomness of their output. The algorithms lacking this attribute can leak information about the secret key or the plaintext, which is not desirable; thus the need for the randomness testing arose.
 
-Since the advent of cryptography, multiple tools addressing this problem were developed; most of them evaluate statistical properties of the tested data. In this thesis, we closely work with three statistical tools: NIST Statistical Testing Suite (cit.), Dieharder (cit.) and TestU01 (cit.). Other notable tools are CryptX (cit.) and Diehard (cit.), which pioneered the statistical randomness evaluation, and EACirc (cit.) that employs alternative, adaptive approach.
+Since the advent of cryptography, multiple tools addressing this problem were developed; most of them evaluate statistical properties of the tested data. In this thesis, we closely work with three statistical tools: NIST Statistical Testing Suite \cite{nist-sts}, Dieharder \cite{dieharder} and TestU01 \cite{testu01-paper}. Other notable tools are Crypt-X \cite{crypt-x} and Diehard \cite{diehard}, which pioneered the statistical randomness evaluation, and EACirc \cite{eacirc-github} that employs alternative, adaptive approach.
 
 The aim of this thesis is to design and develop a unifying interface for the statistical tools. The interface would allow its users to test the randomness of arbitrary binary data in an easy and user-friendly manner. The interface would also present and interpret the results of the randomness assessment in a consistent way. 
 
-We named the interface Randomness Testing Toolkit\footnote{Also refered to as RTT or just the toolkit.} and described its functionality and implementation details in Chapter~\ref{chap:rtt}. The overview of the software used in RTT is in Chapter~\ref{chap:batteries}. 
+We named the interface Randomness Testing Toolkit\footnote{Also refered to as RTT or just the toolkit.} \cite{rtt-github} and described its functionality and implementation details in Chapter~\ref{chap:rtt}. The overview of the software used in RTT is in Chapter~\ref{chap:batteries}. 
 
 In Chapter~\ref{chap:crypto_fn_analysis}, we outline the experiments done with the RTT interface. In~our first experiment we analysed large quantities of random data to establish a baseline, based on which we would interpret our further analyses. For the next experiment, we analysed the randomness of outputs of 15 well-known cryptographic algorithms\footnote{We refer to both ciphers and hashing functions simply as to cryptographic algorithms or primitives.} such as AES or Keccak. We compared the results of the experiment to the results previously obtained with EACirc and compared viability of the different approaches. Based on the outcomes, we drew the security margins of the tested algorithms with respect to the statistical analysis.
 
@@ -244,7 +244,7 @@ In our hypothesis testing, a p-value is a probability of obtaining equal or more
 Significance level based on which we either reject or not reject $H_0$. We can specify some interval (e.g. $(0,\alpha]$) and if the result of the test (p-value) falls into this interval, we will reject the hypothesis that the tested data is random. Alternatively, we can also reject p-values that are too extreme on both sides of the interval (outside of $\left[\frac{\alpha}{2},1-\frac{\alpha}{2}\right]$).
 
 \item[Type I and type II errors] \hfill \\
-A type I error (false positive) is the rejection of a true null hypothesis $H_0$. On the opposite, a type II error (false negative) is incorrectly holding to the null hypothesis, even when it should have been rejected.
+A type I error (false positive) is the rejection of a true null hypothesis $H_0$ \cite{type-i-ii-error}. On the opposite, a type II error (false negative) is incorrectly holding to the null hypothesis, even when it should have been rejected.
 
 \item[Statistic] \hfill \\
 The value obtained by certain calculation from first level p-values. Multiple statistics can be obtained from one set of p-values e.g. when testing the set for uniformity we can use Kolmogorov-Smirnov Test or Chi-Square test. Based on values of statistics of a test we can decide rejection of $H_0$.
@@ -267,18 +267,20 @@ Batch of jobs that analysed single data file with various statistical batteries 
 \end{description}
 
 \section{Batteries supported by RTT}
-\subsection{NIST Statistical Test Suite}
-The battery of statistical tests was developed by National Institute of Standards and Technology (cit.). The battery implements 15 statistical tests for evaluating randomness of input data. The tests are listed in Appendix~\ref{app:nist_sts_tests}.
+In this section we provide a brief overview of the supported statistical batteries included in Randomness Testing Toolkit.
 
-The reference implementation is not used in RTT because it is considerably slower than its optimized counterparts. The faster implementation called NIST STS optimised v5.0.2 used in RTT was developed by Zdeněk Říha and Marek Sýs(cit.).
+\subsection{NIST Statistical Test Suite}
+The battery of statistical tests was developed by National Institute of Standards and Technology \cite{nist-sts}. The battery implements 15 statistical tests for evaluating randomness of input data. The tests are listed in Appendix~\ref{app:nist_sts_tests}.
+
+The reference implementation described in \cite{nist-sts-documentation} is not used in RTT because it is considerably slower than its optimized counterparts. The faster implementation called NIST STS optimised v5.0.2 used in RTT was developed by Marek Sýs and Zdeněk Říha \cite{nist-sts-syso-optimization}.
 
 \subsection{Dieharder}
-Dieharder is a battery designed by Robert G. Brown at the Duke University (cit.). The battery features user-friendly console interface with the possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions (cit manpage) adds to its popularity and ease of use. Dieharder includes all tests from the older statistical battery Diehard (cit.), three tests from NIST STS and several other tests implemented by the author. The tests, along with their default settings, are listed in Appendix~\ref{app:dieharder_tests}.
+Dieharder is a battery designed by Robert G. Brown at the Duke University \cite{dieharder}. The battery features user-friendly console interface with the possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions \cite{dieharder-manpage} adds to its popularity and ease of use. Dieharder includes all tests from the older statistical battery Diehard \cite{diehard}, three tests from NIST STS and several other tests implemented by the author. The tests, along with their default settings, are listed in Appendix~\ref{app:dieharder_tests}.
 
 Since the original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder. We modified Dieharder v3.31.1 which is the last stable maintained release on the project page.
 
 \subsection{TestU01}
-This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. (cit.). It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries. The tests included in specific batteries are listed in TestU01 documentation(cit.).
+This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. \cite{testu01-paper}. It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries. The tests included in specific batteries are listed in TestU01 documentation \cite{testu01-documentation}.
 
 \begin{description}
 \item[Small Crush, Crush, Big Crush] \hfill \\
@@ -286,7 +288,7 @@ Small Crush battery is very fast and needs a relatively small amount of data to 
 \item[Rabbit, Alphabit, Block Alphabit] \hfill \\
 Tests in these batteries are suited for testing hardware bit generators and can be applied to an arbitrary amount of data. Data can be provided either as a binary file or PRNG implementing the TestU01 interface.
 \item[PseudoDIEHARD, FIPS\_140\_2] \hfill \\
-Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests in NIST standard(cit.) Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other batteries.
+Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests defined in NIST FIPS 140-2 standard \cite{nist-fips-140-2} (the definition of tests was removed from the standard in Change Notice 2). Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other batteries.
 \end{description}
 
 Since TestU01 v1.2.3 is available only as an ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. Our interface allows us to apply batteries to arbitrary binary data even when the batteries themselves don't support this feature natively.
@@ -386,7 +388,7 @@ One of our goals during working on this project was to create a tool that would 
 
 Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
 
-Therefore we developed Randomness Testing Toolkit, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely.
+Therefore we developed Randomness Testing Toolkit \cite{rtt-github}, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely.
 
 In the following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
 
@@ -711,7 +713,7 @@ The user interacts only with the frontend server. The machine accepts data and r
 
 The server can be directly accessed through SSH. The direct access is meant for experienced users that need to analyze big volumes of data. Additionaly, an optional web interface can be deployed on the frontend server. The web interface can be used for interactive browsing of the analysis results as well as for submitting undemanding amount of data and experiments by the users.
 
-The direct access to the server is granted to the user by the system administrator. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} (cit.). The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with help of the generator tool (cit.) that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
+The direct access to the server is granted to the user by the system administrator. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} \cite{chroot}. The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with help of the generator tool \cite{eacirc-streams} that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
 
 \subsection*{Experiment submission utility}
 
@@ -802,7 +804,7 @@ In the chapter, we present the results of two distinct experiments and describe 
 
 In the first experiment, we analysed large quantities of random data with the statistical batteries implemented in RTT. The primary motivation for the experiment was to establish a baseline for further experiments -- how many tests and how frequently are expected to fail with truly random sequences. Our subsequent experiments would differ from the baseline analysis only in the input data but will keep the configuration settings of the tests in the batteries the same.
 
-In the second experiment, we analysed outputs of 15 distinct cryptographic algorithms. The specific algorithms were chosen based either on their real-world popularity and utility or their success in cryptographic competitions eSTREAM (cit.) and SHA-3 (cit.). The chosen algorithms were AES, BLAKE, Grain, Gr\o stl, JH, Keccak, MD6, Rabbit, Salsa20, DES, 3-DES, Skein, SOSEMANUK, TES and RC4. We compared the results of the experiment with the results of the analysis in the EACirc framework. The EACirc framework developed at CRoCS implements an alternative approach to the randomness testing (cit.).
+In the second experiment, we analysed outputs of 15 distinct cryptographic algorithms. The specific algorithms were chosen based either on their real-world popularity and utility or their success in cryptographic competitions eSTREAM \cite{estream-competition} and SHA-3 \cite{sha3-competition}. The chosen algorithms were AES, BLAKE, Grain, Gr\o stl, JH, Keccak, MD6, Rabbit, Salsa20, DES, 3-DES, Skein, SOSEMANUK, TES and RC4. We compared the results of the experiment with the results of the analysis in the EACirc framework. The EACirc framework developed at CRoCS implements an alternative approach to the randomness testing \cite{eacirc-github}.
 
 In our experiments, all statistical tests have significance level $\alpha$ set to 0.01. The tests will reject the null hypothesis $H_0$ based on this significance level.
 
@@ -826,13 +828,13 @@ $$
 $$
 
 \subsection*{TestU01}
-We executed the batteries Small Crush and Crush in their default settings. The default settings of the tests in their respective batteries can be found in TestU01 documentation (cit.).
+We executed the batteries Small Crush and Crush in their default settings. The default settings of the tests in their respective batteries can be found in TestU01 documentation \cite[p.~143]{testu01-documentation}.
 
 The battery Big Crush is omitted from our analysis because the tests in the battery would need at least 60 GB of data; the amount of data would be infeasible both to generate and store.
 
 The tests in Rabbit, Alphabit and Block Alphabit batteries were executed in their default settings. We limited the tests to 8000 MiB of data by the parameter \texttt{nb}.
 
-The tests in the batteries Alphabit and Block Alphabit have settings that would set them to process only certain parts of each 32-bit block in the data. We did not use these settings; the tests analysed all bits in 32-bit blocks. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits(cit.).
+The tests in the batteries Alphabit and Block Alphabit have settings that would set them to process only certain parts of each 32-bit block in the data. We did not use these settings; the tests analysed all bits in 32-bit blocks. Additionally, all tests from Block Alphabit are executed in 6 different variants; each test variant analyses differently reordered blocks of 32 bits \cite[p.~155]{testu01-documentation}.
 
 \section{Baseline experiment}
 \label{sec:baseline_exp}
@@ -840,15 +842,15 @@ The aim of this experiment was to observe behaviour and results of the batteries
 
 We evaluate the battery analysis based on the number of failed tests in the battery. Under the assumption that we have single second-level p-value per single test, the test is considered failed when its p-value is outside of the interval $[\alpha, 1)$; null hypothesis $H_0$ of the test is rejected. The reason why we excluded one from the non-rejecting interval is explained in Section~\ref{sec:preventive_measures_rtt}.
 
-One of the properties of the p-values is that for an arbitrary statistical test they will be uniformly distributed over the interval $(0,1]$ as long as the null hypothesis is satisfied (cit.). Our null hypothesis is that the tested data were the product of TRNG. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; $H_0$ of the test will be rejected with probability $\alpha$. When the null hypothesis of a test is rejected, we assess the test as failed.
+One of the properties of the p-values is that for an arbitrary statistical test they will be uniformly distributed over the interval $(0,1]$ as long as the null hypothesis is satisfied \cite{pvals-uniformity}. Our null hypothesis is that the tested data were the product of TRNG. Since the p-values are uniformly distributed, they will fall outside of the interval $[\alpha, 1)$ with probability equal to $\alpha$; $H_0$ of the test will be rejected with probability $\alpha$. When the null hypothesis of a test is rejected, we assess the test as failed.
 
 When we are evaluating a battery analysis based on a count of failed tests, we must know how many tests we expect to fail when $H_0$ holds true. Let's have a battery with 40 independent tests and the significance level 0.01. If we don't know the expected number of failures, we must reject $H_0$ if we observe any number of failures. However, in this case, the probability that at least one test fails is approximately 33 \% (the probability is calculated as a complement of the probability of failing exactly zero tests, see Equation~\ref{eq:bin_pmf}); we would incorrectly reject $H_0$ in one-third of all battery executions.
 
-We can calculate the expected count of failed tests like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution (cit.) $\text{Bin}(n, \alpha)$. Let $F_{Exp}$ be a random discrete variable expressing the count of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected value of a random variable is $E(F_{Exp}) = n\alpha$. Therefore, should a battery finish with $n\alpha$ failed tests we still can't reject $H_0$ for the whole battery; we will treat the analysed data as random.
+We can calculate the expected count of failed tests like so. Let $n$ be the number of tests in a battery. Then we have $n$ independent experiments that will result in either yes (failure of the test) with probability $\alpha$ or no (success of the test) with probability $1-\alpha$. This situation can be modeled by using binomial distribution $\text{Bin}(n, \alpha)$ \cite[p.~245]{stat-handbook}. Let $F_{Exp}$ be a random discrete variable expressing the count of failed tests in a battery with expected distribution $\text{Bin}(n, \alpha)$. From the definition of the binomial distribution, the expected value of a random variable is $E(F_{Exp}) = n\alpha$. Therefore, should a battery finish with $n\alpha$ failed tests we still can't reject $H_0$ for the whole battery; we will treat the analysed data as random.
 
 However, the expected number of failures is not necessarily exact, as the calculation described above treats tests as independent trials. Separate tests in a battery are neither required nor proved to be independent, which can lead to differing distributions of empirical and theoretical random variables representing the counts of failed tests in the batteries.
 
-To observe the empirical distribution of the number of failed tests $F_{Obs}$, we inspected the number of failures of the individual batteries during the analysis of truly random data. In total, approximately eight terabytes of random data were downloaded from QRNG service provided by Humboldt-Universitaet zu Berlin (cit.). The data were split into 1000 blocks each of size 8000 GiB. All seven batteries included in this experiment analysed each block of data once. The sample size of 1000 trials is enough for us to compare the distributions of the two random variables $F_{Exp}$ and $F_{Obs}$.
+To observe the empirical distribution of the number of failed tests $F_{Obs}$, we inspected the number of failures of the individual batteries during the analysis of truly random data. In total, approximately eight terabytes of random data were downloaded from quantum random number generator service provided by Humboldt University of Berlin \cite{qrng-service-germany}. The data were split into 1000 blocks each of size 8000 GiB. All seven batteries included in this experiment analysed each block of data once. The sample size of 1000 trials is enough for us to compare the distributions of the two random variables $F_{Exp}$ and $F_{Obs}$.
 
 We inspected the counts of failures of individual batteries in following two scenarios.
 
@@ -857,7 +859,7 @@ We inspected the counts of failures of individual batteries in following two sce
 In this scenario, we assumed that all second-level p-values produced by a specific battery are independent. Therefore, we treated all statistics calculated by the battery as separate tests. For example, if we execute some test in two variants, each of those variants has two subtests\footnote{For the difference between variant and subtest, see Section~\ref{sec:terminology}.}, and each subtest will calculate two statistics, in total we will get $2^3=8$ second-level p-values; we consider these eight p-values as the results of eight independent tests each of whose calculated a single p-value. 
 
 \item[Corrected p-values failures] \hfill \\
-With this second scenario, we tried to mitigate the effect of dependent p-values in our set by grouping them together. We grouped the p-values that are most likely dependent; we assumed that the p-values that are most likely inter-connected are those that are produced by a single statistical test. Therefore, all p-values belonging to a single test were reduced to only one p-value, leaving us with a single result per distinct test in a statistical battery. For example, should a single test produce eight p-values, for this test we will only have information whether the test was a failure or not. For the grouping of the p-values, we used Šidák's correction (cit.), and we show the process in Method~\ref{def:sidak}.
+With this second scenario, we tried to mitigate the effect of dependent p-values in our set by grouping them together. We grouped the p-values that are most likely dependent; we assumed that the p-values that are most likely inter-connected are those that are produced by a single statistical test. Therefore, all p-values belonging to a single test were reduced to only one p-value, leaving us with a single result per distinct test in a statistical battery. For example, should a single test produce eight p-values, for this test we will only have information whether the test was a failure or not. For the grouping of the p-values, we used Šidák's correction \cite{sidak-corr}, and we show the process in Method~\ref{def:sidak}.
 
 \begin{method}
 \label{def:sidak}
@@ -887,14 +889,14 @@ Let $X = \{x_1,..,x_s\}$ be a multiset of the samples of $F_{Obs}$ and $D = \{d_
 E\left(f_{d}^{X}\right) = s P(F_{Exp} = d)
 \end{equation}
 
-Now that we have both the observed frequency $f_{d}^{X}$ and its expected value $E\left(f_{d}^{X}\right)$ for $d \in D$, we can assess their closeness. For this assessment, we used Pearson's chi-squared test ($\chi^2$) that evaluates whether two tested datasets belong to the same distribution (cit.). We calculated Pearson's cumulative test statistic $\chi^2$ for each pair of expected and observed frequencies as shown in Equation~\ref{eq:chi_square_stat}.
+Now that we have both the observed frequency $f_{d}^{X}$ and its expected value $E\left(f_{d}^{X}\right)$ for $d \in D$, we can assess their closeness. For this assessment, we used Pearson's chi-squared test ($\chi^2$) that evaluates whether two tested datasets belong to the same distribution \cite[p.~219]{stat-handbook}. We calculated Pearson's cumulative test statistic $\chi^2$ for each pair of expected and observed frequencies as shown in Equation~\ref{eq:chi_square_stat}.
 
 \begin{equation}
 \label{eq:chi_square_stat}
 \chi^2 = \sum\limits_{i=1}^{k} \frac{  \left(f_{d_i}^{X} - E \left(f_{d_i}^{X}\right) \right)^2 }{E \left(f_{d_i}^{X}\right)}
 \end{equation}
 
-Due to the limitation of Pearson's $\chi^2$ test stating that the expected value must be at least 5 (cit.), the frequencies that didn't satisfy this condition were summed together and treated as a single frequency. We then calculated p-value using $\chi^2$ distribution (cit.); the p-value is calculated as $1 - \text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution, $df$ are the degrees of freedom (equal to $k-1$) and $\chi^2$ is the value of the $\chi^2$ test statistic.
+Due to the limitation of Pearson's $\chi^2$ test stating that the expected value must be at least 5 \cite[p.~220]{stat-handbook}, the frequencies that didn't satisfy this condition were summed together and treated as a single frequency. We then calculated p-value using $\chi^2$ distribution \cite[p.~116]{stat-handbook}; the p-value is calculated as $1 - \text{CDF}(df, \chi^2)$, where CDF is the cumulative distribution function of the $\chi^2$ distribution, $df$ are the degrees of freedom (equal to $k-1$) and $\chi^2$ is the value of the $\chi^2$ test statistic.
 
 The resulting p-value expresses the probability that the measured sets belong to the same distribution. Therefore, when we are comparing the viability of the two failure counting scenarios (original versus corrected results) the more viable one will have greater p-value than the other; our point was to find out which one of our approaches followed our theoretical expectations more closely.
 
@@ -967,11 +969,11 @@ The presented bounds are used for result interpretation of the subsequent experi
 \section{Analysis of well-known cryptographic algorithms}
 In this experiment, we focused on the analysis of well-known and used cryptographic primitives. Our motivation for this experiment was to find out how big are the security margins of conventional algorithms. Most of the tested algorithms could be reduced in the number of their rounds. We investigated how much could we reduce the rounds until we would start detecting the biases in the data.
 
-The outputs of the functions were generated using the generator developed in CRoCS (cit.). The plaintext of the functions was a binary counter; the key was randomly generated, and initialization vector was set to zeroes. Not all functions needed the key and IV. 
+The outputs of the functions were generated using the generator developed in CRoCS \cite{eacirc-streams}. The plaintext of the functions was a binary counter; the key was randomly generated, and initialization vector was set to zeroes. Not all functions needed the key and IV. 
 
 For each particular round and function combination, we generated a data file with the size of 8000 MiB. In total,  we analysed 72 distinct combinations of functions and rounds. The configurations of the batteries were the same as described in Section~\ref{sec:configuration_of_batteries}. 
 
-The results of this experiment were also compared to the results produced by the EACirc framework (cit.). The results of the analysis of the data with EACirc are part of Karel Kubíček's diploma thesis (cit.).
+The results of this experiment were also compared to the results produced by the EACirc framework \cite{eacirc-github}. The results of the analysis of the data with EACirc are part of Karel Kubíček's diploma thesis \cite{kubicek-dp}.
 
 \subsection{Results of the analysis}
 The results of the analysis are shown in Table~\ref{tab:crypto_alg_analysis}. We included only the combinations of algorithms and rounds in which the data failed to pass either EACirc or any battery in RTT. The marked cells in the table indicate failure of the tool. 
@@ -1045,16 +1047,16 @@ In this section, we list our observations based on the above-presented results, 
 
 \begin{description}
 \item[Biased output of the Rabbit cipher] \hfill \\
-Rabbit cipher is one of the winners in the eSTREAM competition in the software section. The algorithm has a total of 4 rounds. In all of its configurations, Rabbit will consistently fail tests \texttt{sstring\_HammingIndep} and \texttt{sstring\_PeriodsInStrings} in batteries Crush, Rabbit, Alphabit and Block Alphabit. 
+Rabbit \cite{rabbit} cipher is one of the winners in the eSTREAM competition in the software section. The algorithm has a total of 4 rounds. In all of its configurations, Rabbit will consistently fail tests \texttt{sstring\_HammingIndep} and \texttt{sstring\_PeriodsInStrings} in batteries Crush, Rabbit, Alphabit and Block Alphabit. 
 
 The tests are aiming to discover dependencies between separate bits in the data stream. One interesting detail is that the tests in Block Alphabit will fail if and only the bits in the stream are not previously re-ordered by the battery. This fact led us to believe that there indeed is some dependency between bits in the output.
 
-Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit}(cit.) and \textit{Cryptanalysis of Rabbit} (cit.). The authors of the latter paper claimed to be able to construct distinguisher for the cipher that would need $2^{158}$ bits of output. With the help of RTT, we are able to distinguish the Rabbit cipher in just 8 GB of data; however, we make strong assumption about zero initialization vector, while the authors of the paper do not assume anything.
+Biases in the output of the Rabbit cipher were previously published in papers \textit{On a bias of Rabbit} \cite{rabbit-bias-1} and \textit{Cryptanalysis of Rabbit} \cite{rabbit-bias-2}. The authors of the latter paper claimed to be able to construct distinguisher for the cipher that would need $2^{158}$ bits of output. With the help of RTT, we are able to distinguish the Rabbit cipher in just 8 GB of data; however, we make strong assumption about zero initialization vector, while the authors of the paper do not assume anything.
 
 \item[Biased output of the RC4 cipher] \hfill \\
-RC4 is a popular stream cipher widely used in WEP and TLS up until the version 1.3 when it was discontinued. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 (cit.). In its full version (no reduction of rounds or algorithm), the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery from TestU01.
+RC4 \cite{rc4} is a popular stream cipher widely used in WEP and TLS up until the version 1.3 when it was discontinued. Various attacks on RC4 were published, and in 2015 it was prohibited for use in TLS by RFC 7465 \cite{rfc7465}. In its full version (no reduction of rounds or algorithm), the RC4 cipher will consistently fail tests \texttt{sknuth\_SimpPoker} and \texttt{sknuth\_Gap} in the Crush battery from TestU01.
 
-There are multiple known biases and distinguishing attacks on RC4; notable publications are \textit{A Practical Attack on Broadcast RC4} (cit.), \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} (cit.) and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} (cit.). Any of these biases can be causing the failure of the statistical tests.
+There are multiple known biases and distinguishing attacks on RC4; notable publications are \textit{A Practical Attack on Broadcast RC4} \cite{rc4-bias-1}, \textit{Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator} \cite{rc4-bias-2} and \textit{Statistical Analysis of the Alleged RC4 Keystream Generator} \cite{rc4-bias-3}. Any of these biases can be causing the failure of the statistical tests.
 
 \item[Security margins with respect to the statistical analysis] \hfill \\
 The majority of the analysed algorithms has the security margin higher than 0.8. This means that even if we would drastically increase our computational capability and performance of the state-of-the-art statistical tools, biases in full versions of algorithms (without reduction of rounds) will not be detected.
@@ -1067,10 +1069,10 @@ All of the batteries implemented in RTT perform better or equally well than EACi
 The batteries themselves have differing strength. While batteries NIST STS and Small Crush have more or less same bias detection capabilities as EACirc, the remaining batteries perform better and can detect subtler biases. The remaining batteries are listed here, along with the number of times they detected a bias when other batteries failed to do so: Alphabit (2 times), Dieharder (3 times), Block Alphabit (5 times), Rabbit (6 times), Crush (8 times).
 
 \item[Biased output of round reduced Grain function] \hfill \\
-The Grain algorithm is on of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds (out of 13), the test will consistently fail tests \texttt{smarsa\_MatrixRank} and \texttt{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher, but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
+The Grain cipher \cite{grain} is one of the winners of the eSTREAM competition in the hardware section. In 3, 4, 5 and 6 rounds (out of 13), the test will consistently fail tests \texttt{smarsa\_MatrixRank} and \texttt{scomp\_LinearComp} in batteries Crush and Rabbit.  Bias in 6 rounds does not break the security of the cipher, but due to its existence, the security margin is significantly lower (around 0.5) than in other well-known functions. 
 
 \item[Biased output of round reduced MD6 hash function] \hfill \\
-The MD6 hash function was a competitor in the SHA-3 competition but did not advance to the second round of the competition. In 9 and 10 rounds out of 94, the algorithm will consistently fail tests \texttt{smarsa\_MartixRank} and \texttt{sspectral\_Fourier3} in batteries Crush and Rabbit. While this hints us with the presence of a specific bias in the function output it does not break the security of the function; in further rounds, we can no longer detect any bias, and the output appears as truly random.
+The MD6 hash function \cite{md6} was a competitor in the SHA-3 competition but did not advance to the second round of the competition. In 9 and 10 rounds out of 94, the algorithm will consistently fail tests \texttt{smarsa\_MartixRank} and \texttt{sspectral\_Fourier3} in batteries Crush and Rabbit. While this hints us with the presence of a specific bias in the function output it does not break the security of the function; in further rounds, we can no longer detect any bias, and the output appears as truly random.
 
 \end{description}
 
@@ -1081,7 +1083,7 @@ The goal of the research presented in this chapter was to analyse the validity o
 \section{Goals of the research}
 As stated in Section~\ref{sec:baseline_exp}, the p-values produced by an arbitrary statistical test are uniformly distributed over the interval $(0,1]$ if the null hypothesis holds true. This assumption should also hold for the first-level p-values of the individual tests in the battery.
 
-Dieharder uses this assumption to process the results further. In the standard settings, the user of the battery will not be presented the first-level p-values of the tests as a result. Each test in Dieharder will be repeated multiple times resulting in multiple first-level p-values; these p-values will be then tested for uniformity by the Kolmogorov-Smirnov (K-S) test (cit.). Should the K-S test fail, the assumption of the uniformity is rejected, and the test is deemed failed; the user should consider the tested data non-random.
+Dieharder uses this assumption to process the results further. In the standard settings, the user of the battery will not be presented the first-level p-values of the tests as a result. Each test in Dieharder will be repeated multiple times resulting in multiple first-level p-values; these p-values will be then tested for uniformity by the Kolmogorov-Smirnov (K-S) test \cite[p.~473]{stat-handbook}. Should the K-S test fail, the assumption of the uniformity is rejected, and the test is deemed failed; the user should consider the tested data non-random.
 
 The aim of this research was to verify the assumption mentioned above; that the analysis of data produced by TRNG yields uniform results.
 
@@ -1094,10 +1096,10 @@ During the default run, the battery will execute 110 atomic tests, resulting in 
 
 \section{Testing the uniformity of p-values}
 \label{sec:testing_uniformity_dh}
-We inspected the uniformity of the p-value sets using the proportion statistic and Pearson's chi-squared ($\chi^2$) goodness-of-fit test (cit.).
+We inspected the uniformity of the p-value sets using the proportion statistic and Pearson's chi-squared ($\chi^2$) goodness-of-fit test \cite[p.~219]{stat-handbook}.
 
 \subsection{Proportion test}
-The proportion statistic is evaluated based on the number of observed test failures within the p-value sets. We consider a test failed if its p-value is lesser than the significance level $\alpha=0.001$. Let $F$ be a discrete random variable expressing the count of failed tests within a p-value set with $n$ elements; the p-values in the set are samples of $F$. According to our previous assumption, the p-values should be uniformly distributed on the interval $(0,1]$, and therefore the probability of a single test failure is $\alpha$. Then the random variable $F$ should follow binomial distribution $\text{Bin}(n,\alpha)$ (cit.); the expected value of the variable is $E(F) = n\alpha$. The probability of observing $x$ failures within the p-value set is calculated using the probability mass function of binomial distribution shown in Equation~\ref{eq:binom_pmf_5}.
+The proportion statistic is evaluated based on the number of observed test failures within the p-value sets. We consider a test failed if its p-value is lesser than the significance level $\alpha=0.001$. Let $F$ be a discrete random variable expressing the count of failed tests within a p-value set with $n$ elements; the p-values in the set are samples of $F$. According to our previous assumption, the p-values should be uniformly distributed on the interval $(0,1]$, and therefore the probability of a single test failure is $\alpha$. Then the random variable $F$ should follow binomial distribution $\text{Bin}(n,\alpha)$ \cite[p.~245]{stat-handbook}; the expected value of the variable is $E(F) = n\alpha$. The probability of observing $x$ failures within the p-value set is calculated using the probability mass function of binomial distribution shown in Equation~\ref{eq:binom_pmf_5}.
 
 \begin{equation}
 \label{eq:binom_pmf_5}
@@ -1219,15 +1221,15 @@ The aim of this work was to explore and assess current state-of-the-art approach
 
 We presented an overview of the statistical tools used for randomness testing; to observe the unexpected behaviour of the tools we executed them with border-case inputs. When we run the batteries with extremely non-random data (e.g. stream of zeroes), we observed various undocumented situations such as frozen battery execution or invalid test results. Based on the findings, we made adjustments in our toolkit design. 
 
-With respect to the design and the initial requirements of the project, we developed Randomness Testing Toolkit (cit.), or RTT for short. RTT implements an interface for the three presented tools: NIST Statistical Testing Suite (cit.), Dieharder (cit.) and TestU01 (cit.). It is possible to extend the framework to include additional statistical tools in the future.
+With respect to the design and the initial requirements of the project, we developed Randomness Testing Toolkit \cite{rtt-github}, or RTT for short. RTT implements an interface for the three presented tools: NIST Statistical Testing Suite \cite{nist-sts}, Dieharder \cite{dieharder} and TestU01 \cite{testu01-paper}. It is possible to extend the framework to include additional statistical tools in the future.
 
 The RTT framework consists of multiple parts intended for various purposes. Currently, the framework can be used on user's local machine, but it can also be deployed on multiple servers and accessed through the web or console interface. The web interface also eases the result interpretation for the user.
 
-To establish a baseline for the interpretation of the results of the statistical tools, we used RTT to analyse eight terabytes of binary data; the data were generated using quantum random number generator (cit.). All batteries analysed the data in their default settings. We used the established baseline to interpret our subsequent experiments. 
+To establish a baseline for the interpretation of the results of the statistical tools, we used RTT to analyse eight terabytes of binary data; the data were generated using quantum random number generator \cite{qrng-service-germany}. All batteries analysed the data in their default settings. We used the established baseline to interpret our subsequent experiments. 
 
-In our further experiment, we analysed 15 distinct popular and well-known cryptographic algorithms such as AES, Keccak or RC4. The results of the analysis were compared to the results produced by the EACirc framework; EACirc, a tool developed at CRoCS, implements an alternative approach to the statistical testing (cit.). From the comparison of the results, we concluded that RTT could detect subtler biases present in the data better that EACirc. However, there is a trade-off between the two approaches as the EACirc framework needs a much lesser amount of data and resources for the analysis. 
+In our further experiment, we analysed 15 distinct popular and well-known cryptographic algorithms such as AES, Keccak or RC4. The results of the analysis were compared to the results produced by the EACirc framework; EACirc, a tool developed at CRoCS, implements an alternative approach to the statistical testing \cite{eacirc-github}. From the comparison of the results, we concluded that RTT could detect subtler biases present in the data better that EACirc. However, there is a trade-off between the two approaches as the EACirc framework needs a much lesser amount of data and resources for the analysis. 
 
-The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit (cit.) and RC4 (cit.) stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM (cit.) cryptographic competition and RC4 is an algorithm widely used in TLS up until the version 1.3 (RC4 in not included in TLS v1.3 draft). The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
+The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit \cite{rabbit} and RC4 \cite{rc4} stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM \cite{estream-competition} cryptographic competition and RC4 is an algorithm widely used in TLS up until the version 1.3 (RC4 in not included in TLS v1.3 draft). The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
 
 We also inspected the validity of the results produced by the Dieharder battery tests. The validity evaluation was based on the assumption that the test results should be uniformly distributed over the interval $(0,1]$ when random data were analysed. We processed eight terabytes of random data with each test in the Dieharder battery; this way we obtained 110 sets of results while each set was assumed to be uniformly distributed. We found out that 39 (out of 110) sets broke this assumption and were non-uniform. This is significantly more than we originally anticipated as the Dieharder battery relies on the assumption during post-processing of the results.
 
@@ -1236,10 +1238,10 @@ The future development and research can follow up on this thesis in multiple dif
 
 \begin{description}
 \item[Further development of RTT] \hfill \\
-The one possibility of extending RTT is to add more statistical batteries into the interface. Viable candidates for addition are the PractRand battery (cit.) and the EACirc framework (cit.). The other possible extension of RTT is the implementation of the result visualisation directly in the web interface; the visualisation would make the interpretation of the data analysis yet more easy for the user.
+The one possibility of extending RTT is to add more statistical batteries into the interface. Viable candidates for addition are the PractRand battery \cite{practrand} and the EACirc framework. The other possible extension of RTT is the implementation of the result visualisation directly in the web interface; the visualisation would make the interpretation of the data analysis yet more easy for the user.
 
 \item[Study of the dependencies between the statistical tests] \hfill \\
-As stated in Section~\ref{sec:baseline_exp}, we lack a deep understanding of dependency between the individual tests in the statistical batteries. For NIST STS, the research was done in (cit.); however, no such research exists for Dieharder or TestU01. The advanced knowledge of the dependencies would allow us to further improve the accuracy of the battery results interpretation.
+As stated in Section~\ref{sec:baseline_exp}, we lack a deep understanding of dependency between the individual tests in the statistical batteries. For NIST STS, the research was done in \cite{nist-sts-interpretation-syso}; however, no such research exists for Dieharder or TestU01. The advanced knowledge of the dependencies would allow us to further improve the accuracy of the battery results interpretation.
 
 \item[Impact of Dieharder non-uniformity on overall battery results] \hfill \\
 In Chapter~\ref{chap:validating_dieharder} we discovered that a large number of tests in Dieharder produce non-uniform results. Further research on this topic is necessary as we know neither what is causing the non-uniformity nor the exact impact of the broken assumptions on the overall results of Dieharder.
@@ -1552,7 +1554,7 @@ This option is valid only for block alphabit battery. The value must be lesser o
 
 \item[\texttt{parameters}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test in respective batteries can be found in TestU01 documentation (cit.). Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
+This option is valid only for small crush, crush and big crush batteries. The value of the tag must be JSON object that will contain key-value pairs that will represent test's parameters and their values. All parameters of the test must be specified. Each test has different settable parameters, the parameters for each test in respective batteries can be found in TestU01 documentation \cite[p.~143]{testu01-documentation}. Example of the \texttt{parameters} tag for test smars\_BirthdaySpacings is shown in Figure~\ref{fig:params_tag}.
 
 \end{description}
 

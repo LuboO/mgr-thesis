@@ -1,123 +1,342 @@
-% The example bibliographical entries below were borrowed from the
-% <https://www.ctan.org/pkg/biblatex-iso690> package documentation.
+% ===== Statistical batteries =====
 
-% BORGMAN, Christine L., 2003. From Gutenberg to the global information
-% infrastructure: access to information in the networked world. First. Cambridge
-% (Mass): The MIT Press. ISBN 0-262-52345-0 [xviii, 324]
-
-@BOOK{borgman03,
-  author    = {Borgman, Christine L.},
-  date      = {2003},
-  title     = {From Gutenberg to the global information infrastructure},
-  subtitle  = {access to information in the networked world},
-  edition   = {1}, % should not be stated
-  location  = {Cambridge (Mass)},
-  publisher = {The MIT Press},
-  pagetotal = {xviii, 324},
-  isbn      = {0-262-52345-0},
-  langid    = {english}
+@article{nist-sts-interpretation-syso,
+    author = {Marek Sýs and Zdeněk Říha and Václav Matyáš and Kinga Márton and Alin Suciu},
+    title = {On the Interpretation of Results from the NIST Statistical Test Suite},
+    journal = {Romanian Journal of Information Science and Technology},
+    year = {2015},
+    volume = {18},
+    number = {1},
+    pages = {18--32},
+}
+@Article{nist-sts-syso-optimization,
+    author = {Marek Sýs and Zdeněk Říha and Vashek Matyas},
+    title = {{Algorithm 970: Optimizing the NIST Statistical Test Suite and the Berlekamp-Massey Algorithm}},
+    journal = {ACM Transactions on Mathematicsl Software},
+    issue_date = {December 2016},
+    volume = {43},
+    number = {3},
+    month = {dec},
+    year = {2016},
+    issn = {0098-3500},
+    pages = {27:1--27:11},
+    articleno = {27},
+    numpages = {11},
+    url = {http://doi.acm.org/10.1145/2988228},
+    doi = {10.1145/2988228},
+    acmid = {2988228},
+    publisher = {ACM},
+    address = {New York, NY, USA},
+    keywords = {randomness},
+}
+@online{diehard,
+    author = {George Marsaglia},
+    organization = {Floridan State University},
+    title = {Diehard Battery of Tests of Randomness},
+    year = {1995},
+    url = {https://web.archive.org/web/20120102192622/www.stat.fsu.edu/pub/diehard/},
+    urldate = {2017-05-19},
+}
+@online{crypt-x,
+    author = {William Caelli and others},
+    organization = {Information Security Research Centre and School of Mathematics, Queensland University of Technology},
+    title = {Crypt X Package Documentation},
+    year = {1992},
+    url = {https://web.archive.org/web/20060819041438/http://www.isi.qut.edu.au/resources/cryptx/},
+    urldate = {2017-05-19},
+}
+@online{dieharder,
+    author = {Robert G. Brown},
+    organization = {Duke University Physics Department},
+    title = {Dieharder: A Random Number Test Suite},
+    year = {2004},
+    version = {3.31.1},
+    url = {http://www.phy.duke.edu/~rgb/General/dieharder.php},
+    urldate = {2017-05-19},
+}
+@manual{dieharder-manpage,
+    author = {Robert G. Brown},
+    title = {dieharder(1) -- Linux man page},
+    version = {3.31.1},
+    url = {https://linux.die.net/man/1/dieharder},
+    urldate = {2017-05-19},
+}
+@online{nist-sts,
+    author = {{National Institute for Standards and Technology}},
+    title = {Statistical Test Suite},
+    version = {2.1.1},
+    year = {1997},
+    url = {http://csrc.nist.gov/groups/ST/toolkit/rng/index.html},
+    urldate = {2017-05-19},
+}
+@techreport{nist-sts-documentation,
+    author = {Andrew Rukhin and Juan Sota and James Nechvatal and Miles Smid and Elaine Barker and Stefan Leigh and Mark Levenson and Mark Vangel and David Banks and Alan Heckert and James Dray and San Vo},
+    title = {A Statistical Test Suite for Random and Pseudorandom Number Generators for Cryptographic Applications},
+    publisher = {National Institute of Standards and Technology ({NIST})},
+    year = {2000},
+    url = {http://csrc.nist.gov/groups/ST/toolkit/rng/documents/SP800-22rev1a.pdf},
+    urldate = {2017-05-19},
+}
+@online{nist-fips-140-2,
+    author = {{National Institute for Standards and Technology}},
+    title = {FIPS 140-2: Security Requirements For Cryptographic Modules},
+    year = {2001},
+    url = {http://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.140-2.pdf},
+    urldate = {2017-05-19},
+}
+@article{testu01-paper,
+    author = {Pierre L'Ecuyer and Richard Simard},
+    title = {TestU01: A C Library for Empirical Testing of Random Number Generators},
+    journal = {ACM Transactions on Mathematical Software},
+    volume = {33},
+    number = {4},
+    year = {2007},
+    doi = {10.1145/1268776.1268777},
+    publisher = {ACM},
+}
+@online{testu01-documentation,
+    author = {Pierre L'Ecuyer and Richard Simard},
+    title = {TestU01: A Software Library in ANSI C for Empirical Testing of Random Number Generators},
+    organization = {Département d’Informatique et de Recherche Opérationnelle Université de Montréal},
+    year = {2013},
+    version = {1.2.3},
+    url = {http://simul.iro.umontreal.ca/testu01/guideshorttestu01.pdf},
+    urldate = {2017-05-19},
+}
+@online{practrand,
+	author = {Chris Doty-Humphrey},
+	title = {{PractRand}},
+	version = {0.92},
+	year = {2010},
+	url = {http://pracrand.sourceforge.net},
+	urldate = {2017-05-19},
+}
+% ===== Cryptographic competitions =====
+@online{estream-competition,
+	author = {{European Network of Excellence for Cryptology}},
+	title = {eStream project: Call for Stream Cipher Primitives},
+	year = {2005},
+	url = {http://www.ecrypt.eu.org/stream/call/},
+    urldate = {2017-05-19},
+}
+@online{sha3-competition,
+	author = {{National Institute for Standards and Technology}},
+	title = {SHA-3: Cryptographic hash algorithm competition},
+	year = {2007},
+	url = {http://csrc.nist.gov/groups/ST/hash/sha-3/index.html},
+    urldate = {2017-05-19},
+}
+@online{rabbit,
+    author = "Wikipedia",
+    title = "Rabbit (cipher) --- Wikipedia{,} The Free Encyclopedia",
+    year = "2017",
+    url = "https://en.wikipedia.org/wiki/Rabbit_(cipher)",
+    urldate = {2017-05-19},
+}
+@misc{rabbit-bias-1,
+    author       = {Jean-Philippe Aumasson},
+    title        = {On a bias of Rabbit},
+    howpublished = {{eSTREAM}, {ECRYPT} Stream Cipher Project, Report 2007/033 {(SASC 2007)}},
+    year         = {2007},
+    urldate      = {2017-05-19},
+    url          = {http://www.ecrypt.eu.org/stream},
+}
+@Inbook{rabbit-bias-2,
+    author={Yi Lu and Huaxiong Wang and San Ling},
+    editor={Tzong-Chen Wu and Chin-Laung Lei and Vincent Rijmen and Der-Tsai Lee},
+    title={Cryptanalysis of Rabbit},
+    bookTitle={Information Security: 11th International Conference, ISC 2008, Taipei, Taiwan, September 15-18, 2008. Proceedings},
+    year={2008},
+    publisher={Springer Berlin Heidelberg},
+    address={Berlin, Heidelberg},
+    pages={204--214},
+    isbn={978-3-540-85886-7},
+    doi={10.1007/978-3-540-85886-7_14},
+    url={http://dx.doi.org/10.1007/978-3-540-85886-7_14}
+}
+@online{rc4,
+    author = "Wikipedia",
+    title = "RC4 --- Wikipedia{,} The Free Encyclopedia",
+    year = "2017",
+    url = "https://en.wikipedia.org/wiki/RC4",
+    urldate = {2017-05-19},
+}
+@Inbook{rc4-bias-1,
+    author="Mantin, Itsik
+    and Shamir, Adi",
+    editor="Matsui, Mitsuru",
+    title="A Practical Attack on Broadcast RC4",
+    bookTitle="Fast Software Encryption: 8th International Workshop, FSE 2001 Yokohama, Japan, April 2--4, 2001 Revised Papers",
+    year="2002",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="152--164",
+    isbn="978-3-540-45473-1",
+    doi="10.1007/3-540-45473-X_13",
+    url="http://dx.doi.org/10.1007/3-540-45473-X_13"
+}
+@Inbook{rc4-bias-2,
+    author="Paul, Souradyuti
+    and Preneel, Bart",
+    editor="Johansson, Thomas
+    and Maitra, Subhamoy",
+    title="Analysis of Non-fortuitous Predictive States of the RC4 Keystream Generator",
+    bookTitle="Progress in Cryptology - INDOCRYPT 2003: 4th International Conference on Cryptology in India, New Delhi, India, December 8-10, 2003. Proceedings",
+    year="2003",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="52--67",
+    isbn="978-3-540-24582-7",
+    doi="10.1007/978-3-540-24582-7_4",
+    url="http://dx.doi.org/10.1007/978-3-540-24582-7_4"
+}
+@Inbook{rc4-bias-3,
+    author="Fluhrer, Scott R.
+    and McGrew, David A.",
+    editor="Goos, Gerhard
+    and Hartmanis, Juris
+    and van Leeuwen, Jan
+    and Schneier, Bruce",
+    title="Statistical Analysis of the Alleged RC4 Keystream Generator",
+    bookTitle="Fast Software Encryption: 7th International Workshop, FSE 2000 New York, NY, USA, April 10--12, 2000 Proceedings",
+    year="2001",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="19--30",
+    isbn="978-3-540-44706-1",
+    doi="10.1007/3-540-44706-7_2",
+    url="http://dx.doi.org/10.1007/3-540-44706-7_2"
+}
+@online{grain,
+    author = "Wikipedia",
+    title = "Grain (cipher) --- Wikipedia{,} The Free Encyclopedia",
+    year = "2016",
+    url = "https://en.wikipedia.org/wiki/Grain_(cipher)",
+    urldate = {2017-05-19},
+}
+@online{md6,
+    author = "Wikipedia",
+    title = "MD6 --- Wikipedia{,} The Free Encyclopedia",
+    year = "2017",
+    url = "https://en.wikipedia.org/wiki/MD6",
+    urldate = {2017-05-19},
 }
 
-% GREENBERG, David, 1998. Camel drivers and gatecrashers: quality control in
-% the digital research library. In: HAWKINS, B.L et al. (eds.). The mirage of
-% continuity: reconfiguring academic information resources for the 21st
-% century.  Washington (D.C.): Council on Library and Information Resources;
-% Association of American Universities, pp. 105–116
-
-@INCOLLECTION{greenberg98,
-  crossref  = {mirage98},
-  author    = {Greenberg, David},
-  title     = {Camel drivers and gatecrashers},
-  subtitle  = {quality control in the digital research library},
-  pages     = {105-116},
+% ===== Statistics =====
+@online{two-sample-chisquare,
+    author = {{National Institute for Standards and Technology}},
+    title = {Two-sample {$\chi^2$} test},
+    year = {1993},
+    url = {http://www.itl.nist.gov/div898/software/dataplot/refman1/auxillar/chi2samp.htm},
+    urldate = {2017-05-19},
+}
+@book{stat-handbook,
+    title = {Handbook of parametric and nonparametric statistical procedures},
+    author = {David J. Sheskin},
+    edition = {3},
+    year = {2003},
+    isbn = {9781420036268},
+    publisher={{CRC} Press},
+}
+@online{type-i-ii-error,
+    author = {Martyn Shuttleworth},
+    title = {Type I Error -- Type II Error},
+    year = {2008},
+    url = {https://explorable.com/type-i-error},
+    urldate = {2017-05-19},
+}
+@article{pvals-uniformity,
+    author = {Duncan J Murdoch and Yu-Ling Tsai and James Adcock},
+    title = {P-Values are Random Variables},
+    journal = {The American Statistician},
+    volume = {62},
+    number = {3},
+    pages = {242-245},
+    year = {2008},
+    doi = {10.1198/000313008X332421},
+    url = {http://dx.doi.org/10.1198/000313008X332421},
+}
+@article{sidak-corr,
+    author = {Zbyněk Šidák},
+    title = {Rectangular Confidence Regions for the Means of Multivariate Normal Distributions},
+    journal = {Journal of the American Statistical Association},
+    volume = {62},
+    number = {318},
+    pages = {626-633},
+    year = {1967},
+    doi = {10.1080/01621459.1967.10482935},
+    URL = {http://dx.doi.org/10.1080/01621459.1967.10482935},
 }
 
-@COLLECTION{mirage98,
-  title     = {The mirage of continuity},
-  subtitle  = {reconfiguring academic information
-               resources for the 21st century},
-  editor    = {Hawkins, B.L and Battin, P},
-  date      = {1998},
-  location  = {Washington (D.C.)},
-  publisher = {Council on Library and Information Resources;
-               Association of American Universities},
-  langid    = {english}
+% ===== CRoCS =====
+@online{eacirc-github,
+	author = {Petr Švenda and Karel Kubíček and Marek Sýs and others},
+	title = {EACirc},
+	subtitle = {Framework for automatic search for problem solving circuit via evolutionary algorithms},
+    organization = {Centre for Research on Cryptography and Security, Masaryk University},
+    version = {4.2},
+	year = {2012},
+    urldate = {2017-05-19},
+	url = {https://github.com/crocs-muni/EACirc},
+}
+@online{eacirc-streams,
+  author       = {Karel Kubíček and Michal Hajas},
+  title        = {EACirc Generator},
+  organization = {Centre for Research on Cryptography and Security, Masaryk University},
+  version      = {1.0},
+  year         = 2017,
+  urldate      = {2017-05-19},
+  url          = {https://github.com/crocs-muni/eacirc-streams}
+}
+@online{rtt-github,
+    author = {Ľubomír Obrátil and Petr Švenda},
+    title = {Randomness Testing Toolkit},
+    organization = {Centre for Research on Cryptography and Security, Masaryk University},
+    version = {1.0},
+    year = 2015,
+    urldate = {2017-05-19},
+    url = {https://github.com/crocs-muni/randomness-testing-toolkit},
+}
+@thesis{kubicek-dp,
+    author = {Karel Kubíček},
+    title = {{Optimisation heuristics in randomness testing}},
+    type = {master thesis},
+    institution = {Faculty of Informatics, Masaryk University},
+    year = {submitted in 2017},
+    url = {https://is.muni.cz/th/408351/fi_m/}
 }
 
-% LYNCH, C., 2005. Where do we go from here?: the next decade for digital
-% libraries. DLib Magazine [online]. Vol. 11, no. 7/8 [visited on 2005-08-15].
-% ISSN 1082-9873.  Available from:
-% http://www.dlib.org/dlib/july05/lynch/07lynch.html
-
-@ARTICLE{lynch05,
-  crossref = {dlib},
-  author   = {Lynch, C.},
-  title    = {Where do we go from here?},
-  subtitle = {the next decade for digital libraries},
-  url      = {http://www.dlib.org/dlib/july05/lynch/07lynch.html},
-  urldate  = {2005-08-15}
+% ===== Various =====
+@online{qrng-service-germany,
+    author = {{Nano-Optics group and PicoQuant GmbH}},
+    organization = {Humboldt University of Berlin},
+    title = {High Bit Rate Quantum Random Number Generator Service},
+    year = {2010},
+    url = {http://qrng.physik.hu-berlin.de/},
+    urldate = {2017-05-19},
+}
+@online{metacentrum,
+    author = {{Team Czech NGI}},
+    title = {MetaCentrum},
+    subtitle = {Virtual Organization of the Czech National Grid Organization},
+    year = {2015},
+    url = {https://metavo.metacentrum.cz/},
+    urldate = {2017-05-19},
+}
+@manual{chroot,
+    title = {chroot(1) -- Linux man page},
+    author = {Roland McGrath},
+    url = {https://linux.die.net/man/1/chroot},
+    urldate = {2017-05-15},
+}
+@techreport{rfc7465,
+    author = {Andrei Popov},
+    title = "{Prohibiting RC4 Cipher Suites}",
+    howpublished = {Internet Requests for Comments},
+    type ="{RFC}",
+    number = 7465,
+    year = {2015},
+    month = {February},
+    doi = {10.17487/RFC7465},
 }
 
-@PERIODICAL{dlib,
-  journaltitle = {DLib Magazine},
-  date         = {2005},
-  volume       = {11},
-  number       = {7/8},
-  issn         = {1082-9873},
-  langid       = {english},
-}
-
-% HÀN, Thé Thành, 2001. Micro-typographic extensions to the TEX type- setting
-% system [online]. Brno [visited on 2016-12-09]. Available from:
-% http://www.pragma-ade.nl/pdftex/thesis.pdf. PhD thesis. The Faculty of
-% Informatics, Masaryk University.
-
-@PHDTHESIS{thanh01,
-  author      = {Hàn Thé, Thành},
-  title       = {Micro-typographic extensions to the \TeX{} typesetting system},
-  date        = {2001},
-  institution = {The Faculty of Informatics, Masaryk University},
-  location    = {Brno},
-  url         = {http://www.pragma-ade.nl/pdftex/thesis.pdf},
-  urldate     = {2016-12-09},
-  langid      = {english}
-}
-
-% SHANNON, Claude Elwood, 1940. A symbolic analysis of relay and switching
-% circuits. Available from DOI: 1721.1/11173. Master’s thesis.  Massachusetts
-% Institute of Technology.
-
-@MASTERSTHESIS{shannon40,
-  author      = {Shannon, Claude Elwood},
-  title       = {A symbolic analysis of relay and switching circuits},
-  date        = {1940},
-  institution = {Massachusetts Institute of Technology},
-  langid      = {english},
-  doi         = {1721.1/11173},
-}
-
-% EHLINGER JR., Philip Charles. Device for the treatment of hiccups. US.
-% US Patent, 7062320.
-
-@PATENT{ehlinger06,
-  author   = {Ehlinger Jr., Philip Charles},
-  title    = {Device for the treatment of hiccups},
-  type     = {US Patent},
-  location = {US},
-  date     = {2006},
-  number   = {7062320},
-  langid   = {english}
-}
-
-% Masaryk University, 1996–2009 [online]. Brno: Masaryk University
-% [visited on 2016-12-09]. Available from: https://www.muni.cz/en.
-
-@ONLINE{muni,
-  publisher = {Masaryk University},
-  title     = {Masaryk University},
-  date      = {1996/2009},
-  url       = {https://www.muni.cz/en},
-  urldate   = {2016-12-09},
-  location  = {Brno},
-  langid    = {english}
-}
