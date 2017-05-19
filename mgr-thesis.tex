@@ -61,7 +61,7 @@
     TeXtitle      = {The automated testing of~randomness with multiple statistical batteries},
     keywords      = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
     TeXkeywords   = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
-    abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software. The software tools supported in the interface are NIST Statistical Testing Suite, Dieharder and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The tested primitives were well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.},
+    abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software and use it to perform a large scale randomness evaluation and comparison of used software. The software tools supported by the interface are NIST Statistical Testing Suite, Dieharder and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The set of tested primitives contains were well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.},
     thanks        = {TODO},
     bib           = bibliography.bib,
 }
@@ -203,25 +203,25 @@
 \begin{document}
 
 \chapter{Introduction}
-In modern cryptography, one of the required properties of cryptographic primitives is the randomness of their output. The algorithms lacking this attribute can leak information about the secret key or the plaintext, which is not desirable; thus the need for the randomness testing arose.
+In modern cryptography, one of the required properties of cryptographic primitives like block ciphers or hash functions is the pseudo-randomness of their output. The algorithms lacking this attribute can leak information about the secret key or the plaintext, which is not desirable; thus the need for the randomness testing arose.
 
 Since the advent of cryptography, multiple tools addressing this problem were developed; most of them evaluate statistical properties of the tested data. In this thesis, we closely work with three statistical tools: NIST Statistical Testing Suite \cite{nist-sts}, Dieharder \cite{dieharder} and TestU01 \cite{testu01-paper}. Other notable tools are Crypt-X \cite{crypt-x} and Diehard \cite{diehard}, which pioneered the statistical randomness evaluation, and EACirc \cite{eacirc-github} that employs alternative, adaptive approach.
 
 The aim of this thesis is to design and develop a unifying interface for the statistical tools. The interface would allow its users to test the randomness of arbitrary binary data in an easy and user-friendly manner. The interface would also present and interpret the results of the randomness assessment in a consistent way. 
 
-We named the interface Randomness Testing Toolkit\footnote{Also refered to as RTT or just the toolkit.} \cite{rtt-github} and described its functionality and implementation details in Chapter~\ref{chap:rtt}. The overview of the software used in RTT is in Chapter~\ref{chap:batteries}. 
+We named the interface Randomness Testing Toolkit (RTT) \cite{rtt-github} and described its functionality and implementation details in Chapter~\ref{chap:rtt}. The overview of the software used in RTT is in Chapter~\ref{chap:batteries}. 
 
-In Chapter~\ref{chap:crypto_fn_analysis}, we outline the experiments done with the RTT interface. In~our first experiment we analysed large quantities of random data to establish a baseline, based on which we would interpret our further analyses. For the next experiment, we analysed the randomness of outputs of 15 well-known cryptographic algorithms\footnote{We refer to both ciphers and hashing functions simply as to cryptographic algorithms or primitives.} such as AES or Keccak. We compared the results of the experiment to the results previously obtained with EACirc and compared viability of the different approaches. Based on the outcomes, we drew the security margins of the tested algorithms with respect to the statistical analysis.
+In Chapter~\ref{chap:crypto_fn_analysis}, we outline the experiments done with the RTT interface. In~our first experiment we analysed large quantities of random data to establish a baseline, based on which we would interpret our further analyses. For the next experiment, we analysed the randomness of outputs of 15 well-known cryptographic algorithms\footnote{We refer to both ciphers and hashing functions simply as to cryptographic algorithms or primitives.} such as AES or Keccak. We compared the results of the experiment to the results previously obtained with EACirc and compared viability of the different approaches. Based on the outcomes, we derived the security margins of the tested algorithms with respect to the statistical analysis.
 
 Chapter~\ref{chap:validating_dieharder} contains details about our inspection of the validity of the Dieharder battery. To evaluate the validity, we processed a big amount of random data with the battery and analysed the outputs of the processing.
 
-We conclude the thesis with the summary in Chapter~\ref{chap:summary}. In the chapter, we summarise the thesis, briefly list the achieved results and propose possible directions for future research and development.
+We conclude the thesis with the summary in Chapter~\ref{chap:summary}. In the chapter, we briefly list the achieved results and propose possible directions for future research and development.
 
-In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Refered to simply as CRoCS.}, Masaryk University; related problems, ideas and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Petr Švenda, Marek Sýs, Karel Kubíček, Radka Cieslarová, Michal Hajas, Jiří Novotný, Matúš Nemec, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
+In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Referred to simply as CRoCS.}, Masaryk University; related problems, ideas and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Radka Cieslarová, Michal Hajas, Karel Kubíček, Matúš Nemec, Jiří Novotný, Marek Sýs, Petr Švenda, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
 
 \chapter{Used third-party statistical software}
 \label{chap:batteries}
-In this chapter, we will explain terminology specific to Randomness Testing Toolkit; present a quick overview of the statistical software used in the toolkit and describe the observed and unexpected behavior of the statistical software in edge cases. We also list undertaken measures to mitigate the undocumented behaviour in our further experiments.
+In this chapter, we will explain terminology specific to Randomness Testing Toolkit, present a quick overview of the statistical software used in the toolkit and describe the observed and unexpected behavior of the statistical software in edge cases. We also list undertaken measures to mitigate the undocumented behaviour in our further experiments.
 
 \section{Terminology}
 \label{sec:terminology}
@@ -976,7 +976,7 @@ The results of the analysis are shown in Table~\ref{tab:crypto_alg_analysis}. We
 
 The values in the battery columns express the number of failed tests in a specific battery. Each battery has defined the total number of tests in the header. In some cases, not all tests in the battery could be executed; in these cases, we specify the number of performed tests in the cell. 
 
-The values in EACirc column display the proportion of EACirc executions that rejected the null hypothesis for the tested data. When analysing random data, we expect that EACirc will reject the hypothesis in 0.01 runs. If the proportion is greater than 0.02, we can confidently consider the data as non-random.
+For each tested data file, EACirc was executed multiple times and in each execution the null hypothesis was either rejected or retained; for this experiment, EACirc was executed 1000 times for each file. The values in EACirc column display the proportion of EACirc executions that rejected the null hypothesis. When analysing random data, we expect that EACirc will reject the hypothesis in 1 \% of runs. If the proportion is greater than 0.02, we can confidently consider the data as non-random.
 
 We also provide security margins of the analysed algorithms. The security margins are based on the highest round in which the algorithm failed to pass at least one of the batteries and on the default total number of rounds in the algorithm.
 
@@ -1060,7 +1060,9 @@ The majority of the analysed algorithms has the security margin higher than 0.8.
 The margins are significantly lower only for functions with particular biases detected, namely Rabbit, RC4 and Grain.
 
 \item[Strength of the batteries in comparison to EACirc] \hfill \\
-All of the batteries implemented in RTT perform better or equally well than EACirc. The shortcomings of EACirc can be caused by the fact that the framework analyses only 100 MB of data per execution and also finishes its execution more quickly. Therefore we have a trade-off between the needed time and resources and strength of the tool. In many situations we aren't able to retrieve 8000 MiB (e.g. slow hardware generators in smartcards); in these cases, the usage of EACirc for bias detection can be viable.
+All of the batteries implemented in RTT perform better or equally well than EACirc. The shortcomings of EACirc can be caused by the fact that the framework analyses only 4.6 MB of data per run. EACirc is executed multiple times during the analysis, but the multiple executions only affect the precision of the obtained results, not the strength of the tool. Although in this experiment, EACirc needed 4,6 GB of data for the analysis, we can configure it to consume only 460 MB, at the cost of some precision\footnote{This is a very simplified view. For the details about EACirc see \cite{kubicek-dp}.}. 
+
+In many situations we aren't able to retrieve 8000 MiB (e.g. slow hardware generators in smartcards); in these cases it might be viable to extract just 460 MB and analyse the data with EACirc. Therefore we have a trade-off between the needed time and resources and strength of the tool.
 
 The batteries themselves have differing strength. While batteries NIST STS and Small Crush have more or less same bias detection capabilities as EACirc, the remaining batteries perform better and can detect subtler biases. The remaining batteries are listed here, along with the number of times they detected a bias when other batteries failed to do so: Alphabit (2 times), Dieharder (3 times), Block Alphabit (5 times), Rabbit (6 times), Crush (8 times).
 
@@ -1074,7 +1076,7 @@ The MD6 hash function \cite{md6} was a competitor in the SHA-3 competition but d
 
 \chapter{Validation of outputs of Dieharder}
 \label{chap:validating_dieharder}
-The goal of the research presented in this chapter was to analyse the validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results for later analysis, we processed eight terabytes of truly random data with each test in Dieharder. We used the same set of data as in the experiment described in Section~\ref{sec:baseline_exp}.
+The goal of the research presented in this chapter was to analyse the validity of the results of the Dieharder battery\footnote{The research is an extended version of the project for the course PA018 Advanced Topics in Information Technology Security, Autumn 2016.}. To obtain the results for later analysis, we processed eight terabytes of truly random data with each test included in the Dieharder battery. We used the same set of data as in the experiment described in Section~\ref{sec:baseline_exp}.
 
 \section{Goals of the research}
 As stated in Section~\ref{sec:baseline_exp}, the p-values produced by an arbitrary statistical test are uniformly distributed over the interval $(0,1]$ if the null hypothesis holds true. This assumption should also hold for the first-level p-values of the individual tests in the battery.
@@ -1088,7 +1090,7 @@ We analysed outputs of the tests executed with their default settings; the used 
 
 We inspected the uniformity of first-level p-values of all subtests and test variants present in default Dieharder run. For example, if a single test is executed in two variants and both variants have two subtests\footnote{For the difference between variant and subtest, see Section~\ref{sec:terminology}.} then the test will produce four sets of first-level p-values; we treat these sets independently as if four separate tests produced them. In this chapter, we are referring to these low-level tests as to atomic tests.
 
-During the default run, the battery will execute 110 atomic tests, resulting in 110 individual p-value sets. Each atomic test processed the eight terabytes of data from start to finish to extract the maximum possible amount of p-values. The final size of the p-value set varies, as each atomic test processed a different amount of data in a single execution. Each p-value in the set represents a single execution of an atomic test.
+During the default run, the battery executes 110 atomic tests, resulting in 110 individual p-value sets. Each atomic test process the eight terabytes of data from start to finish to extract the maximum possible amount of p-values. The final size of the p-value set varies, as each atomic test processed a different amount of data in a single execution. Each p-value in the set represents a single execution of an atomic test.
 
 \section{Testing the uniformity of p-values}
 \label{sec:testing_uniformity_dh}
@@ -1139,13 +1141,13 @@ From the presented results we can see that out of 110 atomic tests, 39 produced 
 \includegraphics[width=0.6\textwidth]{figures/200_-n_12.png} 
 \includegraphics[width=0.6\textwidth]{figures/202_-n_2.png}
 \end{nomar}
-\caption{Histograms of p-values of chosen atomic tests}
+\caption{Histograms of p-values of chosen atomic tests. Only the Min Distance (2d Circle) test produces uniform p-values.}
 \label{fig:non_uniform_pval_hist}
 \end{figure}
 
-This non-uniformity of results might not be apparent in basic usage of Dieharder for two reasons. The first possible reason is that, during normal usage, only small sets of p-values (usually 100) are tested for the uniformity; in a limited number of p-values, the non-uniform patterns are harder to detect. 
+This significant non-uniformity of results might not be apparent in basic usage of Dieharder for two reasons. The first potential reason is that, during normal usage, only small sets of p-values (usually 100) are tested for the uniformity; in a limited number of p-values, the non-uniform patterns are harder to detect. 
 
-The second potential reason is that, in default Dieharder, a test is considered failed only if its second-level p-value is lesser than $10^{-6}$. If we assume that everything is functioning properly, we should see a failure of a test once in a million of executions. Due to the non-uniformity of the underlying p-values, the actual number of failures can be higher (10 or even 100) but still too small to notice in the common use-case. Additionally, the small significance level introduces high type II error; the tests in Dieharder have lowered sensitivity and might not reject the null hypothesis for non-random data.
+The second possible reason is that, in default Dieharder, a test is considered failed only if its second-level p-value is lesser than $10^{-6}$. If we assume that everything is functioning properly, we should see a failure of a test once in a million of executions. Due to the non-uniformity of the underlying p-values, the actual number of failures can be higher (10 or even 100 failures) but still too small to notice in the common use-case. Additionally, the small significance level introduces high type II error; the tests in Dieharder have lowered sensitivity and might not reject the null hypothesis for non-random data.
 
 \begin{table}
 \begin{nomar}
@@ -1223,18 +1225,18 @@ The RTT framework consists of multiple parts intended for various purposes. Curr
 
 To establish a baseline for the interpretation of the results of the statistical tools, we used RTT to analyse eight terabytes of binary data; the data were generated using quantum random number generator \cite{qrng-service-germany}. All batteries analysed the data in their default settings. We used the established baseline to interpret our subsequent experiments. 
 
-In our further experiment, we analysed 15 distinct popular and well-known cryptographic algorithms such as AES, Keccak or RC4. The results of the analysis were compared to the results produced by the EACirc framework; EACirc, a tool developed at CRoCS, implements an alternative approach to the statistical testing \cite{eacirc-github}. From the comparison of the results, we concluded that RTT could detect subtler biases present in the data better that EACirc. However, there is a trade-off between the two approaches as the EACirc framework needs a much lesser amount of data and resources for the analysis. 
+In further experiments, we analysed 15 distinct popular and well-known cryptographic algorithms such as AES, Keccak or RC4. The results of the analysis were compared to the results produced by the EACirc framework; EACirc, a tool developed at CRoCS, implements an alternative approach to the statistical testing \cite{eacirc-github}. From the comparison of the results, we concluded that RTT could detect subtler biases present in the data better that EACirc. However, there is a trade-off between the two approaches as the EACirc framework needs a much lesser amount of data and resources for the analysis. 
 
-The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit \cite{rabbit} and RC4 \cite{rc4} stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM \cite{estream-competition} cryptographic competition and RC4 is an algorithm widely used in TLS up until the version 1.3 (RC4 in not included in TLS v1.3 draft). The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
+The notable result of the experiment was that RTT is able to distinguish the keystreams of the Rabbit \cite{rabbit} and RC4 \cite{rc4} stream ciphers from the random data. The Rabbit cipher is one of the winners of eSTREAM \cite{estream-competition} cryptographic competition and RC4 is an algorithm commonly used in TLS before the version 1.3. The only restriction on the ciphers is that we need at least 8 GB of keystream generated with a single arbitrary key and the initialization vector must be set to zero.
 
-We also inspected the validity of the results produced by the Dieharder battery tests. The validity evaluation was based on the assumption that the test results should be uniformly distributed over the interval $(0,1]$ when random data were analysed. We processed eight terabytes of random data with each test in the Dieharder battery; this way we obtained 110 sets of results while each set was assumed to be uniformly distributed. We found out that 39 (out of 110) sets broke this assumption and were non-uniform. This is significantly more than we originally anticipated as the Dieharder battery relies on the assumption during post-processing of the results.
+We also inspected the validity of the results produced by the Dieharder battery tests. The validity evaluation was based on the assumption that the test results should be uniformly distributed over the interval $(0,1]$ when random data were analysed. We processed eight terabytes of random data with each test in the Dieharder battery; this way we obtained 110 sets of results while each set was assumed to be uniformly distributed. We found that 39 (out of 110) sets broke this assumption and were non-uniform. This is significantly more than we originally anticipated as the Dieharder battery relies on the uniformity during post-processing of the results.
 
 \section{Future work}
 The future development and research can follow up on this thesis in multiple different directions.
 
 \begin{description}
 \item[Further development of RTT] \hfill \\
-The one possibility of extending RTT is to add more statistical batteries into the interface. Viable candidates for addition are the PractRand battery \cite{practrand} and the EACirc framework. The other possible extension of RTT is the implementation of the result visualisation directly in the web interface; the visualisation would make the interpretation of the data analysis yet more easy for the user.
+The one possibility of extending RTT is to add more statistical batteries into the interface. Viable candidates for addition are the PractRand battery \cite{practrand} and the EACirc framework. The other possible extension of RTT is the implementation of the result visualisation directly in the web interface; the visualisation would make the interpretation of the data analysis even easier for the user.
 
 \item[Study of the dependencies between the statistical tests] \hfill \\
 As stated in Section~\ref{sec:baseline_exp}, we lack a deep understanding of dependency between the individual tests in the statistical batteries. For NIST STS, the research was done in \cite{nist-sts-interpretation-syso}; however, no such research exists for Dieharder or TestU01. The advanced knowledge of the dependencies would allow us to further improve the accuracy of the battery results interpretation.
