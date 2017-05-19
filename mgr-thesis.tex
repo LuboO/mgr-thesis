@@ -6,34 +6,39 @@
 %% conditions are required by law.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 \PassOptionsToPackage{
   plainpages = false,               								
   pdfpagelabels,
   unicode,  
   colorlinks = true,
-  linkcolor = link-grey,	% PC version
-  citecolor = crimson,		% PC version
-  urlcolor = blue,			% PC version
-  % linkcolor = black,		% Print version
-  % citecolor = black,		% Print version
-  % urlcolor = black,		% Print version
+  linkcolor = link-grey,	
+  citecolor = crimson,		
+  urlcolor = blue,			
 }{hyperref}
 
+
 \documentclass[
-  digital,  	% PC version
-  color,		% PC version
-  oneside,   	% PC version
-  % printed 	% Printed version
-  % monochrome	% Printed version
-  % twoside		% Printed version
-  12pt,
-  nocover,
-  notable,
-  nolof,
-  nolot,
-  %% More options are listed in the user guide at
-  %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
+	%twoside,    % Printed version
+	%printed,   	% Printed version
+	digital,    % PC version
+	oneside,    % PC version
+	color,
+	11pt,
+	nocover,
+	notable,
+	nolof,
+	nolot,
+	%% More options are listed in the user guide at
+ 	%% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
+
+
+
+\newtoggle{digital}
+
+\toggletrue{digital}
+%\togglefalse{digital}
 
 %% The following section sets up the locales used in the thesis.
 \usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
@@ -69,11 +74,15 @@
 \makeindex                %% helper commands for index typesetting.
 \thesisload
 
-
-\newcommand{\lmar}{3.6cm} % PC
-\newcommand{\rmar}{3.6cm} % PC
-%\newcommand{\lmar}{4cm} % Printed
-%\newcommand{\rmar}{3.2cm} % Printed
+\iftoggle{digital}{
+	\newcommand{\lmar}{3cm} % PC
+	\newcommand{\rmar}{3cm} % PC
+	\newcommand{\tmp}{3cm}  % PC
+}{
+	\newcommand{\lmar}{3.5cm} % Printed
+	\newcommand{\rmar}{2.5cm} % Printed
+	\newcommand{\tmp}{2.5cm}  % Printed
+}
 
 \usepackage[top=3cm, bottom=3.5cm, left=\lmar, right=\rmar]{geometry}
 
@@ -136,7 +145,7 @@
 \endgroup
 
 % Eliminates margins
-\def\nomar{\list{}{\rightmargin-\rmar\leftmargin-\lmar}\item[]}
+\def\nomar{\list{}{\rightmargin-\tmp \leftmargin-\tmp}\item[]}
 \let\endnomar=\endlist
 
 % Rotates table cell
@@ -213,11 +222,9 @@ We named the interface Randomness Testing Toolkit (RTT) \cite{rtt-github} and de
 
 In Chapter~\ref{chap:crypto_fn_analysis}, we outline the experiments done with the RTT interface. In~our first experiment we analysed large quantities of random data to establish a baseline, based on which we would interpret our further analyses. For the next experiment, we analysed the randomness of outputs of 15 well-known cryptographic algorithms\footnote{We refer to both ciphers and hashing functions simply as to cryptographic algorithms or primitives.} such as AES or Keccak. We compared the results of the experiment to the results previously obtained with EACirc and compared viability of the different approaches. Based on the outcomes, we derived the security margins of the tested algorithms with respect to the statistical analysis.
 
-Chapter~\ref{chap:validating_dieharder} contains details about our inspection of the validity of the Dieharder battery. To evaluate the validity, we processed a big amount of random data with the battery and analysed the outputs of the processing.
+Chapter~\ref{chap:validating_dieharder} contains details about our inspection of the validity of the Dieharder battery. To evaluate the validity, we processed a big amount of random data with the battery and analysed the outputs of the processing. We conclude the thesis with the summary in Chapter~\ref{chap:summary}. In the chapter, we briefly list the achieved results and propose possible directions for future research and development.
 
-We conclude the thesis with the summary in Chapter~\ref{chap:summary}. In the chapter, we briefly list the achieved results and propose possible directions for future research and development.
-
-In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Referred to simply as CRoCS.}, Masaryk University; related problems, ideas and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Radka Cieslarová, Michal Hajas, Karel Kubíček, Matúš Nemec, Jiří Novotný, Marek Sýs, Petr Švenda, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
+In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Simply referred to as CRoCS.}, Masaryk University; related problems, ideas and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Radka Cieslarová, Michal Hajas, Dušan Klinec, Karel Kubíček, Matúš Nemec, Jiří Novotný, Marek Sýs, Petr Švenda, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
 
 \chapter{Used third-party statistical software}
 \label{chap:batteries}
@@ -388,7 +395,7 @@ One of our goals during working on this project was to create a tool that would 
 
 Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
 
-Therefore we developed Randomness Testing Toolkit \cite{rtt-github}, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely.
+Therefore we developed Randomness Testing Toolkit \cite{rtt-github}, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely. 
 
 In the following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
 
@@ -411,12 +418,13 @@ The toolkit accepts settings needed for its run from three following sources:
 \label{fig:rtt_local_workflow}
 \end{figure}
 
+\pagebreak
 \subsection{Command-line arguments}
 The basic options of the RTT execution are set through command-line arguments. The executable recognizes following options.
 
 \begin{itemize}
 \item \texttt{-h} Usage of the toolkit will be printed.
-\item \texttt{-b <battery>} Sets the battery that will be executed during the run. Values accepted as \texttt{<battery>}: dieharder, nist\_sts, tu01\_smallcrush, tu01\_crush, tu01\_bigcrush, tu01\_rabbit, tu01\_alphabit and tu01\_block- \linebreak alphabit.
+\item \texttt{-b <battery>} Sets the battery that will be executed during the run. Values accepted as \texttt{<battery>}: dieharder, nist\_sts, tu01\_smallcrush, tu01\_crush, tu01\_bigcrush, \linebreak tu01\_rabbit, tu01\_alphabit and tu01\_blockalphabit.
 \item \texttt{-t <test-id>} Optional argument. If set, only single test with id \texttt{<test-id>} will be executed in the chosen battery.
 \item \texttt{-c <config-path>} Path to file with configuration of the battery. Details about battery configuration are in Section~\ref{sec:batt_conf}.
 \item \texttt{-f <data-path>} Path to the file with the binary data that will be analyzed by the chosen battery.
@@ -674,6 +682,7 @@ The machine hosting MySQL server with created database for RTT as shown in Figur
 \subsection{Storage server}
 The server hosts a storage space that acts as a temporary deposit for the data that is not yet distributed and analysed on the backend servers. After the distribution and analysis, the data is removed from the machine.
 
+\pagebreak
 \begin{titlemize}{Scripts on the server}
 \item \texttt{clean\_cache.py} -- Script that handles removal of the data files that were already analysed. The script is executed periodically.
 \end{titlemize}
@@ -780,14 +789,6 @@ To create new experiment the user  will have to fill-out following settings in t
 \end{itemize}
 
 \subsection*{Result presentation}
-The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. We denote this proportion as $x$. Then the probability $P(x)$ of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section TODO. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
-
-\begin{itemize}
-\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
-\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
-\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
-\end{itemize}
-
 \begin{figure}[H]
 \begin{nomar}
 \centering
@@ -796,6 +797,14 @@ The web interface also presents and assesses the results of the past experiments
 \caption{Experiment evaluation}
 \label{fig:rtt_assessment}
 \end{figure}
+
+The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. We denote this proportion as $x$. Then the probability $P(x)$ of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section~\ref{sec:baseline_exp}. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
+
+\begin{itemize}
+\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
+\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
+\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
+\end{itemize}
 
 \chapter{Analysing arbitrary binary data with RTT}
 \label{chap:crypto_fn_analysis}
@@ -857,7 +866,7 @@ We inspected the counts of failures of individual batteries in following two sce
 \begin{description}
 \item[Original second-level p-values failures] \hfill \\
 In this scenario, we assumed that all second-level p-values produced by a specific battery are independent. Therefore, we treated all statistics calculated by the battery as separate tests. For example, if we execute some test in two variants, each of those variants has two subtests\footnote{For the difference between variant and subtest, see Section~\ref{sec:terminology}.}, and each subtest will calculate two statistics, in total we will get $2^3=8$ second-level p-values; we consider these eight p-values as the results of eight independent tests each of whose calculated a single p-value. 
-
+\pagebreak
 \item[Corrected p-values failures] \hfill \\
 With this second scenario, we tried to mitigate the effect of dependent p-values in our set by grouping them together. We grouped the p-values that are most likely dependent; we assumed that the p-values that are most likely inter-connected are those that are produced by a single statistical test. Therefore, all p-values belonging to a single test were reduced to only one p-value, leaving us with a single result per distinct test in a statistical battery. For example, should a single test produce eight p-values, for this test we will only have information whether the test was a failure or not. For the grouping of the p-values, we used Šidák's correction \cite{sidak-corr}, and we show the process in Method~\ref{def:sidak}.
 
@@ -921,6 +930,7 @@ $$
 E(f_0^X) = s P(F=0) = 1000 \binom{110}{0} 0.01^0 (1-0.01)^{110-0} \approx 331.03
 $$
 
+\pagebreak
 Based on the expected and observed frequencies in the Figure~\ref{fig:corr_vs_orig_hist} we calculate the $\chi^2$ statistic (Equation~\ref{eq:chi_square_stat}); 
 
 \begin{align*}
@@ -1249,6 +1259,12 @@ In Chapter~\ref{chap:validating_dieharder} we discovered that a large number of 
 \appendix
 
 \printbibliography
+
+\chapter{Data attachment}
+\label{app:data_att}
+\begin{Huge}
+TODO!!!
+\end{Huge}
 
 \chapter{NIST STS Tests}
 \label{app:nist_sts_tests}
@@ -1852,7 +1868,7 @@ Diehard Runs Test test results:
 \begin{figure}[h!]
 \begin{nomar}
 \centering
-\includegraphics[width=\textwidth+1.2cm]{figures/submit-experiment-form.png} 
+\includegraphics[width=\textwidth]{figures/submit-experiment-form.png} 
 \end{nomar}
 \end{figure}
 
