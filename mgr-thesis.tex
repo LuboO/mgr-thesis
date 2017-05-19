@@ -900,32 +900,6 @@ Due to the limitation of Pearson's $\chi^2$ test stating that the expected value
 
 The resulting p-value expresses the probability that the measured sets belong to the same distribution. Therefore, when we are comparing the viability of the two failure counting scenarios (original versus corrected results) the more viable one will have greater p-value than the other; our point was to find out which one of our approaches followed our theoretical expectations more closely.
 
-\begin{example}
-\label{ex:compare_distributions}
-Let's have a multiset $X$, in which are stored the counts of failed tests in 1000 executions of Dieharder battery; therefore we have $s=1000$. There are $n=110$ uncorrected tests in the Dieharder battery. In Table~\ref{tab:dieharder_obs_exp} we can see the observed and expected frequencies of failure counts. We calculate the expected frequency for each failure count as follows (Equation~\ref{eq:bin_pmf}, Equation~\ref{eq:exp_freq}); we use zero failure count as an example.
-
-$$
-E(f_0^X) = s P(F=0) = 1000 \binom{110}{0} 0.01^0 (1-0.01)^{110-0} \approx 331.03
-$$
-
-Based on the expected and observed frequencies in the Table~\ref{tab:dieharder_obs_exp} we calculate the $\chi^2$ statistic (Equation~\ref{eq:chi_square_stat}); in our example $\chi^2 \approx 85.71$. Then we calculate the final p-value of the $\chi^2$ statistic as $1-CDF(df, \chi^2)=1-CDF(5, 85.71) = 5.32 \cdot 10^{-17}$. The resulting p-value is the probability that the observed and expected frequency of the failure counts originate from the same distribution.
-
-\begin{table}[h]
-\begin{center}
-\begin{tabular}{@{}lcccccccc@{}} \toprule
-\textbf{Failures} & \textbf{0} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} \\ \midrule
-\textbf{Observed} & 460 & 331 & 147 & 44 & 11 & 5 & 1 & 1 \\ 
-\textbf{Expected} & 331.03 & 367.81 & 202.48 & 73.63 & 19.90 & 4.26 & 0.75 & 0.11 \\ \bottomrule
-\end{tabular}
-\end{center}
-\caption{Example of the observed and expected failure frequencies}
-\label{tab:dieharder_obs_exp}
-\end{table}
-
-\end{example}
-
-In Figure~\ref{fig:corr_vs_orig_hist} we can see both the original and the corrected failure frequencies along with their expected distributions. As the $\chi^2$ statistic p-value suggest, in the corrected version of failure counting, the observed failure frequency is much closer to the expected distribution than in the original version.
-
 \begin{figure}[H]
 \begin{nomar}
 \centering
@@ -938,6 +912,28 @@ In Figure~\ref{fig:corr_vs_orig_hist} we can see both the original and the corre
 \caption{Test failure frequency distributions in Dieharder battery}
 \label{fig:corr_vs_orig_hist}
 \end{figure}
+
+\begin{example}
+\label{ex:compare_distributions}
+Let's have a multiset $X=\{1,3,4,3,..,0\}$, in which are stored the counts of failed tests in 1000 executions of Dieharder battery (in the first execution failed one test, in the second execution three tests, etc.); therefore we have $s=1000$. There are $n=110$ uncorrected tests in the Dieharder battery. In Figure~\ref{fig:corr_vs_orig_hist} we can see the observed and expected frequencies of the failure counts for both corrected and uncorrected tests. We calculate the expected frequency for each failure count as follows (Equation~\ref{eq:bin_pmf}, Equation~\ref{eq:exp_freq}); we use zero failure count as an example.
+
+$$
+E(f_0^X) = s P(F=0) = 1000 \binom{110}{0} 0.01^0 (1-0.01)^{110-0} \approx 331.03
+$$
+
+Based on the expected and observed frequencies in the Figure~\ref{fig:corr_vs_orig_hist} we calculate the $\chi^2$ statistic (Equation~\ref{eq:chi_square_stat}); 
+
+\begin{align*}
+\chi^2 &= \sum\limits_{i=1}^{k} \frac{  \left(f_{d_i}^{X} - E \left(f_{d_i}^{X}\right) \right)^2 }{E \left(f_{d_i}^{X}\right)} \\
+       &= \frac{(460 - 331.03)^2}{331.03} + \frac{(331 - 367.81)^2}{367.81} + \cdots + \frac{(7 - 5.12)^2}{5.12} \\
+       &\approx 85.71
+\end{align*}
+
+Note, that the frequencies for five, six and seven failures are summed together; this is caused by the limitation of Pearson's $\chi^2$ test that is mentioned above. We calculate the final p-value of the $\chi^2$ statistic as $1-CDF(df, \chi^2)=1-CDF(5, 85.71) = 5.32 \cdot 10^{-17}$. The resulting p-value is the probability that the observed and expected frequency of the failure counts originate from the same distribution. 
+
+We can compare the $\chi^2$ p-values shown in Figure~\ref{fig:corr_vs_orig_hist}. As the p-values suggest, in the corrected version of failure counting, the observed failure frequency is much closer to the expected distribution than in the original version.
+
+\end{example}
 
 \begin{table}[H]
 \begin{nomar}
@@ -1132,7 +1128,7 @@ The resulting p-values of the uniformity testing are presented in Table~\ref{tab
 
 In Figure~\ref{fig:non_uniform_pval_hist} we visualise distributions of p-value sets of four chosen atomic tests. The Diehard Minimum Distance (2d Circe) test was included because its p-values are uniformly distributed, and the graph can be used as a baseline for comparison with other visualised sets. The histograms also contain the p-values of the calculated $\chi^2$ statistics.
 
-From the presented results we can see that out of 110 atomic tests, 39 produced non-uniform p-values. This result is somewhat surprising; prior to the experiment, we presumed that all tests produce uniform results. The discovery is important in the context of further processing of p-values by the Dieharder battery. The battery assumes that if the null hypothesis holds, the first-level p-values are uniformly distributed; the uniformity of the set is tested by the K-S test. However, the fact that some p-value sets are significantly and consistently non-uniform breaks this assumption.
+From the presented results we can see that out of 110 atomic tests, 39 produced non-uniform p-values. This result is surprising since prior to the experiment, we presumed that all tests produce uniform results. The discovery is important in the context of further processing of p-values by the Dieharder battery. The battery assumes that if the null hypothesis holds, the first-level p-values are uniformly distributed; the uniformity of the set is tested by the K-S test. However, the fact that some p-value sets are significantly and consistently non-uniform breaks this assumption.
 
 \begin{figure}[h]
 \begin{nomar}
