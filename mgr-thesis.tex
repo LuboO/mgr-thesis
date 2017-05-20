@@ -67,7 +67,7 @@
     keywords      = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
     TeXkeywords   = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
     abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software and use it to perform a large scale randomness evaluation and comparison of used software. The software tools supported by the interface are NIST Statistical Testing Suite, Dieharder and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The set of tested primitives contains were well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.},
-    thanks        = {TODO},
+    thanks        = {sentence \\ another},
     bib           = bibliography.bib,
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
@@ -79,9 +79,9 @@
 	\newcommand{\rmar}{3cm} % PC
 	\newcommand{\tmp}{3cm}  % PC
 }{
-	\newcommand{\lmar}{3.5cm} % Printed
-	\newcommand{\rmar}{2.5cm} % Printed
-	\newcommand{\tmp}{2.5cm}  % Printed
+	\newcommand{\lmar}{4cm} % Printed
+	\newcommand{\rmar}{2cm} % Printed
+	\newcommand{\tmp}{2cm}  % Printed
 }
 
 \usepackage[top=3cm, bottom=3.5cm, left=\lmar, right=\rmar]{geometry}
@@ -428,8 +428,8 @@ The basic options of the RTT execution are set through command-line arguments. T
 \item \texttt{-t <test-id>} Optional argument. If set, only single test with id \texttt{<test-id>} will be executed in the chosen battery.
 \item \texttt{-c <config-path>} Path to file with configuration of the battery. Details about battery configuration are in Section~\ref{sec:batt_conf}.
 \item \texttt{-f <data-path>} Path to the file with the binary data that will be analyzed by the chosen battery.
-\item \texttt{-r <result-storage>} Sets the type of the result storage that will be used. Accepted values are \texttt{file-report} or \texttt{db-mysql}. The option doesn't have to be set; \texttt{file-report} is then used as default option. More information about result storages is in Section~\ref{sec:result_storages}.
-\item \texttt{-eid <experiment-id>} Option is mandatory only when \texttt{db-mysql} is set as a result storage; the option is ignored otherwise. Sets ID of the experiment in the database that will be assigned the results of the toolkit execution.
+\item \texttt{-r <result-storage>} Sets the type of the result storage that will be used. Accepted values are \texttt{file\_report} or \texttt{db\_mysql}. The option doesn't have to be set; \texttt{file\_report} is then used as default option. More information about result storages is in Section~\ref{sec:result_storages}.
+\item \texttt{-{}-eid <experiment-id>} Option is mandatory only when \texttt{db\_mysql} is set as a result storage; the option is ignored otherwise. Sets ID of the experiment in the database that will be assigned the results of the toolkit execution.
 \end{itemize}
 
 \subsection{Toolkit settings}
@@ -464,7 +464,7 @@ The file is created by the user after the toolkit installation and stays the sam
         "comment": "Executable binaries locations",
         "option": "value", ...
       },    
-      "miscelaneous": {
+      "miscellaneous": {
         "nist-sts": {
           "comment": "Miscellaneous NIST STS settings",
           "option": "value", ...
@@ -500,7 +500,7 @@ Section with settings needed for MySQL Database storage. For details about the s
 Section with the locations of the executables of the batteries. \\
 \textit{Settings: } \texttt{<battery>}
 
-\item[toolkit-settings/miscelaneous/nist-sts] \hfill \\
+\item[toolkit-settings/miscellaneous/nist-sts] \hfill \\
 Miscellaneous constant settings related to NIST STS battery. \\
 \textit{Settings: } \texttt{main-result-dir}
 
@@ -748,7 +748,7 @@ To create a new experiment, the user has to use utility \texttt{submit\_experime
 The flags for the batteries switch their inclusion in the experiment. For example, if we use arguments \texttt{"-{}-all\_batteries -{}-dieharder"}, then the batteries included in the experiment will be the batteries added by the \texttt{"-{}-all\_batteries"} flag \textbf{except} the Dieharder battery. However, if we would use only argument \texttt{"-{}-dieharder"}, then Dieharder will be the \textbf{only} battery used is the experiment.
 
 \subsection{Web Interface for RTT}
-The web interface is aiming to be useful in the basic use-case, where the user has some binary data in a single file that he wants to analyse. The user will upload the data through the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django (cit) framework for its ease of use.
+The web interface is aiming to be useful in the basic use-case, where the user has some binary data in a single file that he wants to analyse. The user will upload the data through the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django framework \cite{django}.
 
 In most of the cases, one does not have to create new configuration for the batteries that will be executed during the analysis; a suitable configuration will be chosen for him automatically. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences.
 
@@ -973,6 +973,7 @@ However, even with the improved result interpretation, some test failure counts 
 The presented bounds are used for result interpretation of the subsequent experiments. If the number of failed tests will be higher than the bound, the data did not pass the battery analysis.
 
 \section{Analysis of well-known cryptographic algorithms}
+\label{sec:usable_testbed}
 In this experiment, we focused on the analysis of well-known and used cryptographic primitives. Our motivation for this experiment was to find out how big are the security margins of conventional algorithms. Most of the tested algorithms could be reduced in the number of their rounds. We investigated how much could we reduce the rounds until we would start detecting the biases in the data.
 
 The outputs of the functions were generated using the generator developed in CRoCS \cite{eacirc-streams}. The plaintext of the functions was a binary counter; the key was randomly generated, and initialization vector was set to zeroes. Not all functions needed the key and IV. 
@@ -1262,9 +1263,17 @@ In Chapter~\ref{chap:validating_dieharder} we discovered that a large number of 
 
 \chapter{Data attachment}
 \label{app:data_att}
-\begin{Huge}
-TODO!!!
-\end{Huge}
+The thesis repository\footnote{Accessible at \url{https://is.muni.cz/th/410282/fi_m/}}  contains following items.
+\begin{itemize}
+\item \texttt{randomness-testing-toolkit} \\
+The source code of Randomness Testing Toolkit v1.0 (copy of the project repository, the latest commit \texttt{347467d} is from 2017-05-20).
+\item \texttt{randomness-testing-toolkit-wiki} \\
+The copy of wiki pages with RTT user documentation (copy of the wiki repository, the latest commit \texttt{30436be} is from 2017-05-20).
+\item \texttt{crypto-algs-analysis-results} \\
+Results of the experiment presented in Section~\ref{sec:usable_testbed}. The directory contains the copy of \texttt{HTML} files as displayed in the RTT web interface. Each subdirectory of the directory \texttt{ViewResults/Experiment} contains the results of analysis of a single data file. 
+\item \texttt{thesis-src} \\
+The source code of this thesis along with used figures and bibliography (copy of the thesis repository, the latest commit is TODO from 2017-05-21).
+\end{itemize}
 
 \chapter{NIST STS Tests}
 \label{app:nist_sts_tests}
@@ -1460,7 +1469,7 @@ For details about the MySQL database storage see Section~\ref{sec:mysql_res_stor
         "dieharder": "/home/rtt-statistical-batteries/dieharder",
         "testu01": "/home/rtt-statistical-batteries/testu01"
       },
-      "miscelaneous": {
+      "miscellaneous": {
         "nist-sts": {
           "main-result-dir": "experiments/AlgorithmTesting/"
         }
@@ -1564,7 +1573,7 @@ This option is valid only for alphabit and block alphabit batteries. Sets how ma
 
 \item[\texttt{bit-w}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
-This option is valid only for block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation (TODO cite).
+This option is valid only for block alphabit battery. The value must be lesser or equal to \texttt{bit-s}, otherwise the option will be ignored. The option sets the reordering of the bits that will happen before processing. For details about the reordering see TestU01 documentation \cite[p.~155]{testu01-documentation}.
 
 \item[\texttt{parameters}] \hfill \\
 \textit{Possible parent tags: } \texttt{defaults, test-specific-settings, variants} \\
