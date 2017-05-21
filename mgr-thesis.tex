@@ -66,8 +66,11 @@
     TeXtitle      = {The automated testing of~randomness with multiple statistical batteries},
     keywords      = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
     TeXkeywords   = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
-    abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software and use it to perform a large scale randomness evaluation and comparison of used software. The software tools supported by the interface are NIST Statistical Testing Suite, Dieharder and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The set of tested primitives contains were well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.},
-    thanks        = {sentence \\ another},
+    abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software and use it to perform a large scale randomness evaluation and comparison of used software. The software tools supported by the interface are NIST Statistical Testing Suite, Dieharder and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The set of tested primitives contains were well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.
+    },
+    thanks        = {To Petr Švenda, for guidance, inspiration, and the ability to see the light at the end of the tunnel. To Marek Sýs, for helping me understand both trivial and not-so-trivial concepts of the world of probability and statistics. To a very special person, for distant, yet far from pointless support. To all the others, lab members or not, for ideas, discussions, suggestions, and procrastination that often kept me sane.\\ \\
+    Thank you. I could not have made it without you. \\ \vspace{\fill} \\ 
+    Computational resources were supplied by the Ministry of Education, Youth and Sports of the Czech Republic under the Projects CESNET (Project No. LM2015042) and CERIT-Scientific Cloud (Project No. LM2015085) provided within the program Projects of Large Research, Development and Innovations Infrastructures. \\ We also acknowledge the support of Czech Science Foundation, the project GA16-08565S.},
     bib           = bibliography.bib,
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
@@ -195,20 +198,6 @@
 % =================================== TEXT BEGINNING =================================== 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Final Description:
-%The randomness and pseudorandomness are important security property of output of a random number generator as well a cryptographic function. To some extent, these characteristics can be measured and tested by randomness statistical batteries like STS NIST or DIEHARDER. The thesis is aimed at development of a tool that would provide means for fast, simple and consistent testing of randomness of arbitrary data using multiple statistical batteries.
-
-%The thesis will provide an introduction to statistical randomness testing and interpretation of results obtained from a given test and battery. The toolkit for easy remote execution of statistical tests on a dedicated server will be developed with the following functionality:
-
-% - Easy submission of data for testing, both locally (filesystem) and remotely (web interface)
-% - At least three different statistical batteries will be incorporated via unified interface
-% - Unified presentation of test results of executed batteries
-%The tool will be utilized in subsequent experiments aimed to compare classical batteries with EACirc framework and also evaluate test behavior of DIEHARDER on large amount of truly random data.
-
-%Literature
-%STS NIST battery, http://csrc.nist.gov/groups/ST/toolkit/rng/index.html [2017-03-13]
-%R. Brown, Dieharder battery, https://www.phy.duke.edu/~rgb/General/dieharder.php[2017-03-13]
-
 \begin{document}
 
 \chapter{Introduction}
