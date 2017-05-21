@@ -19,10 +19,10 @@
 
 
 \documentclass[
-	%printed,   	% Printed version
 	digital,    % PC version
-	%twoside,    % Printed version
-	oneside,
+	oneside,    % PC version
+	%printed,   % Printed version
+	%twoside,   % Printed version
 	color,
 	11pt,
 	nocover,
@@ -35,8 +35,8 @@
 
 \newtoggle{digital}
 
-\toggletrue{digital}     % PC version - centered margins
-%\togglefalse{digital}   % Print version - shifted margins
+\toggletrue{digital}  		% PC version - centered margins
+%\togglefalse{digital}  	% Print version - shifted margins
 
 %% The following section sets up the locales used in the thesis.
 \usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
@@ -60,7 +60,7 @@
     type          = mgr,
     author        = Ľubomír Obrátil,
     gender        = m,
-    assignment    = ,
+    assignment    = ,		% PC version
     advisor       = {RNDr. Petr Švenda, Ph.D.},
     title         = {Randomness Testing Toolkit},
     TeXtitle      = {The automated testing of~randomness with multiple statistical batteries},
@@ -1298,7 +1298,7 @@ The copy of wiki pages with RTT user documentation (copy of the wiki repository,
 \item \texttt{crypto-algs-analysis-results} \\
 Results of the experiment presented in Section~\ref{sec:usable_testbed}. The directory contains the copy of \texttt{HTML} files as displayed in the RTT web interface. Each subdirectory of the directory \texttt{ViewResults/Experiment} contains the results of analysis of a single data file. 
 \item \texttt{thesis-src} \\
-The source code of this thesis along with used figures and bibliography (copy of the thesis repository, the latest commit is TODO from 2017-05-21).
+The source code of this thesis along with used figures and bibliography (copy of the thesis repository, the latest commit is \texttt{ab42db7} from 2017-05-21).
 \end{itemize}
 
 \chapter{NIST STS Tests}
@@ -1392,7 +1392,7 @@ object with key-value pairs with options and their values. For complete example 
 \begin{itemize}
 \item \textbf{dir-prefix} \textit{Optional} -- If set, value of this tag will become prefix of all log files locations. Can be used when all logger directories should have the same parent directories.
 \item \textbf{run-log-dir} -- Sets location of the main log file.
-\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and their values set locations of files that will contain raw outputs of the respective executed batteries.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} is replaced by values dieharder, nist-sts, tu01-small-\linebreak crush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. All of these tags are mandatory and their values set locations of files that will contain raw outputs of the respective executed batteries.
 \end{itemize}
 
 \item[toolkit-settings/result-storage/file] \textit{Optional} \hfill \\
@@ -1400,7 +1400,7 @@ For details about the file storage see Section~\ref{sec:file_res_storage}.
 \begin{itemize}
 \item \textbf{main-file} -- Sets path of the file with final results of the program run. If the file already exists, results will be added to it, if not, new result file will be created.
 \item \textbf{dir-prefix} -- If set, all directory values will have this prefix.
-\item \textbf{<battery>-dir} -- Value \textbf{<battery>} can be replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-blockalphabit. The tags set locations of files with detailed results of the respective battery.
+\item \textbf{<battery>-dir} -- Value \textbf{<battery>} can be replaced by values dieharder, nist-sts, tu01-smallcrush, tu01-crush, tu01-bigcrush, tu01-rabbit, tu01-alphabit and tu01-block-\linebreak alphabit. The tags set locations of files with detailed results of the respective battery.
 \end{itemize}
 
 \item[toolkit-settings/result-storage/mysql-db] \textit{Optional} \hfill \\
