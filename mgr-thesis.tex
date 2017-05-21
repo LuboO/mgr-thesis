@@ -19,10 +19,9 @@
 
 
 \documentclass[
-	%twoside,    % Printed version
 	%printed,   	% Printed version
 	digital,    % PC version
-	oneside,    % PC version
+	twoside,    % Printed version
 	color,
 	11pt,
 	nocover,
@@ -33,12 +32,10 @@
  	%% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
 
-
-
 \newtoggle{digital}
 
-\toggletrue{digital}
-%\togglefalse{digital}
+\toggletrue{digital}     % PC version - centered margins
+%\togglefalse{digital}   % Print version - shifted margins
 
 %% The following section sets up the locales used in the thesis.
 \usepackage[resetfonts]{cmap} %% We need to load the T2A font encoding
@@ -55,6 +52,7 @@
 %%\shorthands{off}
 %% The following section sets up the metadata of the thesis.
 \thesissetup{
+    autoLayout    = false,
     date          = \the\year/\the\month/\the\day,
     university    = mu,
     faculty       = fi,
@@ -66,9 +64,9 @@
     TeXtitle      = {The automated testing of~randomness with multiple statistical batteries},
     keywords      = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
     TeXkeywords   = {randomness testing, statistical test batteries, cryptographic algorithm evaluation, RTT, NIST STS, Dieharder, TestU01, EACirc, CRoCS},
-    abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software and use it to perform a large scale randomness evaluation and comparison of used software. The software tools supported by the interface are NIST Statistical Testing Suite, Dieharder and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The set of tested primitives contains were well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.
+    abstract      = {The aim of this thesis was to design and develop a unified interface for accessing randomness testing software and use it to perform a large scale randomness evaluation and comparison of used software. The software tools supported by the interface are NIST Statistical Testing Suite, Dieharder, and TestU01. Results of each tool are presented and interpreted in a consistent way. Using the developed interface, called Randomness Testing Toolkit, the randomness of outputs of 15 distinct cryptographic primitives was evaluated. The set of tested primitives contains well-known algorithms such as AES and finalists of competitions eSTREAM and SHA-3. Based on the evaluation, the security margins of the algorithms with respect to statistical analysis were defined. In further research, the validity of outputs of Dieharder was assessed by analysing a significant amount of truly random data.
     },
-    thanks        = {To Petr Švenda, for guidance, inspiration, and the ability to see the light at the end of the tunnel. To Marek Sýs, for helping me understand both trivial and not-so-trivial concepts of the world of probability and statistics. To a very special person, for distant, yet far from pointless support. To all the others, lab members or not, for ideas, discussions, suggestions, and procrastination that often kept me sane.\\ \\
+    thanks        = {To Petr Švenda, for guidance, inspiration, and the ability to see the light at the end of the tunnel. To Marek Sýs, for helping me understand both trivial and not-so-trivial concepts of the world of probability and statistics. To an exceptional person, for distant, yet far from pointless support. To all the others, both from the lab and the outside, for ideas, discussions, suggestions, and procrastination that often kept me sane.\\ \\
     Thank you. I could not have made it without you. \\ \vspace{\fill} \\ 
     Computational resources were supplied by the Ministry of Education, Youth and Sports of the Czech Republic under the Projects CESNET (Project No. LM2015042) and CERIT-Scientific Cloud (Project No. LM2015085) provided within the program Projects of Large Research, Development and Innovations Infrastructures. \\ We also acknowledge the support of Czech Science Foundation, the project GA16-08565S.},
     bib           = bibliography.bib,
@@ -199,6 +197,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+% Overriding default layout.  I like it this way more.
+
+\makeatletter
+\def\thesis@blocks@thanks{%
+	\ifx\thesis@thanks\undefined\else
+		\thesis@blocks@clear
+		\begin{alwayssingle}%
+			%\chapter*{\vspace*{\fill}\thesis@@{thanksTitle}}%
+			\chapter*{\thesis@@{thanksTitle}}%
+			\leavevmode\thesis@thanks
+		\end{alwayssingle}%
+	\fi}
+\def\thesis@blocks@abstract{%
+	\begin{alwayssingle}%
+	% Start the new chapter without clearing the right page
+	{\def\clearpage{}
+		\chapter*{\thesis@@{abstractTitle}}}%
+		\noindent\thesis@abstract
+		\par\vfil\null
+		\clearpage{}
+	\end{alwayssingle}}
+\def\thesis@blocks@keywords{%
+	\begin{alwayssingle}%
+	% Start the new chapter without clearing the right page
+	{\def\clearpage{}
+		\chapter*{\thesis@@{keywordsTitle}}}%
+		\noindent\thesis@keywords
+		\par\vfil\null
+		\clearpage{}
+	\end{alwayssingle}}
+\thesis@preamble
+\makeatother
 
 \chapter{Introduction}
 In modern cryptography, one of the required properties of cryptographic primitives like block ciphers or hash functions is the pseudo-randomness of their output. The algorithms lacking this attribute can leak information about the secret key or the plaintext, which is not desirable; thus the need for the randomness testing arose.
@@ -213,7 +243,7 @@ In Chapter~\ref{chap:crypto_fn_analysis}, we outline the experiments done with t
 
 Chapter~\ref{chap:validating_dieharder} contains details about our inspection of the validity of the Dieharder battery. To evaluate the validity, we processed a big amount of random data with the battery and analysed the outputs of the processing. We conclude the thesis with the summary in Chapter~\ref{chap:summary}. In the chapter, we briefly list the achieved results and propose possible directions for future research and development.
 
-In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Simply referred to as CRoCS.}, Masaryk University; related problems, ideas and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Radka Cieslarová, Michal Hajas, Dušan Klinec, Karel Kubíček, Matúš Nemec, Jiří Novotný, Marek Sýs, Petr Švenda, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
+In the thesis text, the plural is used, despite the fact that the presented work was done mostly by myself. Randomness Testing Toolkit was developed as a part of a greater effort at Centre for Research on Cryptography and Security\footnote{Simply referred to as CRoCS.}, Masaryk University; related problems, ideas, and solutions were oftentimes discussed with other researchers\footnote{Notable people involved in randomness research and development are Radka Cieslarová, Michal Hajas, Dušan Klinec, Karel Kubíček, Matúš Nemec, Jiří Novotný, Marek Sýs, Petr Švenda, Martin Ukrop and others.}. Research done by others is properly attributed when presented.
 
 \chapter{Used third-party statistical software}
 \label{chap:batteries}
@@ -249,21 +279,21 @@ The value obtained by certain calculation from first level p-values. Multiple st
 A single execution of a statistical test. The result of single test execution is one first level p-value. By repeating execution of the test, we obtain multiple p-values. By using a certain statistic (e.g. Kolmogorov-Smirnov test), we can calculate a single second level p-value.
 
 \item[Variant of a test] \hfill \\
-Many tests can be parametrized in some ways, possibly giving different results with the same input data. We don't treat multiple executions of a single test with different settings as separate units but rather as variants of that test.
+Many tests can be parametrized in some ways, possibly giving different results with the same input data. We do not treat multiple executions of a single test with different settings as separate units but rather as variants of that test.
 
 \item[Subtest] \hfill \\
-Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery will measure frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as subtests of the test. The subtests can have multiple separate statistics.
+Some tests, even when executed only once, may measure multiple properties of the data thus providing multiple results. For example, Serial Test from Dieharder battery measures frequencies of all 1, 2, .., 16-bit patterns in the data. We treat these measurements separately - as subtests of the test. The subtests can have multiple separate statistics.
 
 \item[Job] \hfill \\
-Single execution of Randomness Testing Toolkit that will analyse single binary data file with single statistical battery.
+A single execution of Randomness Testing Toolkit that analyses single binary data file with single statistical battery.
 
 \item[Experiment] \hfill \\
-Batch of jobs that analysed single data file with various statistical batteries and settings.
+A batch of jobs that analyse single data file with various statistical batteries and settings.
 
 \end{description}
 
 \section{Batteries supported by RTT}
-In this section we provide a brief overview of the supported statistical batteries included in Randomness Testing Toolkit.
+In this section, we provide a brief overview of the supported statistical batteries included in Randomness Testing Toolkit.
 
 \subsection{NIST Statistical Test Suite}
 The battery of statistical tests was developed by National Institute of Standards and Technology \cite{nist-sts}. The battery implements 15 statistical tests for evaluating randomness of input data. The tests are listed in Appendix~\ref{app:nist_sts_tests}.
@@ -273,10 +303,10 @@ The reference implementation described in \cite{nist-sts-documentation} is not u
 \subsection{Dieharder}
 Dieharder is a battery designed by Robert G. Brown at the Duke University \cite{dieharder}. The battery features user-friendly console interface with the possibility of fine-grain modification of the test parameters. The fact that Dieharder is included in repositories of some Linux distributions \cite{dieharder-manpage} adds to its popularity and ease of use. Dieharder includes all tests from the older statistical battery Diehard \cite{diehard}, three tests from NIST STS and several other tests implemented by the author. The tests, along with their default settings, are listed in Appendix~\ref{app:dieharder_tests}.
 
-Since the original Dieharder implementation doesn't output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder. We modified Dieharder v3.31.1 which is the last stable maintained release on the project page.
+Since the original Dieharder implementation does not output all of the information we needed for interpretation and evaluation of the results, we had to modify the source code of the battery. RTT uses this modified Dieharder. We modified Dieharder v3.31.1 which is the last stable and maintained release on the project page.
 
 \subsection{TestU01}
-This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. \cite{testu01-paper}. It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories each intended for different use-case scenario. We will treat these categories of tests as separate batteries. TestU01 includes following ten batteries. The tests included in specific batteries are listed in TestU01 documentation \cite{testu01-documentation}.
+This library of statistical batteries was developed at Université de Montréal by Pierre L’Ecuyer et al. \cite{testu01-paper}. It contains a wide range of tests from NIST STS, Dieharder, and literature. It also implements various pseudo-random number generators. The statistical tests are grouped into multiple categories, each intended for different use-case scenario. We treat these categories of tests as separate batteries. TestU01 includes following ten batteries. The tests included in specific batteries are listed in TestU01 documentation \cite{testu01-documentation}.
 
 \begin{description}
 \item[Small Crush, Crush, Big Crush] \hfill \\
@@ -284,10 +314,10 @@ Small Crush battery is very fast and needs a relatively small amount of data to 
 \item[Rabbit, Alphabit, Block Alphabit] \hfill \\
 Tests in these batteries are suited for testing hardware bit generators and can be applied to an arbitrary amount of data. Data can be provided either as a binary file or PRNG implementing the TestU01 interface.
 \item[PseudoDIEHARD, FIPS\_140\_2] \hfill \\
-Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests defined in NIST FIPS 140-2 standard \cite{nist-fips-140-2} (the definition of tests was removed from the standard in Change Notice 2). Randomness Testing Toolkit doesn't support these two batteries since they are subsets of other batteries.
+Tests in PseudoDIEHARD imitate DIEHARD battery; FIPS\_140\_2 battery implements a small suite of tests defined in NIST FIPS 140-2 standard \cite{nist-fips-140-2} (the definition of tests was removed from the standard in Change Notice 2). Randomness Testing Toolkit does not support these two batteries since they are subsets of other batteries.
 \end{description}
 
-Since TestU01 v1.2.3 is available only as an ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. Our interface allows us to apply batteries to arbitrary binary data even when the batteries themselves don't support this feature natively.
+Since TestU01 v1.2.3 is available only as an ANSI C library, we developed a console interface for it. The interface implements a dummy number generator that provides data from a supplied binary file to the battery. Our interface allows us to apply batteries to arbitrary binary data even when the batteries themselves do not support this feature natively.
 
 \section{Unexpected behavior and errors of the batteries}
 To examine the boundary behavior of the above-listed tools, we used them to process extremely non-random data streams. The data streams that we used as the input to the batteries were two binary data files consisting of only zeroes and ones respectively. The settings of the batteries remained set to default. 
@@ -297,9 +327,9 @@ Below we list observed undocumented behavior that differs from the execution of 
 \subsection*{NIST Statistical Test Suite}
 Each test in the battery processed 1000 separate data streams. Each data stream was 1000000 bits long.
 
-Tests Random Excursions and Random Excursions Variant are not applicable to all possible data streams. In a regular run with reasonably random data, this doesn't matter much, as the tests are repeated multiple times, and the final result will simply be calculated from a lesser number of p-values. 
+Tests Random Excursions and Random Excursions Variant are not applicable to all possible data streams. In a regular run with reasonably random data, this does not matter much, as the tests are repeated multiple times, and the final result will simply be calculated from a lesser number of p-values. 
 
-Neither of the tests can be applied to a stream full of zeroes or ones. This causes absence of results when analyzing such data. The user can find out the fact that the tests are not applicable to provided stream after he inspects logs of the program; otherwise, the interpretation of the missing results is left to him.
+Neither of the tests can be applied to a stream full of zeroes or ones; the results are absent when analysing such data. The user can find out the fact that the tests are not applicable to provided stream after he inspects logs of the program; otherwise, the interpretation of the missing results is left to him.
 
 \subsection*{Dieharder}
 When processing extremely non-random data with Dieharder, we observed various erroneous events. The events are summarized in Table~\ref{tab:dieharder_errors}. 
@@ -325,7 +355,7 @@ RGB Bit Distribution                 & --                       & Stuck executio
 \end{table}
 
 \begin{titlemize}{Observed errors}
-\item \textbf{No result} Test didn't provide any p-values that would be used to calculate the final result of the test. The user is not notified of this, and the final result of the test statistic is based on default value (1.0).
+\item \textbf{No result} Test did not provide any p-values that would be used to calculate the final result of the test. The user is not notified of this, and the final result of the test statistic is based on default value (1.0).
 \item \textbf{Invalid result} Test provided resulting statistic and there was no indication of error other than that the result was again default value of the statistic (1.0). Following the definition of p-value, the interpretation of such result is that the analyzed stream was almost certainly random. This is obviously not true, as both streams are just repeating ones or zeroes respectively. 
 \item \textbf{Stuck execution} Tests froze at a certain point in execution, did not produce any results and we were forced to kill the processes manually.
 \end{titlemize}
@@ -363,35 +393,35 @@ smarsa\_GCD                        & --                       & Stuck execution 
 \end{table}
 
 \begin{titlemize}{Observed errors}
-\item \textbf{No results} Tests reported warning and ended without any result. This is probably caused by the tests not being applicable to provided data.
+\item \textbf{No results} Tests reported warning and ended without any result. This is probably caused by the tests not being applicable to the provided data.
 \item \textbf{All results invalid}  All statistics of the test reported p-value very close to 1.0. This could lead the user to the interpretation that the test reports the data as an almost perfect random stream.
-\item \textbf{Some results invalid} Similar situation to the previous one but not all statistics of the test are close to 1.0. Results of tests statistics are either close to 0.0 or 1.0.
-\item \textbf{Stuck execution} Tests froze at a certain point of execution. In some cases, this is preceded by an issued warning. Tests didn't produce any results and had to be killed manually.
+\item \textbf{Some results invalid} Similar situation to the previous one, but not all statistics of the test are close to 1.0. Results of the statistics of the test are close either to  0.0 or 1.0.
+\item \textbf{Stuck execution} Tests froze at a certain point of execution. In some cases, this is preceded by an issued warning. Tests did not produce any results and had to be killed manually.
 \end{titlemize}
 
 \subsection{Preventive measures in RTT}
 \label{sec:preventive_measures_rtt}
-Since we need to use the batteries in RTT with arbitrary binary data, we implemented following measures that mitigate above-mentioned errors in our experiments.
+Since we need to use the batteries in RTT with arbitrary binary data, we implemented following measures that mitigate errors mentioned above in our experiments.
 \begin{itemize}
 \item Tests that don't produce any results are ignored and treated as if never executed.
-\item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we will reject the hypothesis of randomness either when the p-value is too close to 0 or is equal to 1. More specifically, $H_0$ will be rejected for all p-values that falls outside of the interval $\left[\alpha, 1\right)$.
-\item Each test is executed with the timeout. If the test doesn't finish within defined time limit, we will automatically terminate it and then treat it as if it didn't produce any results.
+\item Because some tests give 1.0 as a result of their statistics when the data are clearly not random, we reject the hypothesis of randomness either when the p-value is too close to 0 or is equal to 1. More specifically, $H_0$ is rejected for all p-values that fall outside of the interval $\left[\alpha, 1\right)$.
+\item Each test is executed with the timeout. If the test does not finish within the defined time limit, we automatically terminate it and then treat it as if it did not produce any results.
 \end{itemize}
 
 \chapter{Randomness Testing Toolkit}
 \label{chap:rtt}
-One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. Process of statistical testing generally includes finding a suitable tool, installation of said tool, and an execution and interpretaion of the analysis results.
+One of our goals during working on this project was to create a tool that would provide fast and user-friendly analysis of randomness even for users not experienced in the field of statistical randomness testing. In general, the process of statistical testing includes finding a suitable tool, installation of said tool, and execution and interpretation of the analysis results.
 
-Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS. Before the start of the project, each researcher used his own set of scripts and tools to analyse, which is difficult to manage and also complicates comparation of the experiments done by different people.
+Another motivation was that the developed tool would unite the process of randomness analysis that is often done by researchers in CRoCS. Before the start of the project, each researcher used his own set of scripts and tools, which is difficult to manage and also complicates the comparison of the experiments done by different people.
 
-Therefore we developed Randomness Testing Toolkit \cite{rtt-github}, a tool that serves as an unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely. 
+Therefore we developed Randomness Testing Toolkit \cite{rtt-github}, a tool that serves as a unified interface of the three statistical batteries presented in Chapter~\ref{chap:batteries}. The toolkit consists of several connected parts that are intended for various purposes. Apart from interfaces and data storage format, the parts are independent and can be exchanged or modified freely. 
 
-In the following sections of this chapter, we will provide detailed description of the implemented parts of the toolkit.
+In the following sections of this chapter, we provide the detailed description of the implemented parts of the toolkit.
 
 \section{Local unified interface}
-The local unified interface is at the lowest level of the developed parts of RTT. The interface is a binary executable that accepts settings and outputs the results in common format for all batteries. The executable handles transformation of general settings into the battery specific ones, running the battery executable and then transforming gathered output into general format. The process is visualized in Figure~\ref{fig:rtt_local_workflow}.
+The local unified interface is at the lowest level of the developed parts of RTT. The interface is a binary executable that accepts settings and outputs the results in common format for all batteries. The executable handles the transformation of general settings into the battery specific ones, running the battery executable and then transforming gathered output into a general format. The process is visualized in Figure~\ref{fig:rtt_local_workflow}.
 
-The toolkit accepts settings needed for its run from three following sources:
+The toolkit accepts settings needed for its run from following three sources:
 \begin{itemize}
 \item \textbf{Command-line arguments} -- Basic settings that can change in every run; e.g. path to input file with binary data or to file with battery configuration.
 \item \textbf{Toolkit settings file} -- General settings for the toolkit related to the system environment e.g. paths to executables of the statistical batteries. In most of the cases, the settings stay the same for all executions of the toolkit regardless of the battery or data used. Changes in this configuration are needed only when the environment changes.
@@ -415,16 +445,16 @@ The basic options of the RTT execution are set through command-line arguments. T
 \item \texttt{-h} Usage of the toolkit will be printed.
 \item \texttt{-b <battery>} Sets the battery that will be executed during the run. Values accepted as \texttt{<battery>}: dieharder, nist\_sts, tu01\_smallcrush, tu01\_crush, tu01\_bigcrush, \linebreak tu01\_rabbit, tu01\_alphabit and tu01\_blockalphabit.
 \item \texttt{-t <test-id>} Optional argument. If set, only single test with id \texttt{<test-id>} will be executed in the chosen battery.
-\item \texttt{-c <config-path>} Path to file with configuration of the battery. Details about battery configuration are in Section~\ref{sec:batt_conf}.
-\item \texttt{-f <data-path>} Path to the file with the binary data that will be analyzed by the chosen battery.
+\item \texttt{-c <config-path>} A path to the file with the configuration of the battery. Details about battery configuration are in Section~\ref{sec:batt_conf}.
+\item \texttt{-f <data-path>} A path to the file with the binary data that will be analyzed by the chosen battery.
 \item \texttt{-r <result-storage>} Sets the type of the result storage that will be used. Accepted values are \texttt{file\_report} or \texttt{db\_mysql}. The option doesn't have to be set; \texttt{file\_report} is then used as default option. More information about result storages is in Section~\ref{sec:result_storages}.
-\item \texttt{-{}-eid <experiment-id>} Option is mandatory only when \texttt{db\_mysql} is set as a result storage; the option is ignored otherwise. Sets ID of the experiment in the database that will be assigned the results of the toolkit execution.
+\item \texttt{-{}-eid <experiment-id>} The option is mandatory only when \texttt{db\_mysql} is set as a result storage; the option is ignored otherwise. Sets ID of the experiment in the database that will be assigned the results of the toolkit execution.
 \end{itemize}
 
 \subsection{Toolkit settings}
 The general settings of the toolkit are kept in separate file \texttt{rtt-settings.json}. The settings are related to the environment in which the toolkit will be executed -- locations of the log files and executables, result storage options and toolkit execution options 
 
-The file is created by the user after the toolkit installation and stays the same for all of the subsequent executions of the program unless the environment changes (as opposed to input file with configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory of the executable. Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}.
+The file is created by the user after the toolkit installation and stays the same for all of the subsequent executions of the program unless the environment changes (as opposed to input file with the configuration of the batteries that can be different for each data analysis). The file \texttt{rtt-settings.json} must be located in the working directory of the executable. Basic structure of the file is in Figure~\ref{fig:rtt_sett_short_json}.
 
 \begin{figure}[h!]
 \begin{minted}[mathescape,
@@ -503,7 +533,7 @@ Settings related to the execution of the statistical batteries. \\
 \label{sec:batt_conf}
 The file with battery configuration defines all settings for the battery and the tests that will be executed during the program run. Each execution of RTT can have different battery configuration; the path to file with the configuration is set through command-line argument \texttt{-c}. The basic structure of the configuration file is outlined in Figure~\ref{fig:batt_conf_short_json}. 
 
-A single configuration file can contain settings for multiple batteries. This allows the user to have only one configuration for all of his experiments. In each battery-specific section, the user can set the default values of settings for all the tests in the battery. Additionaly, settings specific only to certain tests or test variants can be also defined. 
+A single configuration file can contain settings for multiple batteries. This allows the user to have only one configuration for all of his experiments. In each battery-specific section, the user can set the default values of settings for all the tests in the battery. Additionally, settings specific only to certain tests or test variants can also be defined. 
 
 The complete guide to all common and battery specific settings is in Appendix~\ref{app:batt_conf_guide}; for example of possible battery configuration see Appendix~\ref{app:batt_conf_example}.
 
@@ -555,9 +585,9 @@ The result storages are modules in RTT interface that handle saving of the execu
 
 The file storage is intended to be used when RTT is executed locally and manually by the user. After the execution, the user can inspect the human-readable reports that were generated by the module. 
 
-The MySQL database storage is used when RTT is deployed as a service on remote server. The results are stored in the database and can be viewed through web interface. It is also possible for user to install MySQL server on his local machine and setup the module so that it will use this database. The user then can work with the stored results as he sees fit.
+The MySQL database storage is used when RTT is deployed as a service on a remote server. The results are stored in the database and can be viewed through the web interface. It is also possible for the user to install MySQL server on his local machine and setup the module so that it will use this database. The user then can work with the stored results as he sees fit.
 
-The user can also implement his own version of the result storage module that will output the results in arbitrary format. 
+The user can also implement his own version of the result storage module that will output the results in an arbitrary format. 
 
 \subsection{File storage}
 \label{sec:file_res_storage}
@@ -592,15 +622,15 @@ The user can also implement his own version of the result storage module that wi
 \end{figure}
 
 \noindent
-The file storage will store results into human-readable reports. Each execution of the RTT interface will generate single battery-specific report as shown in Figure~\ref{fig:files_generated}. The newly generated files will have names based on the time of the execution and the filename of the binary data that was analysed. Possible instance of a report file is shown in Appendix~\ref{app:file_storage_report}.
+The file storage will store results into human-readable reports. Each execution of the RTT interface will generate a single battery-specific report as shown in Figure~\ref{fig:files_generated}. The newly generated files will have names based on the time of the execution and the filename of the binary data that was analysed. Possible instance of a report file is shown in Appendix~\ref{app:file_storage_report}.
 
-The main result file (in this case \texttt{table.txt}) contains summary of the result of all previous RTT executions since the last deletion of the file. Therefore, if the file does not exist in time of the execution it will be generated; the file will be only modified otherwise.
+The main result file (in this case \texttt{table.txt}) contains a summary of the result of all previous RTT executions since the last deletion of the file. Therefore, if the file does not exist at the time of the execution it will be generated; the file will be only modified otherwise.
 
-In the file, there is a simple ASCII table that contains single row for each input data file with distinct name that was analyzed. The rows contain name of the input file, time of the last modification of the row and a proportion of passed and total number of tests for each battery. In case that a single file is analysed multiple times by a single battery, the results are overwritten.
+In the file, there is a simple ASCII table that contains a single row for each input data file with a distinct name that was analyzed. The rows contain the name of the input file, time of the last modification of the row and a proportion of the passed and total number of tests for each battery. In case that a single file is analysed multiple times by a single battery, the results are overwritten.
 
 \subsection{MySQL database storage}
 \label{sec:mysql_res_storage}
-When using the database storage, RTT writes the results of the run directly into MySQL database. Layout of the database is shown in Figure~\ref{fig:erd_database}. The tables \texttt{experiments} and \texttt{jobs} are not strictly required by the toolkit as the results are written only into table \texttt{batteries} and its sub-tables. The additional tables were added because we anticipated deployment of RTT on multiple servers and the tables store needed metadata about the execution and scheduling.
+When using the database storage, RTT writes the results of the run directly into MySQL database. The layout of the database is shown in Figure~\ref{fig:erd_database}. The tables \texttt{experiments} and \texttt{jobs} are not strictly required by the toolkit as the results are written only into table \texttt{batteries} and its sub-tables. The additional tables were added because we anticipated deployment of RTT on multiple servers and the tables store needed metadata about the execution and scheduling.
 
 \begin{figure}[h!]
 \begin{nomar}
@@ -613,10 +643,10 @@ When using the database storage, RTT writes the results of the run directly into
 
 \begin{description}
 \item[\texttt{experiments}] \hfill \\
-We treat multiple analyses of single data stream by various batteries as a single experiment. The table stores metadata about the experiment such as name of the analysed file or used configuration file.
+We treat multiple analyses of a single data stream by various batteries as a single experiment. The table stores metadata about the experiment such as the name of the analysed file or used configuration file.
 
 \item[\texttt{jobs}] \hfill \\
-The table is used for scheduling execution of RTT on remote server. It holds information about the batteries that will be executed and experiment to which they belong. Single job represents a single execution of RTT.
+The table is used for scheduling execution of RTT on a remote server. It holds information about the batteries that will be executed and experiment to which they belong. A single job represents a single execution of RTT.
 
 \item[\texttt{batteries}] \hfill \\
 Each row represents results of a single execution of RTT. The analysis results are written to this table and its sub-tables by the database storage. The results of multiple RTT executions can be assigned to a single experiment.
@@ -650,11 +680,11 @@ List of all extracted p-values.
 \end{description}
 
 \section{Remote service}
-Randomness Testing Toolkit can be deployed on a single or multiple servers as a service, allowing the users to perform the binary data analysis without the need for the installation of the toolkit and without execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
+Randomness Testing Toolkit can be deployed on a single or multiple servers as a service, allowing the users to perform the binary data analysis without the need for the installation of the toolkit and execution of the tool on their local machine. The statistical testing is, in certain configurations, demanding on computational time and resources. Having the RTT installed on remote machines allows us to scale the resources available for the toolkit and further speed-up the analysis. The user only needs to provide the data for the toolkit and choose (or provide his own) configuration for the batteries. After the testing, the user is notified and can inspect the results.
 
-In the deployment part of the project, we developed an utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles setup of auxiliary scripts and tools that are required for result database and data storage and that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on single server that will handle all of the tasks along with the computation of the analysis. 
+In the deployment part of the project, we developed a utility project that handles setup and installation of the local interface on single or multiple machines. The deployment project also handles the setup of auxiliary scripts and tools that are required for result database and data storage, and that will be used by the machines used for statistical testing computation. The database and storage can be deployed on separate machines or on a single server that will handle all of the tasks along with the computation of the analysis. 
 
-The interaction of the user with the infrastructure is visualized in Figure~\ref{fig:rtt_ecosystem}. In following section we outline the different purposes of the servers.
+The interaction of the user with the infrastructure is visualized in Figure~\ref{fig:rtt_ecosystem}. In the following section, we outline the different purposes of the servers.
 
 \begin{figure}[H]
 \begin{nomar}
@@ -673,22 +703,22 @@ The server hosts a storage space that acts as a temporary deposit for the data t
 
 \pagebreak
 \begin{titlemize}{Scripts on the server}
-\item \texttt{clean\_cache.py} -- Script that handles removal of the data files that were already analysed. The script is executed periodically.
+\item \texttt{clean\_cache.py} -- A script that handles removal of the data files that were already analysed. The script is executed periodically.
 \end{titlemize}
 
 \subsection{Backend server}
-Single or multiple machines that host the installed toolkit and statistical batteries. The analysis of the data is executed on these machines. If there are multiple backend servers, the computations are scheduled based on the information stored in the database. Prior to the analysis, the data is downloaded from the storage and stored in local cache. After the computation, the results are stored on the database server and the data is deleted.
+Single or multiple machines that host the installed toolkit and statistical batteries. The analysis of the data is executed on these machines. If there are multiple backend servers, the computations are scheduled based on the information stored in the database. Prior to the analysis, the data is downloaded from the storage and stored in local cache. After the computation, the results are stored on the database server, and the data is deleted.
 
 Both jobs and experiments can be in one of the three states -- \texttt{pending}, \texttt{running} and \texttt{finished}; the descriptions of the states are in Table~\ref{tab:states_jobs_exps}. Scheduling of the computation is based on the state of the experiments and jobs.
 
 \begin{table}[H]
 \begin{nomar}
 \centering
-\begin{tabular}{@{}lp{5cm}p{5cm}@{}} \toprule
+\begin{tabular}{@{}lp{6cm}p{6cm}@{}} \toprule
 \textbf{Status}   & \textbf{Job} & \textbf{Experiment} \\ \midrule
 \texttt{pending}  & The job is waiting for execution. & All of the jobs related to the experiment are waiting for execution. \\ 
-\texttt{running}  & The job is being executed on backend server. & Some or all related jobs are being executed. \\ 
-\texttt{finished} & The jobs execution ended. & The execution of all \newline related jobs ended. \\ \bottomrule
+\texttt{running}  & The job is being executed on a backend server. & Some or all related jobs are being executed. \\ 
+\texttt{finished} & The jobs execution ended. & The execution of all related jobs ended. \\ \bottomrule
 \end{tabular}
 \end{nomar}
 \caption{States of jobs and experiments}
@@ -696,26 +726,26 @@ Both jobs and experiments can be in one of the three states -- \texttt{pending},
 \end{table}
 
 \begin{titlemize}{Scripts on the server}
-\item \texttt{clean\_cache.py} -- Script that handles removal of the locally cached data files that were already analysed. The script is executed periodically.
-\item \texttt{run\_jobs.py} -- Script responsible for choosing the correct computational job, downloading the data from the storage server and the execution of the analysis. Th script is executed periodically. The jobs are picked from the database table \texttt{jobs} with following priority:
+\item \texttt{clean\_cache.py} -- A script that handles removal of the locally cached data files that were already analysed. The script is executed periodically.
+\item \texttt{run\_jobs.py} -- Script responsible for choosing the correct computational job, downloading the data from the storage server and the execution of the analysis. Th script is executed periodically. The jobs are picked from the database table \texttt{jobs} with the following priority:
 \begin{enumerate}
 \item Jobs of those experiments whose data was downloaded earlier and the data is present in the local cache of the server.
 \item Any jobs of the experiments that are in pending state.
 \item Any jobs that are in pending state.
 \end{enumerate}
-The rules are designed in such a way that a minimal amount of data is transferred over the network. If there are enough distinct pending experiments for all servers then each server will pick single experiment and execute all its jobs and the data of the experiment is transferred only once.
+The rules are designed in such a way that a minimal amount of data is transferred over the network. If there are enough distinct pending experiments for all servers, then each server will pick single experiment and execute all its jobs, and the data of the experiment is transferred only once.
 \end{titlemize}
 
 \subsection{Frontend server}
 The user interacts only with the frontend server. The machine accepts data and requests for creating an experiment. After the request, the server creates the experiment and the related jobs in the database and uploads the data into the storage. The server also presents the results from the database to the users.
 
-The server can be directly accessed through SSH. The direct access is meant for experienced users that need to analyze big volumes of data. Additionaly, an optional web interface can be deployed on the frontend server. The web interface can be used for interactive browsing of the analysis results as well as for submitting undemanding amount of data and experiments by the users.
+The server can be directly accessed through SSH. The direct access is meant for experienced users that need to analyze big volumes of data. Additionally, an optional web interface can be deployed on the frontend server. The web interface can be used for interactive browsing of the analysis results as well as for submitting a undemanding amount of data and experiments by the users.
 
-The direct access to the server is granted to the user by the system administrator. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} \cite{chroot}. The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with help of the generator tool \cite{eacirc-streams} that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
+The direct access to the server is granted to the user by the system administrator. The RTT users can only access part of the system that is separated from the main system using \texttt{chroot jail} \cite{chroot}. The isolated environment contains only the tools and software that is necessary for submitting and processing the experiments. The data for the testing can be uploaded to the server from user's local machine, downloaded from other network location using \texttt{sftp} or generated directly on the server. The data generation is realized with the help of the generator tool \cite{eacirc-streams} that was developed at CRoCS and is capable of producing outputs of numerous round-reduced cryptographic primitives.
 
 \subsection*{Experiment submission utility}
 
-To create a new experiment, the user has to use utility \texttt{submit\_experiment} that is installed on the server. The utility will transfer the user's data into the storage and will insert new computational jobs into the database. The utility accepts following command-line arguments.
+The user has to use utility \texttt{submit\_experiment} that is installed on the server to create a new experiment. The utility will transfer the user's data into the storage and will insert new computational jobs into the database. The program accepts following command-line arguments.
 
 \begin{itemize}
 \item \texttt{-h, -{}-help} Prints the usage of the utility.
@@ -737,14 +767,14 @@ To create a new experiment, the user has to use utility \texttt{submit\_experime
 The flags for the batteries switch their inclusion in the experiment. For example, if we use arguments \texttt{"-{}-all\_batteries -{}-dieharder"}, then the batteries included in the experiment will be the batteries added by the \texttt{"-{}-all\_batteries"} flag \textbf{except} the Dieharder battery. However, if we would use only argument \texttt{"-{}-dieharder"}, then Dieharder will be the \textbf{only} battery used is the experiment.
 
 \subsection{Web Interface for RTT}
-The web interface is aiming to be useful in the basic use-case, where the user has some binary data in a single file that he wants to analyse. The user will upload the data through the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django framework \cite{django}.
+The web interface is aiming to be useful in the basic use-case, where the user has some binary data in a single file that he wants to analyse. The user will upload the data to the website and will wait for the end of the analysis; the results will be shown on the website after the computation. The web interface is not dependent on or required by the underlying server infrastructure that executes analysis of the data. It was developed only to serve as a user-friendly access point to Randomness Testing Toolkit. For development, we used Django framework \cite{django}.
 
-In most of the cases, one does not have to create new configuration for the batteries that will be executed during the analysis; a suitable configuration will be chosen for him automatically. Alternatively one can also manually choose the desired configuration or create his own configuration from the scratch according to his preferences.
+In most of the cases, one does not have to create a new configuration for the batteries that will be executed during the analysis; a suitable configuration will be chosen for him automatically. Alternatively, one can also manually choose the desired configuration or create his own configuration from scratch according to his preferences.
 
-The limitation of the interface is that the manual creation of large number of experiments would be too time-consuming and error-prone for the user, as the process can't be trivially automated. However the web interface is not intended to be used in such situations; creating the experiments through direct access to the frontend server would be much more viable. 
+The limitation of the interface is that the manual creation of a large number of experiments would be too time-consuming and error-prone for the user, as the process can't be trivially automated. However, the web interface is not intended to be used in such situations; creating the experiments through direct access to the frontend server would be much more viable. 
 
 \subsection*{User roles}
-We separate users into three categories in the context of the web interface application. It is worth noting that the user accounts existing in the web interface are independent of the accounts existing on the frontend server. In the following list we summarize the roles and their privileges.
+We separate users into three categories in the context of the web interface application. It is worth noting that the user accounts existing in the web interface are independent of the accounts existing on the frontend server. In the following list, we summarize the roles and their privileges.
 
 \begin{itemize}
 \item \textbf{Anonymous user privileges}
@@ -767,7 +797,7 @@ We separate users into three categories in the context of the web interface appl
 \end{itemize}
 
 \subsection*{Experiment submission}
-To create new experiment the user  will have to fill-out following settings in the online form. The screenshot of the form is included in the Appendix~\ref{chap:exp_submit_form}.
+To create new experiment the user will have to fill-out following settings in the online form. The screenshot of the form is included in the Appendix~\ref{chap:exp_submit_form}.
 
 \begin{itemize}
 \item \textbf{Experiment name} -- Name identifying the experiment, doesn't have to be unique.
@@ -787,12 +817,12 @@ To create new experiment the user  will have to fill-out following settings in t
 \label{fig:rtt_assessment}
 \end{figure}
 
-The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of passed and total number of tests included in the battery. We denote this proportion as $x$. Then the probability $P(x)$ of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section~\ref{sec:baseline_exp}. The example of a experiment evalution is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
+The web interface also presents and assesses the results of the past experiments of all users. Each experiment is listed along with the batteries that were included in it. Battery results are assessed separately; the assessment is based on the proportion of the passed and total number of tests included in the battery. We denote this proportion as $x$. Then the probability $P(x)$ of achieving such proportion when testing truly random data is calculated. The calculation process is described in Section~\ref{sec:baseline_exp}. The example of an experiment evaluation is shown in Figure~\ref{fig:rtt_assessment}. Based on the probability, the possible assessments are as follows.
 
 \begin{itemize}
-\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure and the source of the data should not be considered as a quality randomness generator.
-\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspisious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
-\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result and the data is considered random.
+\item \textbf{FAIL} ($0 < P(x) < 0.001$) -- The result is deemed as a failure, and the source of the data should not be considered as a quality randomness generator.
+\item \textbf{Suspect} ($0.001 \leq P(x) < 0.01$) -- The result is considered suspicious. The user should generate more data from the source and test it again. This result is possible to happen by chance even when the tested data is produced by a good source.
+\item \textbf{OK} ($0.01 \leq P(x) < 1$) -- The result is evaluated as a good result, and the data is considered random.
 \end{itemize}
 
 \chapter{Analysing arbitrary binary data with RTT}
@@ -1869,5 +1899,7 @@ Diehard Runs Test test results:
 \includegraphics[width=\textwidth]{figures/submit-experiment-form.png} 
 \end{nomar}
 \end{figure}
+
+\makeatletter\thesis@postamble\makeatother
 
 \end{document}
