@@ -147,9 +147,70 @@ language=C++
 \item Security margins experiment -- compare to EACirc (?), compare strength of individual batteries in RTT, detect discrepancies
 \item Dieharder experiment -- distribution of the partial results, assumed uniformity, however different results obtained, show how much.
 \end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Statistical testing overview %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Statistical testing of randomness}
+
+\begin{description}
+\item[Statistical battery] \hfill \\
+Software with purpose of detecting biases in data stream; collection of statistical tests.
+\item[Statistical test] \hfill \\
+Single unit in statistical battery, checks some property of the data; e.g. longest
+uninterrupted stream of ones.
+\item[Null hypothesis -- $H_0$] \hfill \\
+Null hypothesis stating that the tested data were produced by a true random number
+generator.
+\item[False positive (Type I error)] \hfill \\
+Happens when $H_0$ holds true but it is rejected -- truly random stream is evaluated as non random. We assume that for random data the p-values have an uniform distribution -- probability of Type I error is $\alpha$.
+
+\item[False negative (Type II error)] \hfill \\
+Happens when $H_0$ is false but it is not rejected -- biased stream is evaluated as random.
+\end{description}
 
 \end{frame}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Randomness Testing Toolkit overview %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Randomness Testing Toolkit -- motivation}
+\begin{Huge}
+TODO
+\end{Huge}
+\end{frame}
+
+\begin{frame}
+\frametitle{Randomness Testing Toolkit -- local interface}
+\begin{nomar}
+\centering
+\includegraphics[width=\textwidth]{figures/local-rtt-workflow.pdf} 
+\end{nomar}
+\end{frame}
+
+\begin{frame}
+\frametitle{Randomness Testing Toolkit -- web service}
+\begin{nomar}
+\centering
+\includegraphics[width=.9\textwidth]{figures/rtt-ecosystem.pdf} 
+\end{nomar}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Experiments -- baseline %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Experiments -- security margins %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Experiments -- faulty Dieharder %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
 \frametitle{Talk overview}
