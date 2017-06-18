@@ -19,11 +19,13 @@
 \usepackage{listings}
 
 \usepackage{color}
+\usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{enumitem}
 
 \definecolor{mygray}{rgb}{0.4,0.4,0.4}
 \definecolor{myorange}{rgb}{1.0,0.4,0}
+\newcommand{\gr}{\cellcolor{green!40}}
 
 \lstset{
 basicstyle=\tiny\sffamily\color{black},
@@ -137,51 +139,39 @@ language=C++
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Overview of the thesis structure %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Presentation structure}
+\frametitle{Thesis structure}
 
 \begin{itemize}
-\item RTT implementation -- program and service, deployed on MetaCentrum
-\item Brief intro into statistical testing -- battery, test, hypothesis, partial results, false positives/negatives
-\item Baseline experiment -- default behaviour of the batteries, what is the rate of false negative tests, find the thresholds, use it in the subsequent testing
-\item Security margins experiment -- compare to EACirc (?), compare strength of individual batteries in RTT, detect discrepancies
-\item Dieharder experiment -- distribution of the partial results, assumed uniformity, however different results obtained, show how much.
+\item Creation of a unified interface supporting multiple statistical batteries.
+\begin{itemize}
+\item NIST Statistical Testing Suite
+\item Dieharder
+\item TestU01
 \end{itemize}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Statistical testing overview %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-\frametitle{Statistical testing of randomness}
-
-\begin{description}
-\item[Statistical battery] \hfill \\
-Software with purpose of detecting biases in data stream; collection of statistical tests.
-\item[Statistical test] \hfill \\
-Single unit in statistical battery, checks some property of the data; e.g. longest
-uninterrupted stream of ones.
-\item[Null hypothesis -- $H_0$] \hfill \\
-Null hypothesis stating that the tested data were produced by a true random number
-generator.
-\item[False positive (Type I error)] \hfill \\
-Happens when $H_0$ holds true but it is rejected -- truly random stream is evaluated as non random. We assume that for random data the p-values have an uniform distribution -- probability of Type I error is $\alpha$.
-
-\item[False negative (Type II error)] \hfill \\
-Happens when $H_0$ is false but it is not rejected -- biased stream is evaluated as random.
-\end{description}
+\item Conducting the baseline (control) experiment to create a reference point for the further experiments.
+\item Evaluating randomness of outputs of well-known cryptographic primitives.
+\item Analysing validity of the Dieharder battery results.
+\end{itemize}
 
 \end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Randomness Testing Toolkit overview %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Randomness Testing Toolkit -- motivation}
-\begin{Huge}
-TODO
-\end{Huge}
+\frametitle{Randomness Testing Toolkit -- overview}
+\begin{itemize}
+\item Design and implementation of a tool for consistent randomness evaluation.
+\item Intended to be used by users without prior knowledge about statistical testing as well as by researchers in CRoCS. 
+\item The developed tool (RTT) acts as a interface between the user and the statistical batteries -- common format of the battery settings and results.
+\item The toolkit supports multiple statistical batteries -- NIST STS, Dieharder and TestU01; it is possible to add more batteries over time.
+\item Both standalone program and online service were developed.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -200,228 +190,58 @@ TODO
 \end{nomar}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Experiments -- baseline %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Experiments -- security margins %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Experiments -- faulty Dieharder %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Statistical testing overview %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Talk overview}
-\begin{itemize}
-\item \textbf{Randomness Testing Toolkit project}
-\begin{itemize}
-\item Developed framework for randomness testing
-\end{itemize}
-\item \textbf{Introduction to statistical testing}
-\begin{itemize}
-\item Theory behind the statistical tests
-\end{itemize} 
-\item \textbf{Experiments done with RTT}
-\begin{itemize}
-\item Baseline experiment
-\item Analysis of popular crypto functions
-\item Dieharder outputs inspection
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Randomness Testing Toolkit}
+\frametitle{Statistical testing of randomness -- 1/2}
 
 \begin{description}
-\item[Motivation] \hfill \\
-\begin{itemize}
-\item Randomness testing used for benchmarking of the research tools developed in CRoCS. TODO: Add another reason, make it easy.
-\item Most of the existing statistical batteries are neither intuitive nor trivial to use.
-\item Inconsistent results among researchers.
-\end{itemize}
-
-\vspace{.5cm}
-
-\item[Randomness Testing Toolkit] \hfill \\
-\begin{itemize}
-\item Project aiming to provide easy, fast and consistent randomness testing.
-\item Inclusion of multiple statistical batteries -- NIST STS, Dieharder, TestU01.
-\item Available as a standalone executable or as a service.
-\end{itemize}
-\end{description}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Randomness Testing Toolkit}
-
-\begin{Huge}
-Here goes the figure...
-\end{Huge}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Statistical testing -- 1/3}
-
-\begin{description}
-\item[Statistical battery] \hfill \\ 
-Software with purpose of detecting biases in data stream; collection of statistical tests.
+\item[Testing hypothesis -- $H_0$] \hfill \\
+During the experiments, we evaluated the hypothesis that the analysed data were produced by a truly random generator. We denote the hypothesis as $H_0$ (null hypothesis).
+\item[Statistical battery] \hfill \\
+Software with the purpose of detecting biases in data stream; collection of statistical tests.
 \item[Statistical test] \hfill \\
-Single unit in statistical battery, checks some property of the data; e.g. longest uninterrupted stream of ones.
-
-\vspace{.3cm}
-
-\item[Statistical test results -- REWORK] \hfill \\
-\begin{itemize}
-\item Single test is repeated multiple times, resulting in multiple first-level p-values.
-\item First-level p-values are processed by arbitrary statistical algorithm -- the result is second-level p-value or statistic; e.g. Kolmogorov-Smirnov test for uniformity.
-\item Single test can produce multiple statistics (subtests, variations in test parameters, multiple uniformity tests, etc...).
-\end{itemize}
+Single unit in a statistical battery, checks some property of the data; e.g. count of ones. Output of a test is the probability that the analysed data were produced by TRNG. Each test in a given battery will either fail ($H_0$ rejection) or pass ($H_0$ retainment).
 \end{description}
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Statistical testing -- 2/3}
+\frametitle{Statistical testing of randomness -- 2/2}
 
 \begin{description}
-\item[Hypothesis $H_0$] \hfill \\
-Null hypothesis stating that the tested data were produced by a true random number generator.
-\item[p-value] \hfill \\
-P-value represents the probability that the $H_0$ holds true.
-\item[Significance level $\alpha$] \hfill \\
-If p-value is lesser than $\alpha$ then the result is significant and $H_0$ is rejected. If the p-value of a test if lesser than $\alpha$ we consider the test failed.
+\item[Significance level -- $\alpha$] \hfill \\
+The significance level is set prior to the experiments (usually 0.001) and based on it, the null hypothesis is rejected or retained.
 \item[False positive (Type I error)] \hfill \\
-Happens when $H_0$ holds true but it is rejected -- truly random stream is evaluated as non random. We assume that for random data the p-values have an uniform distribution -- probability of Type I error is $\alpha$.
+The false positive result is observed when $H_0$ holds true but it is rejected -- stream produced by TRNG is evaluated as non random. Probability of Type I error is $\alpha$.
 \item[False negative (Type II error)] \hfill \\
-Happens when $H_0$ is false but it is not rejected -- biased stream is evaluated as random.
+The false negative result is observed when $H_0$ is false but it is not rejected -- stream generated by biased generator is evaluated as random.
 \end{description}
-
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Experiments - baseline %
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Statistical testing -- 3/3}
-
-\begin{figure}
-\begin{nomar}
-\centering
-\includegraphics[width=.8\paperwidth]{figures/single-fails-4.png} 
-\end{nomar}
-\end{figure}
-
+\frametitle{Establishing baseline results}
+\begin{itemize}
+\item The result of a battery is obtained from the proportion of the failed tests in the battery (e.g. we consider the data biased if more than 2 out of 15 tests fail). However, even data generated by a perfect TRNG may fail some tests (false positives).
+\item To identify the maximum count of failed tests (assuming that the $H_0$ holds) we processed 8 TB of data generated by a quantum random generator (control experiment). Further experiments were interpreted based on these results.
+\item In order to make the result interpretation more straight-forward, results of certain tests were grouped together. As a consequence, the counts of failed tests are closer to expected (theoretical) numbers and therefore more easy to evaluate.
+\end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Experiments - security margins %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Overview of the experiments}
-
-\begin{description}
-\item[Baseline experiment] \hfill \\
+\frametitle{Analysis of well-known algoritms}
 \begin{itemize}
-\item Discovering failure rates of the batteries
-\item Finding the bound of test failure count in a battery
+\item Analyse outputs of well-known cryptographic algorithms (AES, DES, RC4, etc.).
+\item Observe the security margins of the algorithms.
+\item Compare the results to other approach in CRoCS.
 \end{itemize}
-\vspace{.2cm}
-\item[Usable testbed analysis] \hfill \\
-\begin{itemize}
-\item Analyse outputs of well-known cryptographic algorithms (AES, DES, RC4, etc.)
-\item Observe the security margins of the algorithms
-\item Compare the results to other approach in CRoCS
-\end{itemize}
-\vspace{.2cm}
-\item[Analysis of Dieharder] \hfill \\
-\begin{itemize}
-\item Examine behavior of Dieharder battery during truly random data analysis
-\item Analyse the distribution of the results
-\end{itemize}
-\end{description}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Baseline experiment -- 1/4}
-
-\begin{description}
-\item[Analysis of 8TB of quantum random data] \hfill \\
-\begin{itemize}
-\item Data split into 1000 blocks -- each battery executed on every block
-\item Sample size was 1000 trials.
-\end{itemize}
-\vspace{.2cm}
-\item[Test failure observation] \hfill \\
-\begin{itemize}
-\item Raw second-level p-values -- assuming that p-values are independent.
-\begin{itemize}
-\item Single p-value will fail with probability $\alpha$
-\item Out of $n$ p-values, $x$ will fail with probability $P(F=x) = { n \choose x } * \alpha^x * (1-\alpha)^{n-x}$
-\end{itemize}
-\item Corrected p-values -- likely-dependent p-values grouped together
-\begin{itemize}
-\item Products of a single test treated as a single result.
-\item Each group of $n$ p-values has new corrected (partial) $\alpha_0 = 1 - (1 - \alpha)^{\frac{1}{n}}$
-\item If any p-value in the group with $\alpha_0$ has lesser value than the $\alpha_0$, the entire group is treated as a failed test.
-\end{itemize}
-\end{itemize}
-\end{description}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Baseline experiment -- 2/4}
-\includegraphics[width=15cm, height=7cm]{figures/corrected_vs_raw/alphabit-raw.pdf} 
-\begin{figure}
-\begin{nomar}
-\centering
-\end{nomar}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Baseline experiment -- 3/4}
-\includegraphics[width=15cm, height=7cm]{figures/corrected_vs_raw/alphabit-corrected.pdf} 
-\begin{figure}
-\begin{nomar}
-\centering
-\end{nomar}
-\end{figure}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Baseline experiment -- 4/4}
-
-\begin{description}
-\item[Analysis result assessment] \hfill \\
-\begin{itemize}
-\item Result of data analysis is assessed based on the number of failed corrected tests in the battery.
-\item $P(X=F) < 0.001$ -- the analysed data is not considered random
-\end{itemize}
-\item[Summary] \hfill \\
-\begin{table}
-\begin{nomar}
-\centering
-\begin{tabular}{l || r | r | r}
-\textbf{Battery name} & \textbf{Raw} $\chi^2$ & \textbf{Corrected} $\chi^2$ & \textbf{Fail count bound} \\ \hline \hline
-Dieharder            & 4.3e-17          & \textbf{0.50427}  & 3/27 \\ 
-NIST STS             & \textbf{0.02975} & 5.5e-09           & 2/15 \\ 
-TU01 Small Crush     & \textbf{0.72575} & 0.15814           & 2/10 \\ 
-TU01 Crush           & 3.6e-15          & \textbf{0.00707}  & 3/32 \\ 
-TU01 Rabbit          & \textbf{4.9e-22} & 1.4e-23           & 2/16 \\ 
-TU01 Alphabit        & 0.00000          & \textbf{8.6e-07}  & 1/4 \\ 
-TU01 Block Alphabit  & 0.00000          & \textbf{1.4e-101} & 1/4 \\
-\end{tabular}
-\end{nomar}
-\end{table}
-\end{description}
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Usable testbed analysis -- 1/3}
 
 \begin{description}
 \item[Analysed algorithms] \hfill \\
@@ -439,6 +259,17 @@ TU01 Block Alphabit  & 0.00000          & \textbf{1.4e-101} & 1/4 \\
 \end{itemize}
 \end{description}
 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Experiments - faulty Dieharder %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Analysis of the results of Dieharder battery}
+\begin{itemize}
+\item Examine behavior of Dieharder battery during truly random data analysis.
+\item Analyse the distribution of the results.
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -473,6 +304,72 @@ TRIPLE-DES & \cellcolor{green!40}3      & 2  & 13 -- 81.2\% \\
 \end{table}
 
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% Last official frame %
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+
+\frametitle{References}
+\begin{itemize}
+\item \textbf{Randomness Testing Toolkit} \\ \url{https://github.com/crocs-muni/randomness-testing-toolkit}
+\item \textbf{EACirc} \\ \url{https://github.com/crocs-muni/eacirc}
+\item \textbf{NIST Statistical testing suite} \\ \url{http://csrc.nist.gov/groups/ST/toolkit/rng/documentation_software.html}
+\item \textbf{Dieharder} \\ \url{http://www.phy.duke.edu/~rgb/General/dieharder.php}
+\item \textbf{TestU01} \\ \url{http://simul.iro.umontreal.ca/testu01/tu01.html}
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Additional details and figures %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Baseline experiment detail %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Baseline experiment -- uncorrected results}
+\begin{nomar}
+\centering
+\includegraphics[width=.85\textwidth]{figures/dieharder-orig.pdf} 
+\end{nomar}
+\end{frame}
+
+\begin{frame}
+\frametitle{Baseline experiment -- corrected results}
+\begin{nomar}
+\centering
+\includegraphics[width=.85\textwidth]{figures/dieharder-corr.pdf} 
+\end{nomar}
+\end{frame}
+
+\begin{frame}
+\frametitle{Baseline experiment -- resulting reference}
+\begin{table}
+\begin{nomar}
+\centering
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+                      & \multicolumn{2}{c}{\textbf{Closeness to expected results}}               &                           \\ \cmidrule(lr){2-3}
+\textbf{Battery name} & Uncorrected               & Uncorrected              & \textbf{Allowed failures} \\ \midrule
+
+Dieharder             &    $5.32 \cdot 10^{-17}$  & \gr$0.38$                & 3/27 \\ 
+NIST STS              & \gr$2.17 \cdot 10^{-2}$   &    $4.44 \cdot 10^{-7}$  & 2/15 \\ 
+TU01 Small Crush      &    $0.71$                 & \gr$0.95$                & 2/10 \\ 
+TU01 Crush            &    $3.36 \cdot 10^{-11}$  & \gr$3.31 \cdot 10^{-3}$  & 3/32 \\ 
+TU01 Rabbit           & \gr$2.02 \cdot 10^{-5}$   &    $1.45 \cdot 10^{-23}$ & 2/16 \\ 
+TU01 Alphabit         &    $2.14 \cdot 10^{-8}$   & \gr$2.8 \cdot 10^{-7}$   & 1/4 \\ 
+TU01 Block Alphabit   &    $1.87 \cdot 10^{-68}$  & \gr$5.15 \cdot 10^{-47}$ & 1/4 \\
+\bottomrule
+\end{tabular}
+\end{nomar}
+\end{table}
+\end{frame}
+
+
+
 
 \begin{frame}
 \frametitle{Usable testbed analysis -- 3/3}
@@ -522,19 +419,6 @@ TRIPLE-DES & \cellcolor{green!40}3      & 2  & 13 -- 81.2\% \\
 \includegraphics[width=.45\paperwidth]{figures/100.png}
 \end{nomar}
 \end{figure}
-
-\end{frame}
-
-\begin{frame}
-
-\frametitle{References}
-\begin{itemize}
-\item \textbf{Randomness Testing Toolkit} \\ \url{https://github.com/crocs-muni/randomness-testing-toolkit}
-\item \textbf{EACirc} \\ \url{https://github.com/crocs-muni/eacirc}
-\item \textbf{NIST Statistical testing suite} \\ \url{http://csrc.nist.gov/groups/ST/toolkit/rng/documentation_software.html}
-\item \textbf{Dieharder} \\ \url{http://www.phy.duke.edu/~rgb/General/dieharder.php}
-\item \textbf{TestU01} \\ \url{http://simul.iro.umontreal.ca/testu01/tu01.html}
-\end{itemize}
 
 \end{frame}
 
