@@ -26,6 +26,7 @@
 \definecolor{mygray}{rgb}{0.4,0.4,0.4}
 \definecolor{myorange}{rgb}{1.0,0.4,0}
 \newcommand{\gr}{\cellcolor{green!40}}
+\newcommand{\rd}{\cellcolor{red!40}}
 
 \lstset{
 basicstyle=\tiny\sffamily\color{black},
@@ -131,14 +132,12 @@ language=C++
 \renewcommand\theadfont{\bfseries}
 
 \begin{document}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Presentation slides %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \titlepage % Print the title page as the first slide
 \end{frame}
-
-%----------------------------------------------------------------------------------------
-%	PRESENTATION SLIDES
-%----------------------------------------------------------------------------------------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Overview of the thesis structure %
@@ -220,9 +219,9 @@ The false negative result is observed when $H_0$ is false but it is not rejected
 \end{description}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Experiments - baseline %
-%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%
+% Baseline experiment %
+%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Establishing baseline results}
 \begin{itemize}
@@ -232,77 +231,43 @@ The false negative result is observed when $H_0$ is false but it is not rejected
 \end{itemize}
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Experiments - security margins %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Usable testbed experiment %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Analysis of well-known algoritms}
+\frametitle{Analysis of well-known algoritms -- 1/2}
+\textbf{Goal: } Evaluate randomness of the outputs of round-reduced cryptographic primitives and observe their security margins.
+\vspace{.3cm}
 \begin{itemize}
-\item Analyse outputs of well-known cryptographic algorithms (AES, DES, RC4, etc.).
-\item Observe the security margins of the algorithms.
-\item Compare the results to other approach in CRoCS.
+\item We analysed 15 algorithms in multiple configurations. In total, more than 80 data streams were processed. The algorithms were chosen based on their popularity (AES, DES, RC4, ...) or their success in crypto competitions eSTREAM and SHA3 (Rabbit, Keccak, Gr\o stl, ...).
+\item The interpretation of the results was based on the baseline obtained in previous experiment.
+\item The results were compared to another randomness analysis approach developed in CRoCS (EACirc).
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Analysis of well-known algoritms -- 2/2}
 
 \begin{description}
-\item[Analysed algorithms] \hfill \\
+\item[Results of the experiment] \hfill \\
 \begin{itemize}
-\item In total, 72 different data streams were analysed.
-\item The data streams were outputs from 16 distinct round-reduced cryptographic algorithms.
-\item The algorithms were chosed based on their popularity (AES, DES, RC4, ...) or their success in crypto competitions eSTREAM and SHA3 (Rabbit, Keccak, Gr\o stl, ...).
-\end{itemize}
-\vspace{.2cm}
-\item[Analysis conditions] \hfill \\
-\begin{itemize}
-\item Each datastream was 8GB long.
-\item The conditions of analysis were same as in the previous experiment.
-\item The interpretation of the result was based on the results of the baseline experiment.
+\item \textbf{Comparison to EACirc:} The batteries supported by RTT perform as equally well or better than EACirc. This can be caused by a number of reasons, namely by data consumption (EACirc requires lesser amount of data) or internal data representation.
+\item \textbf{Security margins:} Majority of the analysed algorithms had the security margins higher than 80\%. Even with considerable increase of the performance of the statistical tools, the biases in full versions of the algorithms would go undetected.
+\item \textbf{Biased outputs of full algorithms:} Statistical bias was detected in the outputs of the ciphers RC4 and Rabbit (winner of the eSTREAM competition). Compared to already published distinguishers our approach is easy and automated but we assume zero IV and structured input data.
 \end{itemize}
 \end{description}
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Experiments - faulty Dieharder %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Dieharder outputs analysis %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Analysis of the results of Dieharder battery}
 \begin{itemize}
 \item Examine behavior of Dieharder battery during truly random data analysis.
 \item Analyse the distribution of the results.
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Usable testbed analysis -- 2/3}
-
-\begin{table}
-\begin{nomar}
-\centering
-
-\scalebox{0.75} {
-\begin{tabular}{l || r | r | r }
-\textbf{Algorithm} & \thead{Biased round \\ RTT} & \thead{Biased round \\ EACirc} & \textbf{Security Margin} \\ \hline \hline
-AES        & 3                          & 3  & 7 -- 70\% \\
-BLAKE      & 1                          & 1  & 15 -- 93.7\% \\
-Grain      & \cellcolor{green!40}6*     & 2  & 7 -- 53.8\% \\
-Gr\o stl   & 2                          & 2  & 12 -- 85.7\% \\
-HC-128     & --                         & -- & 0 -- 100\% \\
-JH         & 6                          & 6  & 36 -- 85.7\% \\
-Keccak     & \cellcolor{green!40}3      & 2  & 21 -- 87.5\% \\
-MD6        & \cellcolor{green!40}10*    & 8  & 94 -- 90.3\% \\
-Rabbit     & \cellcolor{green!40}4*     & 0  & \cellcolor{red!40}0 -- 0\% \\
-RC4        & \cellcolor{green!40}0*     & -- & \cellcolor{red!40}0 -- 0\% \\
-Salsa20    & 2                          & 2  & 18 -- 90\% \\
-SINGLE-DES & \cellcolor{green!40}5      & 4  & 11 -- 68.7\% \\
-Skein      & \cellcolor{green!40}4      & 3  & 68 -- 94.4\% \\
-SOSEMANUK  & 4                          & 4  & 21 -- 84\% \\
-TEA        & \cellcolor{green!40}5      & 4  & 27 -- 84.3\% \\
-TRIPLE-DES & \cellcolor{green!40}3      & 2  & 13 -- 81.2\% \\
-\end{tabular}
-}
-\end{nomar}
-\end{table}
-
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -322,9 +287,9 @@ TRIPLE-DES & \cellcolor{green!40}3      & 2  & 13 -- 81.2\% \\
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Additional details and figures %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Additional details and figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Baseline experiment detail %
@@ -346,44 +311,59 @@ TRIPLE-DES & \cellcolor{green!40}3      & 2  & 13 -- 81.2\% \\
 \end{frame}
 
 \begin{frame}
-\frametitle{Baseline experiment -- resulting reference}
+\frametitle{Baseline experiment -- reference failure counts}
 \begin{table}
 \begin{nomar}
 \centering
 \begin{tabular}{@{}lrrr@{}}
-\toprule
-                      & \multicolumn{2}{c}{\textbf{Closeness to expected results}}               &                           \\ \cmidrule(lr){2-3}
-\textbf{Battery name} & Uncorrected               & Uncorrected              & \textbf{Allowed failures} \\ \midrule
-
-Dieharder             &    $5.32 \cdot 10^{-17}$  & \gr$0.38$                & 3/27 \\ 
-NIST STS              & \gr$2.17 \cdot 10^{-2}$   &    $4.44 \cdot 10^{-7}$  & 2/15 \\ 
-TU01 Small Crush      &    $0.71$                 & \gr$0.95$                & 2/10 \\ 
-TU01 Crush            &    $3.36 \cdot 10^{-11}$  & \gr$3.31 \cdot 10^{-3}$  & 3/32 \\ 
-TU01 Rabbit           & \gr$2.02 \cdot 10^{-5}$   &    $1.45 \cdot 10^{-23}$ & 2/16 \\ 
-TU01 Alphabit         &    $2.14 \cdot 10^{-8}$   & \gr$2.8 \cdot 10^{-7}$   & 1/4 \\ 
-TU01 Block Alphabit   &    $1.87 \cdot 10^{-68}$  & \gr$5.15 \cdot 10^{-47}$ & 1/4 \\
-\bottomrule
+                                                                                                                  \toprule
+                      & \multicolumn{2}{c}{\textbf{Closeness to expected results}} &                           \\ \cmidrule(lr){2-3}
+\textbf{Battery name} & Uncorrected               & Uncorrected                    & \textbf{Allowed failures} \\ \midrule
+Dieharder             &    $5.32 \cdot 10^{-17}$  & \gr$0.38$                      & 3/27                      \\ 
+NIST STS              & \gr$2.17 \cdot 10^{-2}$   &    $4.44 \cdot 10^{-7}$        & 2/15                      \\ 
+TU01 Small Crush      &    $0.71$                 & \gr$0.95$                      & 2/10                      \\ 
+TU01 Crush            &    $3.36 \cdot 10^{-11}$  & \gr$3.31 \cdot 10^{-3}$        & 3/32                      \\ 
+TU01 Rabbit           & \gr$2.02 \cdot 10^{-5}$   &    $1.45 \cdot 10^{-23}$       & 2/16                      \\ 
+TU01 Alphabit         &    $2.14 \cdot 10^{-8}$   & \gr$2.8 \cdot 10^{-7}$         & 1/4                       \\ 
+TU01 Block Alphabit   &    $1.87 \cdot 10^{-68}$  & \gr$5.15 \cdot 10^{-47}$       & 1/4                       \\ \bottomrule
 \end{tabular}
 \end{nomar}
 \end{table}
 \end{frame}
 
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Usable testbed results detail %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
-\frametitle{Usable testbed analysis -- 3/3}
+\frametitle{Analysis of well-known algorithms -- results}
 
-\begin{description}
-\item[Notable results] \hfill \\
-\begin{itemize}
-\item \textbf{Grain} -- Tests smarsa\_MatrixRank and scomp\_LinearComp (Crush, Rabbit) will fail in 3, 4, 5 and 6-round configuration.
-\item \textbf{MD6} -- Tests smarsa\_MatrixRank and sspectral\_Fourier3 (Crush, Rabbit) will fail in 9 and 10-round configuration.
-\item \textbf{Rabbit} -- Tests sstring\_HammingIndep and sstring\_PeriodsInStrings (Crush, Rabbit, Alphabit, Block Alphabit) will fail in \textbf{full} configuration.
-\item \textbf{RC4} -- Tests sknuth\_SimpPoker and sknuth\_Gap (Crush) will fail in \textbf{full} configuration.
-\end{itemize}
-\end{description}
-
+\begin{table}
+\begin{nomar}
+\centering
+\scalebox{0.75} {
+\begin{tabular}{@{}lrrrr@{}}
+                                                                                                                           \toprule
+                   & \multicolumn{2}{c}{\textbf{Top biased round}} &                                                    \\ \cmidrule(lr){2-3}                       
+\textbf{Algorithm} & RTT                & EACirc                   & \textbf{Total rounds} & \textbf{Security margin}   \\ \midrule
+AES                &    3               & 3                        & 10                    &     7 rounds (70\%)        \\
+BLAKE              &    1               & 1                        & 16                    &    15 rounds (94\%)        \\
+Grain              & \gr6               & 2                        & 13                    &     7 rounds (54\%)        \\
+Gr\o stl           &    2               & 2                        & 14                    &    12 rounds (86\%)        \\
+JH                 &    6               & 6                        & 42                    &    36 rounds (86\%)        \\
+Keccak             & \gr3               & 2                        & 24                    &    21 rounds (88\%)        \\
+MD6                & \gr10              & 8                        & 104                   &    94 rounds (90\%)        \\
+Rabbit             & \gr4               & 0                        & 4                     & \rd 0 rounds (0\%)         \\
+RC4                & \gr--              & --                       & --                    & \rd 0 rounds (0\%)         \\
+Salsa20            &    2               & 2                        & 20                    &    18 rounds (90\%)        \\
+Single DES         & \gr5               & 4                        & 16                    &    11 rounds (69\%)        \\
+Skein              & \gr4               & 3                        & 72                    &    68 rounds (94\%)        \\
+SOSEMANUK          &    4               & 4                        & 25                    &    21 rounds (84\%)        \\
+TEA                & \gr5               & 4                        & 32                    &    27 rounds (84\%)        \\
+Triple DES         & \gr3               & 2                        & 16                    &    13 rounds (81\%)        \\ \bottomrule
+\end{tabular}
+}
+\end{nomar}
+\end{table}
 \end{frame}
 
 \begin{frame}
