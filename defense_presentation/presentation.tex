@@ -46,6 +46,15 @@
 \newcommand{\cthree}{\cellcolor{lvl3}}
 \newcommand{\cfour}{\cellcolor{lvl4}}
 
+\newcommand{\backupbegin}{
+   \newcounter{finalframe}
+   \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+   \setcounter{framenumber}{\value{finalframe}}
+}
+
+
 % Rotates table cell
 \newcolumntype{R}[1]{>{\begin{turn}{90}\begin{minipage}{#1}}l%
 <{\end{minipage}\end{turn}}%
@@ -234,7 +243,7 @@ A single unit in a statistical battery checking some property of the data (e.g. 
 
 \begin{description}
 \item[Significance level -- $\alpha$] \hfill \\
-The significance level is set prior to the experiments (usually 0.001) and based on it, the null hypothesis is rejected or retained.
+The significance level is set prior to the experiments (we use 0.01) and based on it, the null hypothesis is rejected or retained.
 \item[False positive (Type I error)] \hfill \\
 The false positive result is observed when $H_0$ holds true, but it is rejected -- stream
 produced by TRNG is evaluated as non-random. The probability of Type I error is $\alpha$.
@@ -362,15 +371,16 @@ RC$\text{4}^{\ast}$  (roundless) & -- & --  &  0        &  0     &  0       &  3
 \begin{description}
 \item[Randomness Testing Toolkit] \hfill
 \begin{itemize}
-\item User-friendly tool with easy interpretation of results.
+\item A user-friendly tool for easy interpretation of results.
 \item Already used by researchers in CRoCS.
 \item Will be used in future research publication.
 \end{itemize}
 \vspace{.2cm}
 \item[Randomness evaluation of cryptographic algorithms] \hfill
 \begin{itemize}
+\item Baseline interpretation is usable in future experiments.
 \item Most algorithms have large enough security margins.
-\item RC4 and Rabbit cipher have bias in their full version.
+\item RC4 and Rabbit cipher have a bias in their full version.
 \end{itemize}
 \vspace{.2cm}
 \item[Analysis of Dieharder validity] \hfill
@@ -398,10 +408,12 @@ RC$\text{4}^{\ast}$  (roundless) & -- & --  &  0        &  0     &  0       &  3
 
 \end{frame}
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Additional details and figures %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\backupbegin
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Baseline experiment detail %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -442,4 +454,5 @@ TU01 Block Alphabit   &    $1.87 \cdot 10^{-68}$  & \gr$5.15 \cdot 10^{-47}$    
 \end{table}
 \end{frame}
 
+\backupend
 \end{document}
